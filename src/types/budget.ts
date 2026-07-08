@@ -38,6 +38,7 @@ export interface BudgetData {
   expenses: BudgetExpense[];
   totalBudget?: number;
   currency?: string;
+  lastUpdated?: string;
 }
 
 export interface BudgetSummary {

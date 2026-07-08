@@ -2,19 +2,19 @@ import { motion } from "framer-motion";
 import { Plus, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { TripBudgetCard } from "@/components/trip/TripBudgetCard";
 import { EmptyState, IconButton, SectionHeader } from "@/components/ui";
 import { sampleTrip } from "@/data/sample-trip";
 import { staggerContainer } from "@/design-system/motion";
 import { usePersistentBudget } from "@/hooks/usePersistentBudget";
 import { useTranslation } from "@/i18n";
-import { calculateBudgetSummary, filterExpenses, sortExpensesByDate } from "@/lib/budget";
+import { filterExpenses, sortExpensesByDate } from "@/lib/budget";
 import { getCurrentTripDay } from "@/lib/trip-progress";
 import type { BudgetExpense, ExpenseFilters } from "@/types/budget";
 
 import { ExpenseCard } from "@/pages/Budget/components/ExpenseCard";
 import { ExpenseDeleteDialog } from "@/pages/Budget/components/ExpenseDeleteDialog";
 import { ExpenseFormDialog } from "@/pages/Budget/components/ExpenseFormDialog";
-import { WalletHeroCard } from "@/pages/Budget/components/WalletHeroCard";
 
 const defaultFilters: ExpenseFilters = {
   query: "",
@@ -24,7 +24,20 @@ const defaultFilters: ExpenseFilters = {
 
 export function JourneyBudgetPanel() {
   const { t } = useTranslation();
-  const { expenses, addExpense, updateExpense, deleteExpense } = usePersistentBudget();
+  const {
+    expenses,
+    totalBudget,
+    spent,
+    remaining,
+    currency,
+    lastUpdated,
+    addExpense,
+    updateExpense,
+    deleteExpense,
+  } = usePersistentBudget({
+    defaultTotalBudget: sampleTrip.budget.totalMax,
+    defaultCurrency: sampleTrip.budget.currency,
+  });
   const [filters] = useState<ExpenseFilters>(defaultFilters);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<"add" | "edit">("add");
@@ -33,21 +46,9 @@ export function JourneyBudgetPanel() {
 
   const currentDay = getCurrentTripDay(sampleTrip);
   const defaultDate = currentDay.date;
-  const defaultCurrency = sampleTrip.budget.currency;
-
   const filteredExpenses = useMemo(
     () => sortExpensesByDate(filterExpenses(expenses, filters)),
     [expenses, filters],
-  );
-
-  const budgetSummary = useMemo(
-    () =>
-      calculateBudgetSummary({
-        expenses,
-        totalBudget: sampleTrip.budget.totalMax,
-        tripDays: sampleTrip.itinerary,
-      }),
-    [expenses],
   );
 
   function openAddDialog() {
@@ -65,10 +66,12 @@ export function JourneyBudgetPanel() {
   return (
     <>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative flex flex-col gap-5">
-        <WalletHeroCard
-          currency={defaultCurrency}
-          spent={budgetSummary.totalSpent}
-          total={budgetSummary.totalBudget}
+        <TripBudgetCard
+          totalBudget={totalBudget}
+          spent={spent}
+          remaining={remaining}
+          currency={currency}
+          lastUpdated={lastUpdated}
         />
 
         <div className="flex flex-col gap-3.5">
@@ -111,7 +114,7 @@ export function JourneyBudgetPanel() {
         mode={formMode}
         initialExpense={activeExpense ?? undefined}
         defaultDate={defaultDate}
-        defaultCurrency={defaultCurrency}
+        defaultCurrency={currency}
         onClose={() => setFormOpen(false)}
         onSave={(input) => {
           if (formMode === "edit" && activeExpense) {

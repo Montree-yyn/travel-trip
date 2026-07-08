@@ -18,6 +18,7 @@ import type {
 } from "./types";
 
 const defaultBudget: BudgetData = { expenses: [] };
+export const BUDGET_STORAGE_CHANGED_EVENT = "travel-trip-budget-storage-changed";
 
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -112,6 +113,7 @@ export function readBudgetFromStorage(): TripBudgetDoc {
 
 export function writeBudgetToStorage(budget: TripBudgetDoc) {
   writeJson(SYNC_STORAGE_KEYS.budget, budget);
+  window.dispatchEvent(new CustomEvent(BUDGET_STORAGE_CHANGED_EVENT));
 }
 
 export function readTranslatorFromStorage(): TripTranslatorDoc {

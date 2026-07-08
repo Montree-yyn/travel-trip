@@ -178,6 +178,7 @@
     "categorySummary": "Category Summary",
     "tripWallet": "Trip Wallet",
     "totalBudget": "Total",
+    "editTotalBudget": "Edit total budget",
     "spent": "Spent",
     "remaining": "Remaining",
     "spentOf": "Spent {{currency}} {{spent}} of {{total}}",

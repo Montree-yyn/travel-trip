@@ -11,6 +11,7 @@ import {
   ThemeToggle,
 } from "@/components/ui";
 import { PageHeader, PageLoadingGate } from "@/components/layout";
+import { TripBudgetCard } from "@/components/trip/TripBudgetCard";
 import { sampleTrip } from "@/data/sample-trip";
 import { staggerContainer } from "@/design-system/motion";
 import { usePersistentBudget } from "@/hooks/usePersistentBudget";
@@ -31,7 +32,6 @@ import { ExpenseDeleteDialog } from "./components/ExpenseDeleteDialog";
 import { ExpenseFiltersBar } from "./components/ExpenseFiltersBar";
 import { ExpenseFormDialog } from "./components/ExpenseFormDialog";
 import { TotalBudgetDialog } from "./components/TotalBudgetDialog";
-import { WalletHeroCard } from "./components/WalletHeroCard";
 
 const defaultFilters: ExpenseFilters = {
   query: "",
@@ -46,7 +46,10 @@ export function BudgetPage() {
   const {
     expenses,
     totalBudget,
+    spent,
+    remaining,
     currency,
+    lastUpdated,
     addExpense,
     updateExpense,
     deleteExpense,
@@ -115,10 +118,12 @@ export function BudgetPage() {
           </div>
         )}
 
-        <WalletHeroCard
+        <TripBudgetCard
+          totalBudget={totalBudget}
+          spent={spent}
+          remaining={remaining}
           currency={currency}
-          spent={budgetSummary.totalSpent}
-          total={budgetSummary.totalBudget}
+          lastUpdated={lastUpdated}
           onEdit={() => setBudgetDialogOpen(true)}
         />
 

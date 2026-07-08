@@ -178,6 +178,7 @@
     "categorySummary": "สรุปตามหมวด",
     "tripWallet": "กระเป๋าเงินทริป",
     "totalBudget": "ทั้งหมด",
+    "editTotalBudget": "แก้ไขงบทั้งหมด",
     "spent": "ใช้ไป",
     "remaining": "คงเหลือ",
     "spentOf": "ใช้ไป {{currency}} {{spent}} จาก {{total}}",

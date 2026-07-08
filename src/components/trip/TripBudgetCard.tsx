@@ -4,18 +4,37 @@ import { Pencil, Wallet } from "lucide-react";
 import { ProgressRing } from "@/components/ui";
 import { scaleIn } from "@/design-system/motion";
 import { useTranslation } from "@/i18n";
+import { cn } from "@/lib/utils";
 
-export interface WalletHeroCardProps {
-  currency: string;
+export interface TripBudgetCardProps {
+  totalBudget: number;
   spent: number;
-  total: number;
+  remaining: number;
+  currency: string;
+  lastUpdated?: string;
   onEdit?: () => void;
+  className?: string;
 }
 
-export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCardProps) {
+function formatLastUpdated(value: string | undefined) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+export function TripBudgetCard({
+  totalBudget,
+  spent,
+  remaining,
+  currency,
+  lastUpdated,
+  onEdit,
+  className,
+}: TripBudgetCardProps) {
   const { t } = useTranslation();
-  const remaining = Math.max(0, total - spent);
-  const percent = total > 0 ? Math.round((spent / total) * 100) : 0;
+  const percent = totalBudget > 0 ? Math.round((spent / totalBudget) * 100) : 0;
+  const updatedLabel = formatLastUpdated(lastUpdated) ?? t("common.updatedJustNow");
 
   return (
     <motion.div
@@ -30,7 +49,10 @@ export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCar
           onEdit();
         }
       }}
-      className="glass-shadow-glow relative mx-5 overflow-hidden rounded-4xl bg-gradient-to-br from-[#FF9CB8] via-accent-strong to-[#7A2453] p-6 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+      className={cn(
+        "glass-shadow-glow relative mx-5 overflow-hidden rounded-4xl bg-gradient-to-br from-[#FF9CB8] via-accent-strong to-[#7A2453] p-6 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50",
+        className,
+      )}
     >
       <div className="absolute -right-10 -top-12 size-44 rounded-full bg-white/12 blur-3xl" />
       <div className="absolute -bottom-14 -left-10 size-40 rounded-full bg-black/20 blur-3xl" />
@@ -64,7 +86,7 @@ export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCar
                 onEdit();
               }}
               className="inline-flex size-8 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/25"
-              aria-label="Edit total budget"
+              aria-label={t("budget.editTotalBudget")}
             >
               <Pencil size={13} />
             </button>
@@ -82,7 +104,7 @@ export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCar
             {t("budget.spentOf", {
               currency,
               spent: spent.toLocaleString(),
-              total: total.toLocaleString(),
+              total: totalBudget.toLocaleString(),
             })}
           </p>
         </div>
@@ -101,7 +123,7 @@ export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCar
         <div className="grid flex-1 grid-cols-3 gap-2 text-[0.6875rem] font-semibold">
           <span>
             <span className="block text-white/55">{t("budget.totalBudget")}</span>
-            {total.toLocaleString()}
+            {totalBudget.toLocaleString()}
           </span>
           <span>
             <span className="block text-white/55">{t("budget.spent")}</span>
@@ -113,7 +135,7 @@ export function WalletHeroCard({ currency, spent, total, onEdit }: WalletHeroCar
           </span>
         </div>
         <span className="ml-auto text-[0.6875rem] font-medium tracking-wide text-white/60">
-          {t("common.updatedJustNow")}
+          {updatedLabel}
         </span>
       </div>
     </motion.div>

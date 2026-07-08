@@ -134,6 +134,9 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
   const currency = typeof candidate.currency === "string" && candidate.currency.trim()
     ? candidate.currency.trim()
     : undefined;
+  const lastUpdated = typeof candidate.lastUpdated === "string" && candidate.lastUpdated.trim()
+    ? candidate.lastUpdated.trim()
+    : undefined;
 
   if (Array.isArray(candidate.expenses)) {
     return {
@@ -142,6 +145,7 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
         .filter((expense): expense is BudgetExpense => expense !== null),
       totalBudget,
       currency,
+      lastUpdated,
     };
   }
 
@@ -149,6 +153,7 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
     ...migrateLegacyBudget(candidate, defaultCurrency),
     totalBudget,
     currency,
+    lastUpdated,
   };
 }
 

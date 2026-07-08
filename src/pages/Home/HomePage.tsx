@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import { CalendarDays, ChevronRight, Clock, Hotel, MapPin, Plane, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { TripBudgetCard } from "@/components/trip/TripBudgetCard";
 import { Avatar, Chip, GlassCard, ProgressBar, SectionHeader, ThemeToggle } from "@/components/ui";
 import { PageLoadingGate } from "@/components/layout";
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { sampleForecast, getTripDayForecast } from "@/data/sample-weather";
 import { riseIn, staggerContainer } from "@/design-system/motion";
+import { usePersistentBudget } from "@/hooks/usePersistentBudget";
 import { usePersistentBookings } from "@/hooks/usePersistentBookings";
 import { useLocaleDateFormatter, useTranslation, type TranslateParams } from "@/i18n";
 import {
@@ -247,6 +249,16 @@ export function HomePage() {
   const { t } = useTranslation();
   const formatDateShort = useLocaleDateFormatter();
   const { bookings } = usePersistentBookings();
+  const {
+    totalBudget,
+    spent,
+    remaining,
+    currency,
+    lastUpdated,
+  } = usePersistentBudget({
+    defaultTotalBudget: sampleTrip.budget.totalMax,
+    defaultCurrency: sampleTrip.budget.currency,
+  });
   const currentDay = getCurrentTripDay(sampleTrip);
   const currentDayIndex = currentDay.dayNumber;
   const forecast = getTripDayForecast(currentDay.city, currentDay.date) ?? sampleForecast[0]!;
@@ -308,6 +320,14 @@ export function HomePage() {
           activity={nextActivity}
           formatDateShort={formatDateShort}
           t={t}
+        />
+
+        <TripBudgetCard
+          totalBudget={totalBudget}
+          spent={spent}
+          remaining={remaining}
+          currency={currency}
+          lastUpdated={lastUpdated}
         />
 
         <div className="flex flex-col gap-3">
