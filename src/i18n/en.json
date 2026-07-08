@@ -33,6 +33,8 @@
   },
   "nav": {
     "home": "Home",
+    "travelWallet": "Travel Wallet",
+    "explore": "Explore",
     "itinerary": "Itinerary",
     "map": "Map",
     "budget": "Budget",
@@ -56,6 +58,24 @@
     "budgetRemaining": "{{currency}} {{amount}} left",
     "hotel": "Hotel",
     "flight": "Flight",
+    "status": {
+      "title": "Trip Status",
+      "daysToGo": "{{count}} days to go",
+      "dayNow": "Day {{day}} now",
+      "dayOfTotal": "Day {{current}} of {{total}}",
+      "dayCount": "{{count}} days",
+      "complete": "Complete",
+      "percentComplete": "{{percent}}% complete"
+    },
+    "wallet": {
+      "title": "Today's Trip",
+      "subtitle": "Clean summary for today",
+      "nextFlight": "Next Flight",
+      "hotel": "Hotel",
+      "nextActivity": "Next Activity",
+      "noUpcomingFlight": "No upcoming flight",
+      "noActivityToday": "No activity today"
+    },
     "coupleHero": {
       "tripTogether": "Trip together",
       "soloTrip": "Solo trip",
@@ -329,6 +349,103 @@
     "explore": "Explore",
     "madeWith": "Made with {{heart}} for {{companions}}"
   },
+  "wallet": {
+    "title": "All bookings and documents",
+    "subtitle": "Keep confirmations, tickets, entry forms, and identity documents in one place.",
+    "readyTitle": "Ready at the checkpoint",
+    "readySubtitle": "Open flights, hotel vouchers, insurance, USJ tickets, Visit Japan Web, passport/visa, and other files.",
+    "sections": {
+      "bookings": "Bookings",
+      "documents": "Documents",
+      "tickets": "Tickets & Passes"
+    },
+    "counts": {
+      "booking": "{{count}} booking",
+      "bookings": "{{count}} bookings",
+      "document": "{{count}} document",
+      "documents": "{{count}} documents"
+    },
+    "items": {
+      "flight": {
+        "title": "Flight",
+        "subtitle": "Boarding details, PDF previews, baggage, and airport links."
+      },
+      "hotel": {
+        "title": "Hotel",
+        "subtitle": "Stay details, voucher preview, confirmation numbers, and address."
+      },
+      "travel-insurance": {
+        "title": "Travel Insurance",
+        "subtitle": "Policies, cards, emergency contacts, and claim details."
+      },
+      "usj-tickets": {
+        "title": "USJ Tickets",
+        "subtitle": "Universal Studios Japan entry passes and QR tickets."
+      },
+      "visit-japan-web": {
+        "title": "Visit Japan Web",
+        "subtitle": "Immigration, customs, and arrival registration documents."
+      },
+      "passport-visa": {
+        "title": "Passport / Visa",
+        "subtitle": "Passport scans, visas, permits, and identity documents."
+      },
+      "other-documents": {
+        "title": "Other Documents",
+        "subtitle": "Everything important that does not fit another category."
+      }
+    }
+  },
+  "explorePage": {
+    "title": "Plan places and days",
+    "subtitle": "Open trip planning tools without mixing them into your booking wallet.",
+    "soon": "Soon",
+    "items": {
+      "itinerary": {
+        "title": "Itinerary",
+        "subtitle": "Daily plans, timelines, tickets, and trip flow."
+      },
+      "map": {
+        "title": "Interactive Map",
+        "subtitle": "Saved places, routes, and nearby trip locations."
+      },
+      "restaurants": {
+        "title": "Restaurants",
+        "subtitle": "Food and cafe ideas already saved for this trip."
+      },
+      "shopping": {
+        "title": "Shopping",
+        "subtitle": "Shopping ideas and saved stores."
+      },
+      "attractions": {
+        "title": "Attractions",
+        "subtitle": "Landmarks and places to visit."
+      },
+      "notes": {
+        "title": "Notes",
+        "subtitle": "Planning notes for loose ideas."
+      }
+    }
+  },
+  "morePage": {
+    "title": "Tools and settings",
+    "subtitle": "Secondary trip tools, preferences, and support.",
+    "sections": {
+      "tripTools": "Trip Tools",
+      "preferences": "Preferences",
+      "about": "About"
+    },
+    "items": {
+      "currency": "Currency",
+      "language": "Language",
+      "backupSync": "Backup & Sync",
+      "exportPdf": "Export PDF",
+      "theme": "Theme",
+      "notifications": "Notifications",
+      "settings": "Settings",
+      "aboutTravelTrip": "About Travel Trip"
+    }
+  },
   "maps": {
     "directions": "Directions",
     "appleMaps": "Apple Maps",
@@ -551,6 +668,7 @@
     "search": "Search",
     "favorites": "Favorites",
     "map": "Map",
+    "budget": "Budget",
     "flights": "Flights",
     "hotel": "Hotel",
     "checklist": "Checklist",

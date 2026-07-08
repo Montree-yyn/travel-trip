@@ -1,5 +1,7 @@
 export const ROUTES = {
   home: "/",
+  travelWallet: "/travel-wallet",
+  explore: "/explore",
   itinerary: "/itinerary",
   map: "/map",
   food: "/food",
@@ -16,6 +18,8 @@ export const ROUTES = {
   favorites: "/favorites",
   translator: "/translator",
   more: "/more",
+  documents: "/travel-wallet/documents/:categoryId",
+  legacyDocuments: "/more/documents/:categoryId",
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

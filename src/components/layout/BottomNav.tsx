@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CalendarDays, Home, Map, Wallet, MoreHorizontal, type LucideIcon } from "lucide-react";
+import { Compass, Home, MoreHorizontal, Wallet, type LucideIcon } from "lucide-react";
 
 import { motionEasing } from "@/design-system/tokens";
 import { tapScaleFirm } from "@/design-system/motion";
@@ -13,19 +13,33 @@ interface NavItem {
   labelKey: string;
   icon: LucideIcon;
   end?: boolean;
+  activePaths?: string[];
 }
 
 const NAV_ITEMS: NavItem[] = [
   { to: ROUTES.home, labelKey: "nav.home", icon: Home, end: true },
-  { to: ROUTES.itinerary, labelKey: "nav.itinerary", icon: CalendarDays },
-  { to: ROUTES.map, labelKey: "nav.map", icon: Map },
-  { to: ROUTES.budget, labelKey: "nav.budget", icon: Wallet },
+  {
+    to: ROUTES.travelWallet,
+    labelKey: "nav.travelWallet",
+    icon: Wallet,
+    activePaths: [ROUTES.flights, ROUTES.hotel, "/travel-wallet/documents", "/more/documents"],
+  },
+  {
+    to: ROUTES.explore,
+    labelKey: "nav.explore",
+    icon: Compass,
+    activePaths: [ROUTES.itinerary, ROUTES.map, ROUTES.food, ROUTES.places],
+  },
   { to: ROUTES.more, labelKey: "nav.more", icon: MoreHorizontal },
 ];
 
-function isNavActive(pathname: string, to: string, end?: boolean) {
+function isNavActive(pathname: string, to: string, end?: boolean, activePaths: string[] = []) {
   if (end) return pathname === to;
-  return pathname === to || pathname.startsWith(`${to}/`);
+  return (
+    pathname === to ||
+    pathname.startsWith(`${to}/`) ||
+    activePaths.some((path) => pathname === path || pathname.startsWith(`${path}/`))
+  );
 }
 
 export function BottomNav() {
@@ -34,10 +48,10 @@ export function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-[9999] flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)] pointer-events-auto">
+    <nav className="pointer-events-none absolute inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)]">
       <ul className="glass-surface-strong glass-shadow-lg pointer-events-auto flex items-center gap-0.5 rounded-pill p-1.5">
-        {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end }) => {
-          const isActive = isNavActive(pathname, to, end);
+        {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end, activePaths }) => {
+          const isActive = isNavActive(pathname, to, end, activePaths);
 
           return (
             <motion.li key={to} whileTap={tapScaleFirm} transition={motionEasing.snappySpring}>
@@ -48,7 +62,7 @@ export function BottomNav() {
                 onPointerEnter={() => preloadRoute(to)}
                 onTouchStart={() => preloadRoute(to)}
                 onClick={() => navigate(to)}
-                className="relative flex flex-col items-center gap-0.5 rounded-pill px-4 py-2.5 focus-visible:outline-none"
+                className="relative flex min-w-[4.65rem] flex-col items-center gap-0.5 rounded-pill px-3 py-2.5 focus-visible:outline-none"
               >
                 {isActive && (
                   <motion.span

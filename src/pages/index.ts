@@ -1,4 +1,6 @@
 export * from "./Home/HomePage";
+export * from "./TravelWallet/TravelWalletPage";
+export * from "./Explore/ExplorePage";
 export * from "./Itinerary/ItineraryPage";
 export * from "./Map/MapPage";
 export * from "./Food/FoodPage";
@@ -14,3 +16,4 @@ export * from "./Memories/MemoriesPage";
 export * from "./Search/SearchPage";
 export * from "./Favorites/FavoritesPage";
 export * from "./More/MorePage";
+export * from "./Documents/DocumentCategoryPage";

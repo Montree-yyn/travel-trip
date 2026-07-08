@@ -16,22 +16,22 @@ export function ProfileCard({ trip }: { trip: TripPlan }) {
 
   return (
     <motion.div variants={scaleIn}>
-      <GlassCard elevated padding="md" className="relative mx-5 flex items-center gap-3.5 overflow-hidden">
-        <div className="pointer-events-none absolute -right-10 -top-14 size-40 rounded-full bg-accent/12 blur-3xl" />
+      <GlassCard padding="sm" className="relative mx-5 flex items-center gap-3 overflow-hidden">
+        <div className="pointer-events-none absolute -right-8 -top-12 size-28 rounded-full bg-accent/10 blur-3xl" />
         <div className="relative shrink-0">
-          <Avatar name={displayName} src={photoURL} size="lg" className="ring-2 ring-bg-elevated" />
+          <Avatar name={displayName} src={photoURL} size="md" className="ring-2 ring-bg-elevated" />
         </div>
         <div className="relative min-w-0 flex-1">
-          <p className="truncate text-base font-bold tracking-tight text-ink">{displayName}</p>
+          <p className="truncate text-sm font-bold tracking-tight text-ink">{displayName}</p>
           <p className="truncate text-xs font-medium text-ink-muted">{email}</p>
           <p className="truncate text-xs text-ink-faint">{trip.title}</p>
         </div>
         <motion.button
           whileTap={tapScale}
           aria-label={t("common.editTrip")}
-          className="glow-accent relative flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-accent to-accent-strong text-accent-contrast"
+          className="glow-accent relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-accent to-accent-strong text-accent-contrast"
         >
-          <Pencil size={15} />
+          <Pencil size={14} />
         </motion.button>
       </GlassCard>
     </motion.div>

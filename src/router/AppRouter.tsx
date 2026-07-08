@@ -8,6 +8,8 @@ import {
   BudgetPage,
   ChecklistPage,
   CurrencyPage,
+  DocumentCategoryPage,
+  ExplorePage,
   FavoritesPage,
   FlightsPage,
   FoodPage,
@@ -21,6 +23,7 @@ import {
   SearchPage,
   TransportPage,
   TranslatorPage,
+  TravelWalletPage,
   WeatherPage,
 } from "./lazyPages";
 import { ROUTES } from "./paths";
@@ -36,6 +39,8 @@ const router = createBrowserRouter([
     errorElement: <RouteErrorFallback />,
     children: [
       { path: ROUTES.home, element: <LazyRoute><HomePage /></LazyRoute> },
+      { path: ROUTES.travelWallet, element: <LazyRoute><TravelWalletPage /></LazyRoute> },
+      { path: ROUTES.explore, element: <LazyRoute><ExplorePage /></LazyRoute> },
       { path: ROUTES.itinerary, element: <LazyRoute><ItineraryPage /></LazyRoute> },
       { path: ROUTES.map, element: <LazyRoute><MapPage /></LazyRoute> },
       { path: ROUTES.food, element: <LazyRoute><FoodPage /></LazyRoute> },
@@ -52,6 +57,8 @@ const router = createBrowserRouter([
       { path: ROUTES.favorites, element: <LazyRoute><FavoritesPage /></LazyRoute> },
       { path: ROUTES.translator, element: <LazyRoute><TranslatorPage /></LazyRoute> },
       { path: ROUTES.more, element: <LazyRoute><MorePage /></LazyRoute> },
+      { path: ROUTES.documents, element: <LazyRoute><DocumentCategoryPage /></LazyRoute> },
+      { path: ROUTES.legacyDocuments, element: <LazyRoute><DocumentCategoryPage /></LazyRoute> },
     ],
   },
 ]);

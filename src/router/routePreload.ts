@@ -2,6 +2,8 @@ import { ROUTES } from "./paths";
 
 export const pageImporters = {
   [ROUTES.home]: () => import("@/pages/Home/HomePage"),
+  [ROUTES.travelWallet]: () => import("@/pages/TravelWallet/TravelWalletPage"),
+  [ROUTES.explore]: () => import("@/pages/Explore/ExplorePage"),
   [ROUTES.itinerary]: () => import("@/pages/Itinerary/ItineraryPage"),
   [ROUTES.map]: () => import("@/pages/Map/MapPage"),
   [ROUTES.food]: () => import("@/pages/Food/FoodPage"),
@@ -18,6 +20,8 @@ export const pageImporters = {
   [ROUTES.favorites]: () => import("@/pages/Favorites/FavoritesPage"),
   [ROUTES.more]: () => import("@/pages/More/MorePage"),
   [ROUTES.translator]: () => import("@/pages/Translator/TranslatorPage"),
+  [ROUTES.documents]: () => import("@/pages/Documents/DocumentCategoryPage"),
+  [ROUTES.legacyDocuments]: () => import("@/pages/Documents/DocumentCategoryPage"),
 } as const;
 
 export function preloadRoute(route: string) {

@@ -3,43 +3,37 @@ import {
   AlertTriangle,
   Bell,
   Cloud,
-  FileText,
+  Coins,
+  Download,
   Globe,
   HelpCircle,
   Info,
-  LogOut,
-  Shield,
-  Star,
+  Languages,
+  Settings as SettingsIcon,
   WifiOff,
 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { SectionHeader, SegmentedControl, Switch, GlassCard } from "@/components/ui";
 import { PageLoadingGate } from "@/components/layout";
+import { GlassCard, SegmentedControl, Switch } from "@/components/ui";
 import { sampleTrip } from "@/data/sample-trip";
 import { riseIn, staggerContainer } from "@/design-system/motion";
-import { useAuth } from "@/auth";
 import { useTranslation } from "@/i18n";
-import { getCurrentTripDay, getNextActivity } from "@/lib/trip-progress";
+import { ROUTES } from "@/router/paths";
 import { useTripSync } from "@/sync";
 import { useTheme } from "@/theme/useTheme";
 
-import { UpcomingActivityCard } from "../Home/components/UpcomingActivityCard";
-import { EmergencyCard } from "./components/EmergencyCard";
-import { ExploreGrid } from "./components/ExploreGrid";
 import { ProfileCard } from "./components/ProfileCard";
 import { SettingsRow } from "./components/SettingsRow";
 import { SettingsSection } from "./components/SettingsSection";
 
 export function MorePage() {
+  const navigate = useNavigate();
   const { t, locale, setLocale } = useTranslation();
-  const { signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const { status, error, retry } = useTripSync();
-  const [offline, setOffline] = useState(false);
   const [notifications, setNotifications] = useState(true);
-  const currentDay = getCurrentTripDay(sampleTrip);
-  const nextActivity = getNextActivity(currentDay);
 
   const syncStatusLabel =
     status === "synced"
@@ -58,95 +52,77 @@ export function MorePage() {
   return (
     <PageLoadingGate>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6 pb-8">
-      <header className="px-5 pb-1 pt-4">
-        <h1 className="text-[1.75rem] font-bold tracking-tight text-ink">{t("more.title")}</h1>
-        <p className="mt-1 text-sm text-ink-muted">{t("more.subtitle")}</p>
-      </header>
+        <header className="px-5 pt-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("nav.more")}</p>
+          <h1 className="mt-1 text-[2rem] font-bold leading-tight tracking-tight text-ink">{t("morePage.title")}</h1>
+          <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+            {t("morePage.subtitle")}
+          </p>
+        </header>
 
-      {status === "error" && (
-        <motion.div variants={riseIn} className="px-5">
-          <GlassCard padding="md" className="flex items-start gap-3 bg-red-500/10">
-            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-red-500" />
-            <p className="text-sm leading-relaxed text-red-500">{t(error ?? "sync.unavailable")}</p>
-          </GlassCard>
-        </motion.div>
-      )}
+        {status === "error" && (
+          <motion.div variants={riseIn} className="px-5">
+            <GlassCard padding="md" className="flex items-start gap-3 bg-red-500/10">
+              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-red-500" />
+              <p className="text-sm leading-relaxed text-red-500">{t(error ?? "sync.unavailable")}</p>
+            </GlassCard>
+          </motion.div>
+        )}
 
-      <ProfileCard trip={sampleTrip} />
+        <ProfileCard trip={sampleTrip} />
 
-      {notifications && (
-        <div className="flex flex-col gap-3.5">
-          <SectionHeader title={t("home.upcomingActivity")} />
-          <UpcomingActivityCard item={nextActivity} seed={currentDay.city} />
-        </div>
-      )}
-
-      <div className="flex flex-col gap-3.5">
-        <h2 className="px-5 text-[1.05rem] font-semibold tracking-tight text-ink">{t("more.explore")}</h2>
-        <ExploreGrid />
-      </div>
-
-      <SettingsSection title={t("settings.preferences")}>
-        <div className="flex items-center justify-between px-4 py-3.5">
-          <span className="text-sm font-medium text-ink">{t("settings.appearance")}</span>
-          <SegmentedControl
-            layoutId="settings-theme"
-            options={[
-              { value: "light", label: t("settings.light") },
-              { value: "dark", label: t("settings.dark") },
-              { value: "system", label: t("settings.auto") },
-            ]}
-            value={theme}
-            onChange={setTheme}
+        <SettingsSection title={t("morePage.sections.tripTools")}>
+          <SettingsRow icon={Coins} label={t("morePage.items.currency")} onClick={() => navigate(ROUTES.currency)} />
+          <SettingsRow
+            icon={Languages}
+            label={t("morePage.items.language")}
+            value={locale === "th" ? t("settings.thai") : t("settings.english")}
+            onClick={toggleLocale}
           />
-        </div>
-        <SettingsRow
-          icon={Globe}
-          label={t("settings.language")}
-          value={locale === "th" ? t("settings.thai") : t("settings.english")}
-          onClick={toggleLocale}
-        />
-        <SettingsRow
-          icon={syncStatusIcon}
-          iconTone={syncStatusTone}
-          label={t("sync.statusLabel")}
-          value={syncStatusLabel}
-          onClick={status === "error" ? retry : undefined}
-        />
-        <SettingsRow
-          icon={WifiOff}
-          label={t("settings.offlineMode")}
-          trailing={
-            <Switch checked={offline} onChange={setOffline} aria-label={t("common.toggleOfflineMode")} />
-          }
-        />
-        <SettingsRow
-          icon={Bell}
-          label={t("settings.notifications")}
-          trailing={
-            <Switch checked={notifications} onChange={setNotifications} aria-label={t("common.toggleNotifications")} />
-          }
-        />
-      </SettingsSection>
+          <SettingsRow
+            icon={syncStatusIcon}
+            iconTone={syncStatusTone}
+            label={t("morePage.items.backupSync")}
+            value={syncStatusLabel}
+            onClick={status === "error" ? retry : undefined}
+          />
+          <SettingsRow icon={Download} label={t("morePage.items.exportPdf")} onClick={() => {}} />
+        </SettingsSection>
 
-      <EmergencyCard />
+        <SettingsSection title={t("morePage.sections.preferences")}>
+          <div className="flex items-center justify-between gap-3 px-4 py-3.5">
+            <span className="flex items-center gap-3">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
+                <Globe size={16} />
+              </span>
+              <span className="text-sm font-medium text-ink">{t("morePage.items.theme")}</span>
+            </span>
+            <SegmentedControl
+              layoutId="settings-theme"
+              options={[
+                { value: "light", label: t("settings.light") },
+                { value: "dark", label: t("settings.dark") },
+                { value: "system", label: t("settings.auto") },
+              ]}
+              value={theme}
+              onChange={setTheme}
+            />
+          </div>
+          <SettingsRow
+            icon={Bell}
+            label={t("morePage.items.notifications")}
+            trailing={
+              <Switch checked={notifications} onChange={setNotifications} aria-label={t("common.toggleNotifications")} />
+            }
+          />
+          <SettingsRow icon={SettingsIcon} label={t("morePage.items.settings")} onClick={() => {}} />
+        </SettingsSection>
 
-      <SettingsSection title={t("settings.about")}>
-        <SettingsRow icon={Info} label={t("settings.appVersion")} value="1.0.0 (Phase 2)" />
-        <SettingsRow icon={HelpCircle} label={t("settings.helpSupport")} onClick={() => {}} />
-        <SettingsRow icon={Shield} label={t("settings.privacyPolicy")} onClick={() => {}} />
-        <SettingsRow icon={FileText} label={t("settings.termsOfService")} onClick={() => {}} />
-        <SettingsRow icon={Star} label={t("settings.rateApp")} onClick={() => {}} />
-      </SettingsSection>
-
-      <SettingsSection title={t("settings.account")}>
-        <SettingsRow icon={LogOut} iconTone="danger" label={t("settings.signOut")} onClick={() => void signOut()} />
-      </SettingsSection>
-
-      <p className="flex items-center justify-center gap-1 pt-2 text-xs text-ink-faint">
-        {t("more.madeWith", { heart: "♥", companions: sampleTrip.companions.join(" & ") })}
-      </p>
-    </motion.div>
+        <SettingsSection title={t("morePage.sections.about")}>
+          <SettingsRow icon={Info} label={t("morePage.items.aboutTravelTrip")} value="1.0.0" onClick={() => {}} />
+          <SettingsRow icon={HelpCircle} label={t("settings.helpSupport")} onClick={() => {}} />
+        </SettingsSection>
+      </motion.div>
     </PageLoadingGate>
   );
 }

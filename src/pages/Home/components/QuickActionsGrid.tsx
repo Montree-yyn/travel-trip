@@ -13,8 +13,8 @@ interface QuickAction {
 }
 
 const ACTIONS: QuickAction[] = [
-  { to: ROUTES.budget, labelKey: "budget.addExpense", icon: Wallet },
   { to: ROUTES.map, labelKey: "quickActions.map", icon: Map },
+  { to: ROUTES.budget, labelKey: "quickActions.budget", icon: Wallet },
   { to: ROUTES.checklist, labelKey: "quickActions.checklist", icon: ListChecks },
   { to: ROUTES.memories, labelKey: "quickActions.memories", icon: Camera },
 ];

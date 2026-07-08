@@ -33,6 +33,8 @@
   },
   "nav": {
     "home": "หน้าแรก",
+    "travelWallet": "กระเป๋าทริป",
+    "explore": "สำรวจ",
     "itinerary": "กำหนดการ",
     "map": "แผนที่",
     "budget": "งบประมาณ",
@@ -56,6 +58,24 @@
     "budgetRemaining": "เหลือ {{currency}} {{amount}}",
     "hotel": "ที่พัก",
     "flight": "เที่ยวบิน",
+    "status": {
+      "title": "สถานะทริป",
+      "daysToGo": "{{count}} วันก่อนเดินทาง",
+      "dayNow": "วันที่ {{day}}",
+      "dayOfTotal": "วันที่ {{current}} จาก {{total}}",
+      "dayCount": "{{count}} วัน",
+      "complete": "เสร็จแล้ว",
+      "percentComplete": "เสร็จแล้ว {{percent}}%"
+    },
+    "wallet": {
+      "title": "ทริปวันนี้",
+      "subtitle": "สรุปสิ่งสำคัญของวันนี้",
+      "nextFlight": "เที่ยวบินถัดไป",
+      "hotel": "โรงแรม",
+      "nextActivity": "กิจกรรมถัดไป",
+      "noUpcomingFlight": "ไม่มีเที่ยวบินถัดไป",
+      "noActivityToday": "วันนี้ยังไม่มีกิจกรรม"
+    },
     "coupleHero": {
       "tripTogether": "ทริปร่วมกัน",
       "soloTrip": "ทริปเดี่ยว",
@@ -329,6 +349,103 @@
     "explore": "สำรวจ",
     "madeWith": "สร้างด้วย {{heart}} เพื่อ {{companions}}"
   },
+  "wallet": {
+    "title": "การจองและเอกสารทั้งหมด",
+    "subtitle": "เก็บการยืนยันการจอง บัตร แบบฟอร์มเข้าเมือง และเอกสารสำคัญไว้ในที่เดียว",
+    "readyTitle": "พร้อมใช้ที่จุดตรวจ",
+    "readySubtitle": "เปิดเที่ยวบิน voucher โรงแรม ประกันเดินทาง บัตร USJ Visit Japan Web พาสปอร์ต/วีซ่า และไฟล์อื่น ๆ",
+    "sections": {
+      "bookings": "การจอง",
+      "documents": "เอกสาร",
+      "tickets": "บัตรและพาส"
+    },
+    "counts": {
+      "booking": "{{count}} รายการจอง",
+      "bookings": "{{count}} รายการจอง",
+      "document": "{{count}} เอกสาร",
+      "documents": "{{count}} เอกสาร"
+    },
+    "items": {
+      "flight": {
+        "title": "เที่ยวบิน",
+        "subtitle": "รายละเอียดขึ้นเครื่อง ตัวอย่าง PDF สัมภาระ และลิงก์สนามบิน"
+      },
+      "hotel": {
+        "title": "โรงแรม",
+        "subtitle": "รายละเอียดที่พัก voucher หมายเลขยืนยัน และที่อยู่"
+      },
+      "travel-insurance": {
+        "title": "ประกันเดินทาง",
+        "subtitle": "กรมธรรม์ บัตรประกัน เบอร์ติดต่อฉุกเฉิน และข้อมูลเคลม"
+      },
+      "usj-tickets": {
+        "title": "บัตร USJ",
+        "subtitle": "บัตรเข้า Universal Studios Japan และ QR tickets"
+      },
+      "visit-japan-web": {
+        "title": "Visit Japan Web",
+        "subtitle": "เอกสารตรวจคนเข้าเมือง ศุลกากร และข้อมูลลงทะเบียนเข้าประเทศ"
+      },
+      "passport-visa": {
+        "title": "พาสปอร์ต / วีซ่า",
+        "subtitle": "สำเนาพาสปอร์ต วีซ่า ใบอนุญาต และเอกสารยืนยันตัวตน"
+      },
+      "other-documents": {
+        "title": "เอกสารอื่น ๆ",
+        "subtitle": "เอกสารสำคัญอื่น ๆ ที่ไม่อยู่ในหมวดด้านบน"
+      }
+    }
+  },
+  "explorePage": {
+    "title": "วางแผนสถานที่และวันเดินทาง",
+    "subtitle": "เปิดเครื่องมือวางแผนทริปโดยไม่ปะปนกับกระเป๋าเอกสาร",
+    "soon": "เร็ว ๆ นี้",
+    "items": {
+      "itinerary": {
+        "title": "แผนการเดินทาง",
+        "subtitle": "แผนรายวัน ไทม์ไลน์ บัตร และลำดับการเดินทาง"
+      },
+      "map": {
+        "title": "แผนที่",
+        "subtitle": "สถานที่ที่บันทึก เส้นทาง และจุดใกล้เคียงในทริป"
+      },
+      "restaurants": {
+        "title": "ร้านอาหาร",
+        "subtitle": "ร้านอาหารและคาเฟ่ที่บันทึกไว้สำหรับทริปนี้"
+      },
+      "shopping": {
+        "title": "ช้อปปิ้ง",
+        "subtitle": "ไอเดียช้อปปิ้งและร้านค้าที่บันทึกไว้"
+      },
+      "attractions": {
+        "title": "สถานที่เที่ยว",
+        "subtitle": "แลนด์มาร์กและสถานที่ที่อยากไป"
+      },
+      "notes": {
+        "title": "โน้ต",
+        "subtitle": "บันทึกไอเดียและสิ่งที่อยากวางแผนต่อ"
+      }
+    }
+  },
+  "morePage": {
+    "title": "เครื่องมือและการตั้งค่า",
+    "subtitle": "เครื่องมือเสริมของทริป การตั้งค่า และความช่วยเหลือ",
+    "sections": {
+      "tripTools": "เครื่องมือทริป",
+      "preferences": "การตั้งค่า",
+      "about": "เกี่ยวกับ"
+    },
+    "items": {
+      "currency": "ค่าเงิน",
+      "language": "ภาษา",
+      "backupSync": "สำรองและซิงก์",
+      "exportPdf": "ส่งออก PDF",
+      "theme": "ธีม",
+      "notifications": "การแจ้งเตือน",
+      "settings": "ตั้งค่า",
+      "aboutTravelTrip": "เกี่ยวกับ Travel Trip"
+    }
+  },
   "maps": {
     "directions": "เส้นทาง",
     "appleMaps": "Apple Maps",
@@ -551,6 +668,7 @@
     "search": "ค้นหา",
     "favorites": "รายการโปรด",
     "map": "แผนที่",
+    "budget": "งบประมาณ",
     "flights": "เที่ยวบิน",
     "hotel": "ที่พัก",
     "checklist": "เช็กลิสต์",

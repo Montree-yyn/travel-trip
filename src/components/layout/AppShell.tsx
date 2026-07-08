@@ -8,9 +8,9 @@ import { BottomNav } from "./BottomNav";
 /** Root layout: full-height mobile frame with a scrollable page area and a floating bottom nav. */
 export function AppShell() {
   return (
-    <div className="relative mx-auto flex h-dvh w-full max-w-md flex-col bg-bg md:max-w-lg lg:max-w-xl">
+    <div className="relative isolate mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-bg md:max-w-lg lg:max-w-xl">
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <main className="no-scrollbar relative z-0 flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-32">
+        <main className="no-scrollbar relative z-0 flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[calc(env(safe-area-inset-bottom)+7.25rem)]">
           <motion.div
             variants={fadeIn}
             initial={false}
