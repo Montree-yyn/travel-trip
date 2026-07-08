@@ -9,6 +9,8 @@ export interface TravelDocumentFile {
   fileName: string;
   fileType: string;
   dataUrl: string;
+  downloadUrl?: string;
+  storagePath?: string;
   updatedAt: string;
 }
 

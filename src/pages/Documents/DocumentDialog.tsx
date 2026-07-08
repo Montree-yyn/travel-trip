@@ -6,6 +6,7 @@ import { Button, GlassCard, IconButton } from "@/components/ui";
 import {
   DEFAULT_DOCUMENT_OWNERS,
   DOCUMENT_CATEGORIES,
+  createDocumentId,
   readDocumentFile,
 } from "@/lib/documents";
 import type { DocumentCategoryId, TravelDocument, TravelDocumentFile } from "@/types/document";
@@ -97,7 +98,7 @@ export function DocumentDialog({
 
     const now = new Date().toISOString();
     const nextDocument: TravelDocument = {
-      id: document?.id ?? `document-${Date.now()}`,
+      id: document?.id ?? createDocumentId(),
       owner,
       title,
       category: draft.category,

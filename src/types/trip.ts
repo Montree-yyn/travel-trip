@@ -88,6 +88,7 @@ export interface TripSettings {
   startDate: string;
   endDate: string;
   travelers: string[];
+  documentOwners?: string[];
   currency: string;
   totalBudget: number;
   destination: string;

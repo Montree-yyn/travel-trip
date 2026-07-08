@@ -5,6 +5,7 @@
   "startDate": "2026-07-13",
   "endDate": "2026-07-18",
   "travelers": ["Cake", "Noonmim"],
+  "documentOwners": ["CAKE", "นุ่มนิ่ม", "ยินดี", "ญาณิน"],
   "currency": "THB",
   "destination": "Kansai, Japan",
   "accommodation": "Smile Hotel Osaka Yotsubashi",

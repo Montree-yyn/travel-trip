@@ -13,6 +13,7 @@ const fallbackTripSettings: TripSettings = {
   startDate: "2026-07-13",
   endDate: "2026-07-18",
   travelers: ["Traveler"],
+  documentOwners: ["Traveler"],
   currency: "THB",
   totalBudget: 0,
   destination: "Japan",
@@ -28,6 +29,7 @@ function normalizeTripSettings(value: unknown): TripSettings {
     ...fallbackTripSettings,
     ...candidate,
     travelers: Array.isArray(candidate.travelers) ? candidate.travelers : fallbackTripSettings.travelers,
+    documentOwners: Array.isArray(candidate.documentOwners) ? candidate.documentOwners : candidate.travelers,
     mainTransport: Array.isArray(candidate.mainTransport) ? candidate.mainTransport : fallbackTripSettings.mainTransport,
     tips: Array.isArray(candidate.tips) ? candidate.tips : fallbackTripSettings.tips,
   };

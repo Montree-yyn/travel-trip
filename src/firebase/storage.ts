@@ -33,6 +33,10 @@ export function buildBudgetReceiptStoragePath(uid: string, tripId: string, recei
   return `users/${uid}/trips/${tripId}/budget/receipts/${receiptId}.jpg`;
 }
 
+export function buildTravelDocumentStoragePath(uid: string, tripId: string, documentId: string, fileName: string) {
+  return `users/${uid}/trips/${tripId}/documents/${cleanStorageSegment(documentId)}/${cleanStorageSegment(fileName)}`;
+}
+
 function cleanStorageSegment(value: string) {
   return value
     .trim()
