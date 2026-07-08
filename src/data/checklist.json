@@ -1,0 +1,21 @@
+[
+  { "id": "passport", "label": "Passport (valid 6+ months)", "checked": true, "category": "documents" },
+  { "id": "visa", "label": "Visa / entry documents", "checked": true, "category": "documents" },
+  { "id": "flight-tickets", "label": "Flight e-tickets", "checked": true, "category": "documents" },
+  { "id": "hotel-booking", "label": "Hotel booking confirmation", "checked": false, "category": "documents" },
+  { "id": "travel-insurance", "label": "Travel insurance", "checked": false, "category": "documents" },
+  { "id": "icoca", "label": "IC Card (ICOCA)", "checked": false, "category": "money" },
+  { "id": "yen-cash", "label": "Japanese yen cash", "checked": false, "category": "money" },
+  { "id": "credit-card", "label": "Credit / travel card", "checked": true, "category": "money" },
+  { "id": "clothes", "label": "Weather-appropriate clothing", "checked": true, "category": "packing" },
+  { "id": "shoes", "label": "Comfortable walking shoes", "checked": true, "category": "packing" },
+  { "id": "rain-gear", "label": "Rain gear / umbrella", "checked": false, "category": "packing" },
+  { "id": "skincare", "label": "Skincare / cosmetics", "checked": false, "category": "packing" },
+  { "id": "phone-charger", "label": "Phone charger", "checked": true, "category": "electronics" },
+  { "id": "power-bank", "label": "Power bank", "checked": false, "category": "electronics" },
+  { "id": "adapter", "label": "Universal travel adapter", "checked": false, "category": "electronics" },
+  { "id": "camera", "label": "Camera / extra memory card", "checked": false, "category": "electronics" },
+  { "id": "medicine", "label": "Personal medication", "checked": false, "category": "health" },
+  { "id": "pain-reliever", "label": "Pain reliever / allergy meds", "checked": false, "category": "health" },
+  { "id": "sunscreen", "label": "Sunscreen", "checked": false, "category": "health" }
+]

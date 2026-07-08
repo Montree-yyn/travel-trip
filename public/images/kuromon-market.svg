@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-label="Kuromon Market">
+  <defs>
+    <linearGradient id="bg-kuromon-market" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD9A6"/>
+      <stop offset="55%" stop-color="#FF9F68"/>
+      <stop offset="100%" stop-color="#E8654B"/>
+    </linearGradient>
+    <radialGradient id="glow-kuromon-market" cx="30%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg-kuromon-market)"/>
+  <rect width="800" height="800" fill="url(#glow-kuromon-market)"/>
+  <circle cx="624" cy="176" r="144" fill="#ffffff" fill-opacity="0.12"/>
+  <circle cx="144" cy="624" r="176" fill="#000000" fill-opacity="0.08"/>
+  <text x="400" y="400" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" fill-opacity="0.92" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="700">Kuromon Market</text>
+  
+</svg>

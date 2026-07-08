@@ -1,0 +1,162 @@
+[
+  {
+    "dayNumber": 1,
+    "date": "2026-07-13",
+    "weekday": "Sunday",
+    "title": "Osaka First Day",
+    "theme": "Arrival & City Highlights",
+    "city": "Osaka",
+    "timeline": [
+      { "time": "09:30", "activity": "Arrive at Kansai Airport (KIX)" },
+      { "time": "10:30", "activity": "Nankai Express to Namba" },
+      { "time": "12:00", "activity": "Drop luggage at hotel", "notes": "Check-in from 14:00" },
+      { "time": "12:00", "activity": "Osaka Castle", "location": "Osaka Castle Park" },
+      { "time": "14:30", "activity": "Namba Yasaka Shrine" },
+      { "time": "15:30", "activity": "Umeda Sky Building", "notes": "360° city view" },
+      { "time": "17:30", "activity": "Check in & rest at hotel" }
+    ],
+    "highlights": [
+      { "name": "Osaka Castle" },
+      { "name": "Namba Yasaka Shrine" },
+      { "name": "Umeda Sky Building" }
+    ],
+    "food": [
+      { "name": "Tsujita Artisan Noodle", "category": "restaurant" },
+      { "name": "Kaiten Sushi Ginza Onodera", "category": "restaurant" },
+      { "name": "Tuna Master", "category": "restaurant" },
+      { "name": "Shiki Japanese Tea", "category": "cafe" },
+      { "name": "Lilo Coffee Roasters", "category": "cafe" }
+    ]
+  },
+  {
+    "dayNumber": 2,
+    "date": "2026-07-14",
+    "weekday": "Monday",
+    "title": "Universal Studios Japan",
+    "theme": "Theme Park Day",
+    "city": "Osaka",
+    "timeline": [
+      { "time": "08:00", "activity": "Depart for Universal Studios Japan" },
+      { "time": "09:00", "activity": "Enjoy USJ", "notes": "Open until 20:00" },
+      { "time": "20:00", "activity": "Back to hotel & rest" }
+    ],
+    "highlights": [
+      { "name": "Super Nintendo World" },
+      { "name": "The Wizarding World of Harry Potter" }
+    ],
+    "food": [],
+    "tips": [
+      "Buy tickets in advance",
+      "Download the USJ app",
+      "Arrive before opening",
+      "Bring a rain poncho — consider Express Pass"
+    ]
+  },
+  {
+    "dayNumber": 3,
+    "date": "2026-07-15",
+    "weekday": "Tuesday",
+    "title": "Kyoto + Uji",
+    "theme": "Temples, Tea & Riverside",
+    "city": "Kyoto",
+    "timeline": [
+      { "time": "07:30", "activity": "Depart for Kyoto" },
+      { "time": "09:30", "activity": "%Arabica Kyoto Arashiyama" },
+      { "time": "10:30", "activity": "Explore Arashiyama" },
+      { "time": "11:30", "activity": "Kennin-ji Temple" },
+      { "time": "13:00", "activity": "Explore Gion" },
+      { "time": "14:30", "activity": "Travel to Uji" },
+      { "time": "15:00", "activity": "Ujikoen", "notes": "Green tea house" },
+      { "time": "16:00", "activity": "Byodo-in Temple" },
+      { "time": "17:00", "activity": "Uji Matcha Street" },
+      { "time": "18:00", "activity": "Explore Gion" },
+      { "time": "20:00", "activity": "Walk along Kamo River" },
+      { "time": "21:00", "activity": "Back to hotel & rest" }
+    ],
+    "highlights": [
+      { "name": "%Arabica" },
+      { "name": "Arashiyama Bamboo Grove" },
+      { "name": "Gion District" }
+    ],
+    "food": [
+      { "name": "Gyukatsu Kyoto Katsugyu", "category": "restaurant" },
+      { "name": "%Arabica Kyoto Higashiyama", "category": "cafe" },
+      { "name": "Omen Ginkaku-ji", "category": "restaurant" },
+      { "name": "Ujikoen", "category": "cafe" },
+      { "name": "Matcha Cafe (Uji)", "category": "cafe" }
+    ]
+  },
+  {
+    "dayNumber": 4,
+    "date": "2026-07-16",
+    "weekday": "Wednesday",
+    "title": "Ine Day Trip",
+    "theme": "Fishing Village & Bay Cruise",
+    "city": "Ine",
+    "timeline": [
+      { "time": "07:30", "activity": "Depart for Ine", "notes": "JR + Bus" },
+      { "time": "10:30", "activity": "Arrive at Amanohashidate" },
+      { "time": "11:00", "activity": "Amanohashidate View Land" },
+      { "time": "12:30", "activity": "Explore Ine" },
+      { "time": "13:30", "activity": "Ine Bay Cruise" },
+      { "time": "14:30", "activity": "Ine Funaya", "notes": "Boathouse village" },
+      { "time": "17:00", "activity": "Seaside cafe" },
+      { "time": "18:00", "activity": "Return to train station" },
+      { "time": "20:00", "activity": "Back to hotel & rest" }
+    ],
+    "highlights": [
+      { "name": "Amanohashidate" },
+      { "name": "Ine Funaya" },
+      { "name": "Ine Bay Cruise" }
+    ],
+    "food": [{ "name": "Local seafood", "category": "restaurant" }],
+    "tips": ["Try the eel-filled bread", "Sample local desserts"]
+  },
+  {
+    "dayNumber": 5,
+    "date": "2026-07-17",
+    "weekday": "Thursday",
+    "title": "Osaka Morning + Kobe Afternoon",
+    "theme": "Markets & Harbor Sunset",
+    "city": "Osaka / Kobe",
+    "timeline": [
+      { "time": "07:30", "activity": "Kuromon Market" },
+      { "time": "08:00", "activity": "Breakfast & shopping" },
+      { "time": "10:00", "activity": "FFF Coffee" },
+      { "time": "10:30", "activity": "Explore Nakazakicho" },
+      { "time": "12:00", "activity": "Travel to Kobe", "notes": "~40 min" },
+      { "time": "13:00", "activity": "Steak Land Kobe", "notes": "Lunch" },
+      { "time": "15:00", "activity": "Walk & snack around town" },
+      { "time": "16:30", "activity": "Kobe Harborland" },
+      { "time": "18:00", "activity": "Sunset at Harborland" }
+    ],
+    "highlights": [
+      { "name": "Kuromon Market" },
+      { "name": "Kobe Harborland" }
+    ],
+    "food": [
+      { "name": "Kuromon Market", "category": "street-food" },
+      { "name": "MOKEN Cream Puff", "category": "dessert" },
+      { "name": "FFF Coffee", "category": "cafe" },
+      { "name": "Steak Land Kobe", "category": "restaurant" }
+    ]
+  },
+  {
+    "dayNumber": 6,
+    "date": "2026-07-18",
+    "weekday": "Friday",
+    "title": "Last Day",
+    "theme": "Outlet Shopping & Departure",
+    "city": "Osaka",
+    "timeline": [
+      { "time": "08:00", "activity": "Check out", "notes": "Hotel can hold luggage" },
+      { "time": "10:00", "activity": "Rinku Premium Outlets" },
+      { "time": "13:00", "activity": "Pick up luggage" },
+      { "time": "14:00", "activity": "Travel to airport", "notes": "Nankai / JR Express to KIX" },
+      { "time": "16:00", "activity": "Airline check-in" }
+    ],
+    "highlights": [{ "name": "Rinku Premium Outlets" }],
+    "food": [],
+    "tips": ["Souvenirs: green tea, snacks, skincare, cosmetics"]
+  }
+]

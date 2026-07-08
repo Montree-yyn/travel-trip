@@ -1,0 +1,144 @@
+{
+  "bookingReference": "MBYCVP",
+  "passengers": ["Cake", "Noonmim"],
+  "baggage": {
+    "checked": "Please update from flight PDF",
+    "cabin": "Please update from flight PDF"
+  },
+  "airports": [
+    {
+      "code": "CNX",
+      "name": "Chiang Mai International Airport",
+      "city": "Chiang Mai",
+      "country": "Thailand",
+      "terminal": "Terminal 2"
+    },
+    {
+      "code": "KUL",
+      "name": "Kuala Lumpur International Airport",
+      "city": "Kuala Lumpur",
+      "country": "Malaysia",
+      "terminal": "Terminal 2"
+    },
+    {
+      "code": "KIX",
+      "name": "Kansai International Airport",
+      "city": "Osaka",
+      "country": "Japan",
+      "terminal": "Terminal 1"
+    },
+    {
+      "code": "DMK",
+      "name": "Don Mueang International Airport",
+      "city": "Bangkok",
+      "country": "Thailand",
+      "terminal": "Terminal 1"
+    }
+  ],
+  "segments": [
+    {
+      "id": "cnx-kul",
+      "direction": "outbound",
+      "label": "Outbound",
+      "airline": "AirAsia",
+      "flightNumber": "AK857",
+      "bookingReference": "MBYCVP",
+      "departure": {
+        "date": "2026-07-12",
+        "time": "15:40",
+        "airport": "Chiang Mai International Airport",
+        "airportCode": "CNX",
+        "terminal": "Terminal 2",
+        "city": "Chiang Mai"
+      },
+      "arrival": {
+        "date": "2026-07-12",
+        "time": "19:35",
+        "airport": "Kuala Lumpur International Airport",
+        "airportCode": "KUL",
+        "terminal": "Terminal 2",
+        "city": "Kuala Lumpur"
+      },
+      "transitTime": "2 hr 55 min",
+      "baggage": "Please update from flight PDF"
+    },
+    {
+      "id": "kul-kix",
+      "direction": "outbound",
+      "label": "Outbound",
+      "airline": "AirAsia X",
+      "flightNumber": "D7 532",
+      "bookingReference": "MBYCVP",
+      "departure": {
+        "date": "2026-07-13",
+        "time": "02:20",
+        "airport": "Kuala Lumpur International Airport",
+        "airportCode": "KUL",
+        "terminal": "Terminal 2",
+        "city": "Kuala Lumpur"
+      },
+      "arrival": {
+        "date": "2026-07-13",
+        "time": "09:50",
+        "airport": "Kansai International Airport",
+        "airportCode": "KIX",
+        "terminal": "Terminal 1",
+        "city": "Osaka"
+      },
+      "transitTime": "6 hr 30 min",
+      "baggage": "Please update from flight PDF"
+    },
+    {
+      "id": "kix-dmk",
+      "direction": "return",
+      "label": "Return",
+      "airline": "Thai AirAsia X",
+      "flightNumber": "XJ 613",
+      "bookingReference": "MBYCVP",
+      "departure": {
+        "date": "2026-07-18",
+        "time": "13:05",
+        "airport": "Kansai International Airport",
+        "airportCode": "KIX",
+        "terminal": "Terminal 1",
+        "city": "Osaka"
+      },
+      "arrival": {
+        "date": "2026-07-18",
+        "time": "17:05",
+        "airport": "Don Mueang International Airport",
+        "airportCode": "DMK",
+        "terminal": "Terminal 1",
+        "city": "Bangkok"
+      },
+      "transitTime": "6 hr",
+      "baggage": "Please update from flight PDF"
+    },
+    {
+      "id": "dmk-cnx",
+      "direction": "return",
+      "label": "Return",
+      "airline": "Thai AirAsia",
+      "flightNumber": "FD 3443",
+      "bookingReference": "MBYCVP",
+      "departure": {
+        "date": "2026-07-18",
+        "time": "19:35",
+        "airport": "Don Mueang International Airport",
+        "airportCode": "DMK",
+        "terminal": "Terminal 2",
+        "city": "Bangkok"
+      },
+      "arrival": {
+        "date": "2026-07-18",
+        "time": "20:50",
+        "airport": "Chiang Mai International Airport",
+        "airportCode": "CNX",
+        "terminal": "Terminal 2",
+        "city": "Chiang Mai"
+      },
+      "transitTime": "1 hr 15 min",
+      "baggage": "Please update from flight PDF"
+    }
+  ]
+}

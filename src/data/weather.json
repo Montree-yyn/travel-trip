@@ -1,0 +1,308 @@
+[
+  {
+    "date": "2026-07-13",
+    "weekday": "Sun",
+    "city": "Osaka",
+    "condition": "sunny",
+    "high": 33,
+    "low": 26,
+    "precipitation": 10,
+    "humidity": 68,
+    "hourly": [
+      { "time": "09:00", "temp": 28, "condition": "sunny" },
+      { "time": "12:00", "temp": 32, "condition": "sunny" },
+      { "time": "15:00", "temp": 33, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 27, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "weekday": "Sun",
+    "city": "Kyoto",
+    "condition": "partly-cloudy",
+    "high": 31,
+    "low": 24,
+    "precipitation": 15,
+    "humidity": 72,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 31, "condition": "sunny" },
+      { "time": "18:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 25, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "weekday": "Sun",
+    "city": "Kobe",
+    "condition": "sunny",
+    "high": 32,
+    "low": 25,
+    "precipitation": 8,
+    "humidity": 66,
+    "hourly": [
+      { "time": "09:00", "temp": 27, "condition": "sunny" },
+      { "time": "12:00", "temp": 31, "condition": "sunny" },
+      { "time": "15:00", "temp": 32, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 29, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 26, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "weekday": "Mon",
+    "city": "Osaka",
+    "condition": "partly-cloudy",
+    "high": 32,
+    "low": 25,
+    "precipitation": 20,
+    "humidity": 71,
+    "hourly": [
+      { "time": "09:00", "temp": 27, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 31, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 32, "condition": "sunny" },
+      { "time": "18:00", "temp": 29, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 26, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "weekday": "Mon",
+    "city": "Kyoto",
+    "condition": "cloudy",
+    "high": 30,
+    "low": 24,
+    "precipitation": 25,
+    "humidity": 75,
+    "hourly": [
+      { "time": "09:00", "temp": 25, "condition": "cloudy" },
+      { "time": "12:00", "temp": 28, "condition": "cloudy" },
+      { "time": "15:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 27, "condition": "cloudy" },
+      { "time": "21:00", "temp": 24, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "weekday": "Mon",
+    "city": "Kobe",
+    "condition": "partly-cloudy",
+    "high": 31,
+    "low": 25,
+    "precipitation": 18,
+    "humidity": 69,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 31, "condition": "sunny" },
+      { "time": "18:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 25, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "weekday": "Tue",
+    "city": "Osaka",
+    "condition": "cloudy",
+    "high": 32,
+    "low": 26,
+    "precipitation": 30,
+    "humidity": 73,
+    "hourly": [
+      { "time": "09:00", "temp": 27, "condition": "cloudy" },
+      { "time": "12:00", "temp": 30, "condition": "cloudy" },
+      { "time": "15:00", "temp": 32, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 29, "condition": "rainy" },
+      { "time": "21:00", "temp": 26, "condition": "cloudy" }
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "weekday": "Tue",
+    "city": "Kyoto",
+    "condition": "cloudy",
+    "high": 31,
+    "low": 25,
+    "precipitation": 35,
+    "humidity": 74,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "cloudy" },
+      { "time": "12:00", "temp": 29, "condition": "cloudy" },
+      { "time": "15:00", "temp": 31, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 28, "condition": "rainy" },
+      { "time": "21:00", "temp": 25, "condition": "cloudy" }
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "weekday": "Tue",
+    "city": "Kobe",
+    "condition": "partly-cloudy",
+    "high": 30,
+    "low": 25,
+    "precipitation": 28,
+    "humidity": 70,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 29, "condition": "cloudy" },
+      { "time": "15:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 27, "condition": "cloudy" },
+      { "time": "21:00", "temp": 25, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-16",
+    "weekday": "Wed",
+    "city": "Osaka",
+    "condition": "rainy",
+    "high": 29,
+    "low": 24,
+    "precipitation": 60,
+    "humidity": 78,
+    "hourly": [
+      { "time": "09:00", "temp": 25, "condition": "rainy" },
+      { "time": "12:00", "temp": 27, "condition": "rainy" },
+      { "time": "15:00", "temp": 29, "condition": "cloudy" },
+      { "time": "18:00", "temp": 26, "condition": "cloudy" },
+      { "time": "21:00", "temp": 24, "condition": "cloudy" }
+    ]
+  },
+  {
+    "date": "2026-07-16",
+    "weekday": "Wed",
+    "city": "Kyoto",
+    "condition": "rainy",
+    "high": 28,
+    "low": 24,
+    "precipitation": 65,
+    "humidity": 80,
+    "hourly": [
+      { "time": "09:00", "temp": 25, "condition": "rainy" },
+      { "time": "12:00", "temp": 27, "condition": "rainy" },
+      { "time": "15:00", "temp": 28, "condition": "cloudy" },
+      { "time": "18:00", "temp": 26, "condition": "cloudy" },
+      { "time": "21:00", "temp": 24, "condition": "cloudy" }
+    ]
+  },
+  {
+    "date": "2026-07-16",
+    "weekday": "Wed",
+    "city": "Kobe",
+    "condition": "cloudy",
+    "high": 29,
+    "low": 24,
+    "precipitation": 45,
+    "humidity": 76,
+    "hourly": [
+      { "time": "09:00", "temp": 25, "condition": "cloudy" },
+      { "time": "12:00", "temp": 27, "condition": "rainy" },
+      { "time": "15:00", "temp": 29, "condition": "cloudy" },
+      { "time": "18:00", "temp": 26, "condition": "cloudy" },
+      { "time": "21:00", "temp": 24, "condition": "cloudy" }
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "weekday": "Thu",
+    "city": "Osaka",
+    "condition": "sunny",
+    "high": 32,
+    "low": 26,
+    "precipitation": 8,
+    "humidity": 67,
+    "hourly": [
+      { "time": "09:00", "temp": 27, "condition": "sunny" },
+      { "time": "12:00", "temp": 31, "condition": "sunny" },
+      { "time": "15:00", "temp": 32, "condition": "sunny" },
+      { "time": "18:00", "temp": 29, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 26, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "weekday": "Thu",
+    "city": "Kyoto",
+    "condition": "partly-cloudy",
+    "high": 31,
+    "low": 25,
+    "precipitation": 12,
+    "humidity": 70,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 29, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 31, "condition": "sunny" },
+      { "time": "18:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 25, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "weekday": "Thu",
+    "city": "Kobe",
+    "condition": "sunny",
+    "high": 33,
+    "low": 26,
+    "precipitation": 5,
+    "humidity": 65,
+    "hourly": [
+      { "time": "09:00", "temp": 28, "condition": "sunny" },
+      { "time": "12:00", "temp": 32, "condition": "sunny" },
+      { "time": "15:00", "temp": 33, "condition": "sunny" },
+      { "time": "18:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 27, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-18",
+    "weekday": "Fri",
+    "city": "Osaka",
+    "condition": "partly-cloudy",
+    "high": 32,
+    "low": 26,
+    "precipitation": 15,
+    "humidity": 69,
+    "hourly": [
+      { "time": "09:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 31, "condition": "sunny" },
+      { "time": "15:00", "temp": 32, "condition": "partly-cloudy" },
+      { "time": "18:00", "temp": 29, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 26, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-18",
+    "weekday": "Fri",
+    "city": "Kyoto",
+    "condition": "partly-cloudy",
+    "high": 30,
+    "low": 24,
+    "precipitation": 20,
+    "humidity": 72,
+    "hourly": [
+      { "time": "09:00", "temp": 25, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 30, "condition": "cloudy" },
+      { "time": "18:00", "temp": 27, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 24, "condition": "clear-night" }
+    ]
+  },
+  {
+    "date": "2026-07-18",
+    "weekday": "Fri",
+    "city": "Kobe",
+    "condition": "partly-cloudy",
+    "high": 31,
+    "low": 25,
+    "precipitation": 12,
+    "humidity": 68,
+    "hourly": [
+      { "time": "09:00", "temp": 26, "condition": "partly-cloudy" },
+      { "time": "12:00", "temp": 30, "condition": "partly-cloudy" },
+      { "time": "15:00", "temp": 31, "condition": "sunny" },
+      { "time": "18:00", "temp": 28, "condition": "partly-cloudy" },
+      { "time": "21:00", "temp": 25, "condition": "clear-night" }
+    ]
+  }
+]

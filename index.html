@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="preload" href="/images/trip-hero.svg" as="image" type="image/svg+xml" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#FBF8F6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#100B0D" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Travel Trip — a liquid-glass travel companion for itineraries, budgets, and memories." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Travel Trip" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Travel Trip</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("travel-trip-theme");
+          var isDark =
+            stored === "dark" ||
+            (stored !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (isDark) document.documentElement.classList.add("dark");
+        } catch (e) {}
+        try {
+          var locale = localStorage.getItem("travel-trip-locale");
+          if (locale === "th") document.documentElement.lang = "th";
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

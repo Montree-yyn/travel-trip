@@ -1,0 +1,65 @@
+export type BudgetCategoryIcon = "food" | "transport" | "shopping" | "attraction" | "hotel" | "other";
+
+export type BudgetExpenseCategory = BudgetCategoryIcon;
+
+export type LegacyBudgetExpenseCategory = "flight" | "train" | "activities";
+
+export type BudgetPaymentMethod = "cash" | "card" | "icoca" | "mobile";
+
+export interface BudgetExpense {
+  id: string;
+  title: string;
+  category: BudgetExpenseCategory;
+  amount: number;
+  currency: string;
+  date: string;
+  paymentMethod: BudgetPaymentMethod;
+  note?: string;
+  receiptPhotoUrl?: string;
+  receiptPhotoPath?: string;
+  merchant?: string;
+}
+
+export interface BudgetCategorySpending {
+  id: string;
+  label: string;
+  icon: BudgetCategoryIcon;
+  spent: number;
+  allocated: number;
+}
+
+export interface DailySpending {
+  day: number;
+  label: string;
+  amount: number;
+}
+
+export interface BudgetData {
+  expenses: BudgetExpense[];
+  totalBudget?: number;
+  currency?: string;
+}
+
+export interface BudgetSummary {
+  totalBudget: number;
+  totalSpent: number;
+  remaining: number;
+  spentPercent: number;
+  categories: BudgetCategorySpending[];
+  dailySpending: DailySpending[];
+}
+
+export type ExpenseCategoryFilter = BudgetExpenseCategory | "all";
+export type ExpenseDateFilter = "all" | string;
+
+export interface ExpenseFilters {
+  query: string;
+  category: ExpenseCategoryFilter;
+  date: ExpenseDateFilter;
+}
+
+/** @deprecated Legacy Firestore/localStorage shape — migrated on read. */
+export interface LegacyBudgetData {
+  categories?: Array<Omit<BudgetCategorySpending, "icon"> & { icon: BudgetCategoryIcon | LegacyBudgetExpenseCategory }>;
+  dailySpending?: DailySpending[];
+}

@@ -1,0 +1,16 @@
+{
+  "categories": [
+    { "id": "flights", "label": "Flights", "icon": "flight", "spent": 20000, "allocated": 22000 },
+    { "id": "hotel", "label": "Hotel", "icon": "hotel", "spent": 6000, "allocated": 7000 },
+    { "id": "train", "label": "Train / IC Card", "icon": "train", "spent": 3200, "allocated": 5000 },
+    { "id": "activities", "label": "Activities, food & shopping", "icon": "food", "spent": 6300, "allocated": 11000 }
+  ],
+  "dailySpending": [
+    { "day": 1, "label": "Day 1", "amount": 5200 },
+    { "day": 2, "label": "Day 2", "amount": 3400 },
+    { "day": 3, "label": "Day 3", "amount": 4100 },
+    { "day": 4, "label": "Day 4", "amount": 2600 },
+    { "day": 5, "label": "Day 5", "amount": 6800 },
+    { "day": 6, "label": "Day 6", "amount": 3900 }
+  ]
+}

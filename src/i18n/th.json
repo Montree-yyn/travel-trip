@@ -1,0 +1,562 @@
+{
+  "common": {
+    "retry": "ลองอีกครั้ง",
+    "remove": "ลบออก",
+    "viewAll": "ดูทั้งหมด",
+    "seeAll": "ดูเพิ่มเติม",
+    "loading": "กำลังโหลด…",
+    "copied": "คัดลอกแล้ว",
+    "copy": "คัดลอก",
+    "copyAddress": "คัดลอกที่อยู่",
+    "favorite": "บันทึกไว้",
+    "favorited": "บันทึกแล้ว",
+    "addToFavorites": "เพิ่มในรายการโปรด",
+    "removeFromFavorites": "นำออกจากรายการโปรด",
+    "clearSearch": "ล้างคำค้นหา",
+    "all": "ทั้งหมด",
+    "today": "วันนี้",
+    "day": "วันที่ {{day}}",
+    "dayOf": "วันที่ {{current}} จาก {{total}}",
+    "daySlash": "วันที่ {{current}} / {{total}}",
+    "traveler": "นักเดินทาง",
+    "updatedJustNow": "อัปเดตเมื่อสักครู่",
+    "terminal": "เทอร์มินัล {{terminal}}",
+    "morePhotos": "+{{count}}",
+    "swapCurrencies": "สลับสกุลเงิน",
+    "editTrip": "แก้ไขทริป",
+    "collapseSheet": "ย่อแผง",
+    "expandSheet": "ขยายแผง",
+    "switchToLightMode": "เปลี่ยนเป็นโหมดสว่าง",
+    "switchToDarkMode": "เปลี่ยนเป็นโหมดมืด",
+    "toggleOfflineMode": "เปิด/ปิดโหมดออฟไลน์",
+    "toggleNotifications": "เปิด/ปิดการแจ้งเตือน"
+  },
+  "nav": {
+    "home": "หน้าแรก",
+    "itinerary": "กำหนดการ",
+    "map": "แผนที่",
+    "budget": "งบประมาณ",
+    "more": "เพิ่มเติม"
+  },
+  "home": {
+    "greeting": {
+      "morning": "สวัสดีตอนเช้า",
+      "afternoon": "สวัสดีตอนบ่าย",
+      "evening": "สวัสดีตอนเย็น"
+    },
+    "subtitle": "{{companions}} · วันที่ {{day}} ที่ {{city}}",
+    "todayPlan": "แผนวันนี้",
+    "todayCity": "วันนี้ · {{city}}",
+    "quickActions": "ทางลัด",
+    "continueJourney": "เดินทางต่อ",
+    "tripSettings": "ตั้งค่าทริปและอื่น ๆ",
+    "upcomingActivity": "กิจกรรมถัดไป",
+    "nextUp": "ถัดไป · {{time}}",
+    "budgetUsed": "ใช้งบไปแล้ว",
+    "budgetRemaining": "เหลือ {{currency}} {{amount}}",
+    "hotel": "ที่พัก",
+    "flight": "เที่ยวบิน",
+    "coupleHero": {
+      "tripTogether": "ทริปร่วมกัน",
+      "soloTrip": "ทริปเดี่ยว",
+      "daysToGo": "อีก {{count}} วัน",
+      "daysLeft": "เหลืออีก {{count}} วัน",
+      "dayProgress": "วันที่ {{current}} / {{total}}",
+      "percentComplete": "ครบ {{percent}}%"
+    }
+  },
+  "itinerary": {
+    "title": "กำหนดการ",
+    "subtitle": "{{days}} วัน · {{tripTitle}}",
+    "tripProgress": "ความคืบหน้าทริป",
+    "visit": "เช็คอิน",
+    "visited": "เช็คอินแล้ว",
+    "unavailableTitle": "โหลดกำหนดการไม่ได้",
+    "unavailableDescription": "ไม่พบข้อมูลกำหนดการ กรุณาตรวจสอบไฟล์ข้อมูลในเครื่อง",
+    "dayUnavailableDescription": "ไม่สามารถแสดงวันที่เลือกได้ กรุณาตรวจสอบรายการกำหนดการ"
+  },
+  "map": {
+    "title": "แผนที่",
+    "searchPlaceholder": "ค้นหาสถานที่ใน {{city}}…",
+    "filters": "ตัวกรอง",
+    "dayRoute": "วันที่ {{day}} · {{city}}",
+    "routeFallback": "เส้นทาง",
+    "nearby": "ใกล้เคียง",
+    "route": "เส้นทาง",
+    "noPlacesForDay": "ยังไม่มีสถานที่บันทึกไว้สำหรับวันนี้ สลับไปที่เส้นทางเพื่อดูจุดในกำหนดการ",
+    "noTransitLegs": "ไม่มีข้อมูลการเดินทางสำหรับวันนี้",
+    "apple": "Apple",
+    "google": "Google",
+    "unavailableTitle": "โหลดแผนที่ไม่ได้",
+    "unavailableDescription": "ไม่พบข้อมูลแผนที่หรือกำหนดการ กรุณาตรวจสอบไฟล์ข้อมูลในเครื่อง"
+  },
+  "food": {
+    "title": "อาหาร & คาเฟ่",
+    "subtitle": "มี {{count}} ร้านให้ลอง",
+    "noPlacesTitle": "ไม่พบร้านที่ตรงกัน",
+    "noPlacesDescription": "ลองเปลี่ยนหมวดหมู่เพื่อดูร้านอาหารและคาเฟ่เพิ่มเติม"
+  },
+  "flights": {
+    "title": "เที่ยวบิน",
+    "subtitle": "รายละเอียดขาไปและขากลับ",
+    "bookingReference": "หมายเลขการจอง",
+    "passengers": "ผู้โดยสาร",
+    "flightDetails": "รายละเอียดเที่ยวบิน",
+    "airportMapLinks": "ลิงก์แผนที่สนามบิน",
+    "checkedBaggage": "กระเป๋าเช็คอิน",
+    "cabinBaggage": "กระเป๋าถือขึ้นเครื่อง"
+  },
+  "hotel": {
+    "title": "ที่พัก",
+    "subtitle": "รายละเอียดการเข้าพักและการจอง",
+    "nights": "{{count}} คืน",
+    "osakaStay": "พักที่โอซาก้า",
+    "callHotel": "โทรหาโรงแรม",
+    "checkIn": "เช็คอิน",
+    "checkOut": "เช็คเอาท์",
+    "room": "ห้องพัก",
+    "roomType": "ประเภทห้อง",
+    "bookingDetails": "รายละเอียดการจอง",
+    "confirmationNo": "เลขยืนยัน",
+    "bookingNo": "เลขที่จอง",
+    "guestName": "ชื่อผู้เข้าพัก",
+    "amenities": "สิ่งอำนวยความสะดวก",
+    "dataNotice": "เลขยืนยัน เลขที่จอง และชื่อผู้เข้าพักดึงจาก hotel.json เท่านั้น"
+  },
+  "places": {
+    "title": "สถานที่",
+    "subtitle": "{{count}} แหล่งท่องเที่ยวและแลนด์มาร์ก",
+    "navigation": "นำทาง",
+    "openingHours": "เวลาเปิด–ปิด",
+    "nearby": "ใกล้เคียง",
+    "ticket": "ค่าเข้า",
+    "bestTime": "ช่วงเวลาที่ดี",
+    "duration": "ระยะเวลาเที่ยว",
+    "unavailableTitle": "โหลดสถานที่ไม่ได้",
+    "unavailableDescription": "ไม่พบข้อมูลสถานที่ กรุณาตรวจสอบ places.json"
+  },
+  "transport": {
+    "title": "การเดินทาง",
+    "subtitle": "รถไฟ รถบัส และการรับส่ง",
+    "daySection": "วันที่ {{day}}",
+    "keyStations": "สถานีสำคัญ"
+  },
+  "budget": {
+    "title": "งบประมาณ",
+    "subtitle": "ติดตามค่าใช้จ่ายทริป",
+    "expenses": "รายการค่าใช้จ่าย",
+    "addExpense": "เพิ่มค่าใช้จ่าย",
+    "editExpense": "แก้ไขค่าใช้จ่าย",
+    "deleteExpense": "ลบค่าใช้จ่าย",
+    "saveExpense": "บันทึก",
+    "cancel": "ยกเลิก",
+    "confirmDelete": "ลบ",
+    "closeDialog": "ปิดหน้าต่าง",
+    "deleteConfirm": "ลบ \"{{title}}\" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้",
+    "syncErrorTitle": "ปัญหาการซิงก์คลาวด์",
+    "dailySpending": "ค่าใช้จ่ายรายวัน",
+    "categorySummary": "สรุปตามหมวด",
+    "tripWallet": "กระเป๋าเงินทริป",
+    "totalBudget": "ทั้งหมด",
+    "spent": "ใช้ไป",
+    "remaining": "คงเหลือ",
+    "spentOf": "ใช้ไป {{currency}} {{spent}} จาก {{total}}",
+    "searchPlaceholder": "ค้นหารายการค่าใช้จ่าย…",
+    "filters": {
+      "allDates": "ทุกวัน",
+      "dayOption": "วันที่ {{day}}"
+    },
+    "fields": {
+      "title": "ชื่อรายการ",
+      "titlePlaceholder": "เช่น อาหาร รถไฟ ของฝาก",
+      "merchant": "ร้าน/สถานที่",
+      "merchantPlaceholder": "ชื่อร้านหรือสถานที่",
+      "category": "หมวดหมู่",
+      "amount": "จำนวนเงิน",
+      "currency": "สกุลเงิน",
+      "date": "วันที่",
+      "paymentMethod": "วิธีชำระเงิน",
+      "receipt": "รูปใบเสร็จ",
+      "note": "หมายเหตุ (ไม่บังคับ)",
+      "notePlaceholder": "เพิ่มหมายเหตุสั้น ๆ"
+    },
+    "paymentMethods": {
+      "cash": "เงินสด",
+      "card": "บัตร",
+      "icoca": "ICOCA",
+      "mobile": "จ่ายผ่านมือถือ"
+    },
+    "categories": {
+      "transport": "เดินทาง",
+      "shopping": "ช้อปปิ้ง",
+      "attraction": "สถานที่เที่ยว",
+      "hotel": "ที่พัก",
+      "food": "อาหาร",
+      "other": "อื่น ๆ"
+    },
+    "receipt": {
+      "takePhoto": "ถ่ายรูป",
+      "choosePhoto": "เลือกรูป",
+      "remove": "ลบ",
+      "attached": "แนบใบเสร็จแล้ว",
+      "synced": "บันทึกในคลาวด์แล้ว",
+      "local": "บันทึกในเครื่องสำหรับใช้ออฟไลน์"
+    },
+    "errors": {
+      "titleRequired": "กรุณากรอกชื่อรายการ",
+      "amountRequired": "กรุณากรอกจำนวนเงินมากกว่า 0",
+      "dateRequired": "กรุณาเลือกวันที่",
+      "receiptInvalidType": "กรุณาเลือกรูปภาพใบเสร็จ",
+      "receiptUploadFailed": "อัปโหลดใบเสร็จไม่สำเร็จ แต่ยังบันทึกค่าใช้จ่ายได้"
+    }
+  },
+  "checklist": {
+    "title": "เช็กลิสต์",
+    "subtitle": "จัดกระเป๋าและสิ่งที่ต้องทำก่อนเดินทาง",
+    "packedProgress": "จัดแล้ว {{done}} จาก {{total}} รายการ",
+    "allSet": "พร้อมออกเดินทางแล้ว!",
+    "itemsLeft": "เหลืออีก {{count}} รายการ",
+    "completed": "เสร็จแล้ว {{count}} รายการ",
+    "remaining": "เหลือ {{count}} รายการ",
+    "addItem": "เพิ่มรายการ",
+    "editItem": "แก้ไขรายการ",
+    "deleteItem": "ลบรายการ",
+    "deleteConfirm": "ลบ \"{{label}}\" ออกจากเช็กลิสต์?",
+    "confirmDelete": "ลบ",
+    "cancel": "ยกเลิก",
+    "saveItem": "บันทึก",
+    "closeDialog": "ปิด",
+    "syncErrorTitle": "ปัญหาการซิงก์คลาวด์",
+    "fields": {
+      "label": "รายการ",
+      "labelPlaceholder": "ต้องจัดหรือทำอะไรก่อนเดินทาง?",
+      "category": "หมวดหมู่"
+    },
+    "errors": {
+      "labelRequired": "กรุณากรอกชื่อรายการ"
+    }
+  },
+  "weather": {
+    "title": "สภาพอากาศ",
+    "subtitle": "โอซาก้า · เกียวโต · โกเบ รายวัน",
+    "rainAlert": "แจ้งเตือนฝน",
+    "outfit": "แต่งตัว",
+    "hourlyForecast": "พยากรณ์รายชั่วโมง",
+    "sixDayForecast": "พยากรณ์ 6 วัน",
+    "humidity": "ความชื้น {{percent}}%",
+    "rainChance": "โอกาสฝน {{percent}}%",
+    "lowTemp": "ต่ำสุด {{temp}}°"
+  },
+  "currency": {
+    "title": "อัตราแลกเปลี่ยน",
+    "subtitle": "แปลง THB ⇄ JPY",
+    "exchangeRate": "อัตราแลกเปลี่ยน",
+    "rateLine": "1 {{base}} = {{rate}} {{quote}}",
+    "rateUpdated": "อัปเดต {{date}} · อัตราจากไฟล์ในเครื่อง",
+    "convert": "แปลงเงิน",
+    "quickAmounts": "จำนวนที่ใช้บ่อย",
+    "offlineNotice": "อัตรานี้เก็บในไฟล์ JSON ในเครื่อง ใช้งานได้แม้ไม่มีอินเทอร์เน็ต"
+  },
+  "memories": {
+    "title": "ความทรงจำ",
+    "subtitle": "เขียนไดอารี่แล้ว {{journaled}} จาก {{total}} วัน",
+    "photoGallery": "แกลเลอรีรูปภาพ",
+    "photoCount": "{{count}} รูป",
+    "tripJournal": "ไดอารี่ทริป",
+    "journalPlaceholder": "เขียนบันทึกวันนี้…",
+    "memoryCount": "{{count}} ความทรงจำ",
+    "addMemory": "เพิ่มความทรงจำ",
+    "editMemory": "แก้ไขความทรงจำ",
+    "deleteMemory": "ลบความทรงจำ",
+    "deleteConfirm": "ลบ \"{{title}}\" ออกจากไดอารี่?",
+    "confirmDelete": "ลบ",
+    "cancel": "ยกเลิก",
+    "saveMemory": "บันทึก",
+    "closeDialog": "ปิด",
+    "noNoteYet": "ยังไม่มีบันทึก",
+    "photoPlaceholder": "อัปโหลดรูปภาพจะมาเร็ว ๆ นี้ — ตอนนี้แสดงเฉพาะตัวอย่าง",
+    "syncErrorTitle": "ปัญหาการซิงก์คลาวด์",
+    "photos": {
+      "addPhotos": "เพิ่มรูปภาพ",
+      "count": "{{count}} / {{max}} รูป",
+      "emptyHint": "แตะเพื่อเพิ่มรูปความทรงจำสำหรับรายการนี้",
+      "manageOnCard": "เพิ่ม จัดเรียง และลบรูปได้จากการ์ดไดอารี่โดยตรง",
+      "deletePhoto": "ลบรูปภาพ",
+      "deleteConfirm": "ลบรูปนี้ออกจากไดอารี่หรือไม่?",
+      "retry": "ลองใหม่",
+      "closePreview": "ปิดตัวอย่าง",
+      "previousPhoto": "รูปก่อนหน้า",
+      "nextPhoto": "รูปถัดไป",
+      "errors": {
+        "fileTooLarge": "รูปแต่ละรูปต้องไม่เกิน 5 MB ก่อนอัปโหลด",
+        "invalidType": "กรุณาเลือกไฟล์รูปภาพ",
+        "limitReached": "เพิ่มได้สูงสุด 10 รูปต่อความทรงจำ",
+        "uploadFailed": "อัปโหลดไม่สำเร็จ กรุณาลองใหม่",
+        "offlinePending": "บันทึกออฟไลน์แล้ว จะอัปโหลดอีกครั้งเมื่อกลับมาออนไลน์"
+      }
+    },
+    "fields": {
+      "title": "หัวข้อ",
+      "titlePlaceholder": "วันนี้เกิดอะไรขึ้น?",
+      "day": "วันที่",
+      "date": "วันที่",
+      "location": "สถานที่",
+      "locationPlaceholder": "คุณอยู่ที่ไหน?",
+      "note": "บันทึก",
+      "tags": "แท็ก",
+      "tagsPlaceholder": "อาหาร, พระอาทิตย์ตก, ครอบครัว",
+      "photos": "รูปภาพ"
+    },
+    "errors": {
+      "titleRequired": "กรุณากรอกหัวข้อ",
+      "dateRequired": "กรุณาเลือกวันที่"
+    }
+  },
+  "search": {
+    "title": "ค้นหา",
+    "subtitle": "ค้นหาได้ {{count}} รายการในทริป",
+    "placeholder": "ค้นหากำหนดการ สถานที่ อาหาร ที่พัก…"
+  },
+  "favorites": {
+    "title": "รายการโปรด",
+    "subtitle": "บันทึกไว้ {{count}} สถานที่และร้านอาหาร",
+    "placesSection": "สถานที่",
+    "restaurantsSection": "ร้านอาหาร"
+  },
+  "more": {
+    "title": "เพิ่มเติม",
+    "subtitle": "ตั้งค่าและเมนูอื่น ๆ",
+    "explore": "สำรวจ",
+    "madeWith": "สร้างด้วย {{heart}} เพื่อ {{companions}}"
+  },
+  "maps": {
+    "directions": "เส้นทาง",
+    "appleMaps": "Apple Maps",
+    "googleMaps": "Google Maps"
+  },
+  "errors": {
+    "dataTitle": "โหลดข้อมูลไม่สำเร็จ",
+    "dataDescription": "เกิดข้อผิดพลาดขณะโหลดข้อมูลทริป ตรวจสอบการเชื่อมต่อแล้วลองใหม่อีกครั้ง",
+    "routeTitle": "เกิดข้อผิดพลาด",
+    "routeDescription": "โหลดหน้านี้ไม่สำเร็จ"
+  },
+  "sync": {
+    "statusLabel": "ซิงก์คลาวด์",
+    "statusSynced": "ซิงก์แล้ว",
+    "statusOffline": "โหมดออฟไลน์",
+    "statusError": "ซิงก์ผิดพลาด",
+    "unavailable": "ไม่สามารถซิงก์คลาวด์ได้ กำลังใช้ข้อมูลออฟไลน์",
+    "errorTitle": "ซิงก์ข้อมูลไม่สำเร็จ",
+    "loadFailed": "ซิงก์จากคลาวด์ไม่สำเร็จ ข้อมูลที่บันทึกไว้ในเครื่องยังใช้งานได้",
+    "notConfigured": "ไม่สามารถซิงก์จากคลาวด์ได้เพราะยังไม่ได้ตั้งค่า Firebase",
+    "offlineHint": "การเปลี่ยนแปลงจะถูกบันทึกในเครื่องและซิงก์เมื่อกลับมาออนไลน์"
+  },
+  "empty": {
+    "favorites": {
+      "title": "ยังไม่มีรายการโปรด",
+      "description": "แตะบันทึกไว้ในหน้าสถานที่หรืออาหาร เพื่อเก็บจุดที่ชอบไว้เข้าถึงง่าย"
+    },
+    "search": {
+      "title": "ค้นหาทริปของคุณ",
+      "description": "ค้นหากิจกรรม สถานที่ ร้านอาหาร ที่พัก เที่ยวบิน และการเดินทาง"
+    },
+    "searchNoResults": {
+      "title": "ไม่พบผลลัพธ์",
+      "description": "ลองคำค้นอื่นหรือเปลี่ยนหมวดหมู่ดู"
+    },
+    "memories": {
+      "title": "ยังไม่มีความทรงจำ",
+      "description": "แตะ + เพื่อเพิ่มความทรงจำแรก พร้อมบันทึก แท็ก และตัวอย่างรูปภาพ"
+    },
+    "memoriesPhotos": {
+      "title": "ยังไม่มีรูปที่อัปโหลด",
+      "description": "เพิ่มรูปในรายการไดอารี่แล้วจะแสดงที่นี่"
+    },
+    "budget": {
+      "title": "ยังไม่มีรายการค่าใช้จ่าย",
+      "description": "แตะ + เพื่อเพิ่มรายการแรกและติดตามค่าใช้จ่ายทริป"
+    },
+    "budgetNoResults": {
+      "title": "ไม่พบรายการที่ตรงกัน",
+      "description": "ลองคำค้นหาอื่นหรือล้างตัวกรอง"
+    },
+    "checklist": {
+      "title": "ยังไม่มีรายการ",
+      "description": "เพิ่มสิ่งที่ต้องจัดกระเป๋าและเตรียมตัวก่อนออกเดินทาง"
+    },
+    "food": {
+      "title": "ไม่พบร้านที่ตรงกัน",
+      "description": "ลองเปลี่ยนหมวดหมู่เพื่อดูร้านอาหารและคาเฟ่เพิ่มเติม"
+    },
+    "places": {
+      "title": "ยังไม่มีสถานที่",
+      "description": "แหล่งท่องเที่ยวและแลนด์มาร์กที่บันทึกไว้จะแสดงที่นี่"
+    },
+    "itinerary": {
+      "title": "โหลดกำหนดการไม่ได้",
+      "description": "ไม่พบข้อมูลกำหนดการ กรุณาตรวจสอบไฟล์ข้อมูลในเครื่อง"
+    },
+    "map": {
+      "title": "โหลดแผนที่ไม่ได้",
+      "description": "ไม่พบข้อมูลแผนที่หรือกำหนดการ กรุณาตรวจสอบไฟล์ข้อมูลในเครื่อง"
+    }
+  },
+  "searchCategories": {
+    "itinerary": "กำหนดการ",
+    "places": "สถานที่",
+    "restaurants": "ร้านอาหาร",
+    "hotel": "ที่พัก",
+    "flights": "เที่ยวบิน",
+    "transport": "การเดินทาง"
+  },
+  "checklistCategories": {
+    "documents": "เอกสาร",
+    "money": "การเงิน",
+    "packing": "จัดกระเป๋า",
+    "electronics": "อุปกรณ์อิเล็กทรอนิกส์",
+    "health": "สุขภาพ"
+  },
+  "weatherConditions": {
+    "sunny": "แดดจัด",
+    "partly-cloudy": "มีเมฆบางส่วน",
+    "cloudy": "เมฆมาก",
+    "rainy": "ฝนตก",
+    "stormy": "พายุ",
+    "clear-night": "ท้องฟ้าแจ่มใส"
+  },
+  "weatherAlerts": {
+    "high": "โอกาสฝนสูง ควรพกร่มหรือเสื้อกันฝนบาง ๆ ติดตัว",
+    "medium": "อาจมีฝนตกเป็นช่วง ๆ พกร่มพับเล็ก ๆ ไว้เผื่อไว้",
+    "low": "โอกาสฝนต่ำ ไม่จำเป็นต้องเตรียมอุปกรณ์กันฝนตลอดวัน"
+  },
+  "weatherOutfits": {
+    "hot": "ใส่เสื้อผ้าโปร่ง สบาย รองเท้าเดิน และอย่าลืมครีมกันแดดกับผ้าเช็ดตัว",
+    "rainy": "ชุดแห้งเร็ว รองเท้ากันน้ำถ้ามี และร่มพับขนาดเล็ก",
+    "cool": "เสื้อคลุมบาง ๆ หรือคาร์ดิแกนสำหรับช่วงเช้า–เย็น",
+    "default": "ชุดสบาย ๆ ใส่เป็นชั้น ๆ พร้อมรองเท้าเดินสำหรับออกเที่ยวทั้งวัน"
+  },
+  "filters": {
+    "food": {
+      "all": "ทั้งหมด",
+      "restaurant": "ร้านอาหาร",
+      "cafe": "คาเฟ่",
+      "dessert": "ของหวาน",
+      "street-food": "อาหารริมทาง"
+    },
+    "map": {
+      "all": "ทั้งหมด",
+      "attractions": "สถานที่ท่องเที่ยว",
+      "food": "อาหาร",
+      "transit": "การเดินทาง"
+    }
+  },
+  "auth": {
+    "title": "ยินดีต้อนรับกลับ",
+    "subtitle": "เข้าสู่ระบบด้วย Google เพื่อดูทริปของคุณ",
+    "continueWithGoogle": "เข้าสู่ระบบด้วย Google",
+    "signingIn": "กำลังเข้าสู่ระบบ…",
+    "error": "เข้าสู่ระบบไม่สำเร็จ ลองใหม่อีกครั้งนะ",
+    "notConfigured": "ยังไม่ได้ตั้งค่า Firebase กรุณาเพิ่ม VITE_FIREBASE_* ใน environment",
+    "notAllowed": "บัญชีนี้ไม่มีสิทธิ์เข้าถึงทริปนี้",
+    "emailFallback": "ไม่มีอีเมล"
+  },
+  "settings": {
+    "preferences": "การตั้งค่า",
+    "appearance": "ธีม",
+    "light": "สว่าง",
+    "dark": "มืด",
+    "auto": "อัตโนมัติ",
+    "language": "ภาษา",
+    "english": "English",
+    "thai": "ไทย",
+    "offlineMode": "โหมดออฟไลน์",
+    "notifications": "การแจ้งเตือน",
+    "about": "เกี่ยวกับ",
+    "appVersion": "เวอร์ชันแอป",
+    "helpSupport": "ช่วยเหลือ & สนับสนุน",
+    "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+    "termsOfService": "ข้อกำหนดการใช้งาน",
+    "rateApp": "ให้คะแนนแอป",
+    "account": "บัญชี",
+    "signOut": "ออกจากระบบ"
+  },
+  "emergency": {
+    "title": "ฉุกเฉิน",
+    "police": "ตำรวจ",
+    "fireAmbulance": "ดับเพลิง / รถพยาบาล",
+    "visitorHotline": "Japan Visitor Hotline"
+  },
+  "translator": {
+    "title": "AI แปลภาษา",
+    "subtitle": "แปลประโยคระหว่างเดินทาง",
+    "sourceLanguage": "จาก",
+    "targetLanguage": "เป็น",
+    "swapLanguages": "สลับภาษา",
+    "inputLabel": "พิมพ์ข้อความ",
+    "inputPlaceholder": "พิมพ์ประโยคที่ต้องการแปล…",
+    "outputLabel": "คำแปล",
+    "outputEmpty": "คำแปลจะแสดงที่นี่",
+    "translate": "แปล",
+    "translating": "กำลังแปล…",
+    "copy": "คัดลอกคำแปล",
+    "savePhrase": "บันทึกลงสมุดคำศัพท์",
+    "saved": "บันทึกแล้ว",
+    "favorite": "เพิ่มรายการโปรด",
+    "unfavorite": "เอาออกจากรายการโปรด",
+    "mockHint": "แปลแบบจำลองออฟไลน์ — ลองพิมพ์ “hello” หรือ “thank you”",
+    "emptyTitle": "เริ่มแปลภาษา",
+    "emptyDescription": "เลือกภาษา พิมพ์ประโยค แล้วกดแปล ประโยคที่บันทึกจะซิงก์ข้ามอุปกรณ์",
+    "phrasebookTitle": "สมุดคำศัพท์",
+    "phrasebookEmptyTitle": "ยังไม่มีประโยคที่บันทึก",
+    "phrasebookEmptyDescription": "บันทึกคำแปลที่อยากใช้ซ้ำระหว่างทริป",
+    "historyTitle": "ประวัติ",
+    "historyEmptyTitle": "ยังไม่มีประวัติ",
+    "historyEmptyDescription": "คำแปลล่าสุดจะแสดงที่นี่โดยอัตโนมัติ",
+    "clearHistory": "ล้างประวัติ",
+    "syncErrorTitle": "ซิงก์สมุดคำศัพท์มีปัญหา",
+    "tabs": {
+      "translate": "แปล",
+      "phrasebook": "สมุดคำศัพท์",
+      "history": "ประวัติ"
+    },
+    "languages": {
+      "th": "ไทย",
+      "en": "อังกฤษ",
+      "ja": "ญี่ปุ่น",
+      "my": "พม่า",
+      "zh": "จีน",
+      "ko": "เกาหลี"
+    },
+    "errors": {
+      "emptyInput": "กรุณาพิมพ์ข้อความก่อนแปล",
+      "failed": "แปลไม่สำเร็จ กรุณาลองอีกครั้ง"
+    },
+    "usingMock": "ใช้การแปลออฟไลน์ — ผลลัพธ์อาจจำกัด"
+  },
+  "explore": {
+    "search": "ค้นหา",
+    "favorites": "รายการโปรด",
+    "food": "อาหาร",
+    "flights": "เที่ยวบิน",
+    "hotel": "ที่พัก",
+    "places": "สถานที่",
+    "transport": "การเดินทาง",
+    "checklist": "เช็กลิสต์",
+    "weather": "สภาพอากาศ",
+    "currency": "อัตราแลกเปลี่ยน",
+    "translator": "AI แปลภาษา",
+    "memories": "ความทรงจำ"
+  },
+  "quickActions": {
+    "search": "ค้นหา",
+    "favorites": "รายการโปรด",
+    "map": "แผนที่",
+    "flights": "เที่ยวบิน",
+    "hotel": "ที่พัก",
+    "checklist": "เช็กลิสต์",
+    "currency": "อัตราแลกเปลี่ยน",
+    "transport": "การเดินทาง",
+    "weather": "สภาพอากาศ",
+    "memories": "ความทรงจำ"
+  }
+}

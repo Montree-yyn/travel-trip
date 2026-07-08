@@ -1,0 +1,562 @@
+{
+  "common": {
+    "retry": "Try again",
+    "remove": "Remove",
+    "viewAll": "View all",
+    "seeAll": "See all",
+    "loading": "Loading…",
+    "copied": "Copied",
+    "copy": "Copy",
+    "copyAddress": "Copy Address",
+    "favorite": "Favorite",
+    "favorited": "Favorited",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "clearSearch": "Clear search",
+    "all": "All",
+    "today": "Today",
+    "day": "Day {{day}}",
+    "dayOf": "Day {{current}} of {{total}}",
+    "daySlash": "Day {{current}} / {{total}}",
+    "traveler": "Traveler",
+    "updatedJustNow": "Updated just now",
+    "terminal": "Terminal {{terminal}}",
+    "morePhotos": "+{{count}}",
+    "swapCurrencies": "Swap currencies",
+    "editTrip": "Edit trip",
+    "collapseSheet": "Collapse sheet",
+    "expandSheet": "Expand sheet",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "toggleOfflineMode": "Toggle offline mode",
+    "toggleNotifications": "Toggle notifications"
+  },
+  "nav": {
+    "home": "Home",
+    "itinerary": "Itinerary",
+    "map": "Map",
+    "budget": "Budget",
+    "more": "More"
+  },
+  "home": {
+    "greeting": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
+    },
+    "subtitle": "{{companions}} · Day {{day}} in {{city}}",
+    "todayPlan": "Today's Plan",
+    "todayCity": "Today · {{city}}",
+    "quickActions": "Quick Actions",
+    "continueJourney": "Continue Journey",
+    "tripSettings": "Trip settings & more",
+    "upcomingActivity": "Upcoming Activity",
+    "nextUp": "Next up · {{time}}",
+    "budgetUsed": "Budget used",
+    "budgetRemaining": "{{currency}} {{amount}} left",
+    "hotel": "Hotel",
+    "flight": "Flight",
+    "coupleHero": {
+      "tripTogether": "Trip together",
+      "soloTrip": "Solo trip",
+      "daysToGo": "{{count}} days to go",
+      "daysLeft": "{{count}} days left",
+      "dayProgress": "Day {{current}} / {{total}}",
+      "percentComplete": "{{percent}}% complete"
+    }
+  },
+  "itinerary": {
+    "title": "Itinerary",
+    "subtitle": "{{days}} days · {{tripTitle}}",
+    "tripProgress": "Trip progress",
+    "visit": "Visit",
+    "visited": "Visited",
+    "unavailableTitle": "Itinerary unavailable",
+    "unavailableDescription": "No itinerary days were found. Please verify your local itinerary data.",
+    "dayUnavailableDescription": "Unable to map the selected day. Please verify your itinerary entries."
+  },
+  "map": {
+    "title": "Map",
+    "searchPlaceholder": "Search places in {{city}}…",
+    "filters": "Filters",
+    "dayRoute": "Day {{day}} · {{city}}",
+    "routeFallback": "Route",
+    "nearby": "Nearby",
+    "route": "Route",
+    "noPlacesForDay": "No saved places for this day. Switch to Route to see itinerary locations.",
+    "noTransitLegs": "No transit legs recorded for this day.",
+    "apple": "Apple",
+    "google": "Google",
+    "unavailableTitle": "Map data unavailable",
+    "unavailableDescription": "No map-ready itinerary or places data was found. Please verify your local JSON data."
+  },
+  "food": {
+    "title": "Food & Cafe",
+    "subtitle": "{{count}} places to try",
+    "noPlacesTitle": "No places found",
+    "noPlacesDescription": "Try a different category to see more restaurants and cafes."
+  },
+  "flights": {
+    "title": "Flights",
+    "subtitle": "Outbound & return details",
+    "bookingReference": "Booking reference",
+    "passengers": "Passengers",
+    "flightDetails": "Flight Details",
+    "airportMapLinks": "Airport Map Links",
+    "checkedBaggage": "Checked baggage",
+    "cabinBaggage": "Cabin baggage"
+  },
+  "hotel": {
+    "title": "Hotel",
+    "subtitle": "Stay details & booking info",
+    "nights": "{{count}} nights",
+    "osakaStay": "Osaka stay",
+    "callHotel": "Call Hotel",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "room": "Room",
+    "roomType": "Room type",
+    "bookingDetails": "Booking Details",
+    "confirmationNo": "Confirmation No.",
+    "bookingNo": "Booking No.",
+    "guestName": "Guest name",
+    "amenities": "Amenities",
+    "dataNotice": "Confirmation number, booking number, and guest name are read from hotel.json only."
+  },
+  "places": {
+    "title": "Places",
+    "subtitle": "{{count}} attractions & landmarks",
+    "navigation": "Navigation",
+    "openingHours": "Opening Hours",
+    "nearby": "Nearby",
+    "ticket": "Ticket",
+    "bestTime": "Best time",
+    "duration": "Duration",
+    "unavailableTitle": "Places unavailable",
+    "unavailableDescription": "No places were found. Please verify places.json."
+  },
+  "transport": {
+    "title": "Transport",
+    "subtitle": "Trains, buses & transfers",
+    "daySection": "Day {{day}}",
+    "keyStations": "Key Stations"
+  },
+  "budget": {
+    "title": "Budget",
+    "subtitle": "Track your trip spending",
+    "expenses": "Expenses",
+    "addExpense": "Add expense",
+    "editExpense": "Edit expense",
+    "deleteExpense": "Delete expense",
+    "saveExpense": "Save",
+    "cancel": "Cancel",
+    "confirmDelete": "Delete",
+    "closeDialog": "Close dialog",
+    "deleteConfirm": "Delete \"{{title}}\"? This cannot be undone.",
+    "syncErrorTitle": "Cloud sync issue",
+    "dailySpending": "Daily Spending",
+    "categorySummary": "Category Summary",
+    "tripWallet": "Trip Wallet",
+    "totalBudget": "Total",
+    "spent": "Spent",
+    "remaining": "Remaining",
+    "spentOf": "Spent {{currency}} {{spent}} of {{total}}",
+    "searchPlaceholder": "Search expenses…",
+    "filters": {
+      "allDates": "All dates",
+      "dayOption": "Day {{day}}"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Dinner, train, souvenir",
+      "merchant": "Merchant",
+      "merchantPlaceholder": "Shop or place",
+      "category": "Category",
+      "amount": "Amount",
+      "currency": "Currency",
+      "date": "Date",
+      "paymentMethod": "Payment method",
+      "receipt": "Receipt photo",
+      "note": "Note (optional)",
+      "notePlaceholder": "Add a short note"
+    },
+    "paymentMethods": {
+      "cash": "Cash",
+      "card": "Card",
+      "icoca": "ICOCA",
+      "mobile": "Mobile pay"
+    },
+    "categories": {
+      "transport": "Transport",
+      "shopping": "Shopping",
+      "attraction": "Attraction",
+      "hotel": "Hotel",
+      "food": "Food",
+      "other": "Other"
+    },
+    "receipt": {
+      "takePhoto": "Take Photo",
+      "choosePhoto": "Choose Photo",
+      "remove": "Remove",
+      "attached": "Receipt attached",
+      "synced": "Saved to cloud storage",
+      "local": "Saved locally for offline use"
+    },
+    "errors": {
+      "titleRequired": "Enter a title for this expense.",
+      "amountRequired": "Enter an amount greater than zero.",
+      "dateRequired": "Select a date for this expense.",
+      "receiptInvalidType": "Choose an image file for the receipt.",
+      "receiptUploadFailed": "Receipt upload failed. The expense can still be saved."
+    }
+  },
+  "checklist": {
+    "title": "Checklist",
+    "subtitle": "Packing & pre-trip to-dos",
+    "packedProgress": "{{done}} of {{total}} packed",
+    "allSet": "You're all set for the trip!",
+    "itemsLeft": "{{count}} items left to prepare",
+    "completed": "{{count}} completed",
+    "remaining": "{{count}} remaining",
+    "addItem": "Add item",
+    "editItem": "Edit item",
+    "deleteItem": "Delete item",
+    "deleteConfirm": "Remove \"{{label}}\" from your checklist?",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel",
+    "saveItem": "Save",
+    "closeDialog": "Close",
+    "syncErrorTitle": "Cloud sync issue",
+    "fields": {
+      "label": "Item",
+      "labelPlaceholder": "What do you need to pack or do?",
+      "category": "Category"
+    },
+    "errors": {
+      "labelRequired": "Enter an item name."
+    }
+  },
+  "weather": {
+    "title": "Weather",
+    "subtitle": "Osaka · Kyoto · Kobe by day",
+    "rainAlert": "Rain alert",
+    "outfit": "Outfit",
+    "hourlyForecast": "Hourly Forecast",
+    "sixDayForecast": "6-Day Forecast",
+    "humidity": "{{percent}}% humidity",
+    "rainChance": "{{percent}}% rain",
+    "lowTemp": "Low {{temp}}°"
+  },
+  "currency": {
+    "title": "Currency",
+    "subtitle": "THB ⇄ JPY converter",
+    "exchangeRate": "Exchange Rate",
+    "rateLine": "1 {{base}} = {{rate}} {{quote}}",
+    "rateUpdated": "Updated {{date}} · local JSON rate",
+    "convert": "Convert",
+    "quickAmounts": "Quick Amounts",
+    "offlineNotice": "This rate is stored in local JSON for offline-first trip planning."
+  },
+  "memories": {
+    "title": "Memories",
+    "subtitle": "{{journaled}} of {{total}} days journaled",
+    "photoGallery": "Photo Gallery",
+    "photoCount": "{{count}} photos",
+    "tripJournal": "Trip Journal",
+    "journalPlaceholder": "Write about your day…",
+    "memoryCount": "{{count}} memories",
+    "addMemory": "Add memory",
+    "editMemory": "Edit memory",
+    "deleteMemory": "Delete memory",
+    "deleteConfirm": "Remove \"{{title}}\" from your journal?",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel",
+    "saveMemory": "Save",
+    "closeDialog": "Close",
+    "noNoteYet": "No note yet",
+    "photoPlaceholder": "Photo upload coming soon — placeholders only for now.",
+    "syncErrorTitle": "Cloud sync issue",
+    "photos": {
+      "addPhotos": "Add photos",
+      "count": "{{count}} / {{max}} photos",
+      "emptyHint": "Tap to add trip photos for this memory",
+      "manageOnCard": "Add, reorder, and delete photos directly on each journal card.",
+      "deletePhoto": "Delete photo",
+      "deleteConfirm": "Remove this photo from your journal?",
+      "retry": "Retry",
+      "closePreview": "Close preview",
+      "previousPhoto": "Previous photo",
+      "nextPhoto": "Next photo",
+      "errors": {
+        "fileTooLarge": "Each photo must be 5 MB or less before upload.",
+        "invalidType": "Choose an image file to upload.",
+        "limitReached": "You can add up to 10 photos per memory.",
+        "uploadFailed": "Upload failed. Try again.",
+        "offlinePending": "Saved offline. Upload will retry when you're back online."
+      }
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "What happened today?",
+      "day": "Trip day",
+      "date": "Date",
+      "location": "Location",
+      "locationPlaceholder": "Where were you?",
+      "note": "Note",
+      "tags": "Tags",
+      "tagsPlaceholder": "food, sunset, family",
+      "photos": "Photos"
+    },
+    "errors": {
+      "titleRequired": "Enter a title for this memory.",
+      "dateRequired": "Select a date for this memory."
+    }
+  },
+  "search": {
+    "title": "Search",
+    "subtitle": "{{count}} trip items indexed",
+    "placeholder": "Search itinerary, places, food, hotel…"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "subtitle": "{{count}} saved places & restaurants",
+    "placesSection": "Places",
+    "restaurantsSection": "Restaurants"
+  },
+  "more": {
+    "title": "More",
+    "subtitle": "Settings & everything else",
+    "explore": "Explore",
+    "madeWith": "Made with {{heart}} for {{companions}}"
+  },
+  "maps": {
+    "directions": "Directions",
+    "appleMaps": "Apple Maps",
+    "googleMaps": "Google Maps"
+  },
+  "errors": {
+    "dataTitle": "Couldn't load data",
+    "dataDescription": "Something went wrong while loading trip data. Check your connection and try again.",
+    "routeTitle": "Something went wrong",
+    "routeDescription": "The page failed to load."
+  },
+  "sync": {
+    "statusLabel": "Cloud sync",
+    "statusSynced": "Synced",
+    "statusOffline": "Offline mode",
+    "statusError": "Sync error",
+    "unavailable": "Cloud Sync unavailable. Using offline data.",
+    "errorTitle": "Couldn't sync your data",
+    "loadFailed": "Cloud sync failed. Your saved local data is still available.",
+    "notConfigured": "Cloud sync is unavailable because Firebase is not configured.",
+    "offlineHint": "Changes are saved on this device and will sync when you're back online."
+  },
+  "empty": {
+    "favorites": {
+      "title": "No favorites yet",
+      "description": "Tap Favorite on Places or Food pages to save spots for quick access here."
+    },
+    "search": {
+      "title": "Search your trip",
+      "description": "Find itinerary activities, places, restaurants, hotel, flights, and transport."
+    },
+    "searchNoResults": {
+      "title": "No results found",
+      "description": "Try another keyword or switch the category filter."
+    },
+    "memories": {
+      "title": "No memories yet",
+      "description": "Tap + to add your first trip memory with notes, tags, and photo placeholders."
+    },
+    "memoriesPhotos": {
+      "title": "No uploaded photos yet",
+      "description": "Add photos to a journal entry and they will appear here."
+    },
+    "budget": {
+      "title": "No expenses yet",
+      "description": "Tap + to add your first expense and track trip spending."
+    },
+    "budgetNoResults": {
+      "title": "No matching expenses",
+      "description": "Try a different search term or clear your filters."
+    },
+    "checklist": {
+      "title": "Nothing on your list",
+      "description": "Add packing and pre-trip tasks to stay organized before you go."
+    },
+    "food": {
+      "title": "No places found",
+      "description": "Try a different category to see more restaurants and cafes."
+    },
+    "places": {
+      "title": "No places to show",
+      "description": "Saved attractions and landmarks will appear here."
+    },
+    "itinerary": {
+      "title": "Itinerary unavailable",
+      "description": "No itinerary days were found. Please verify your local itinerary data."
+    },
+    "map": {
+      "title": "Map data unavailable",
+      "description": "No map-ready itinerary or places data was found. Please verify your local JSON data."
+    }
+  },
+  "searchCategories": {
+    "itinerary": "Itinerary",
+    "places": "Places",
+    "restaurants": "Restaurants",
+    "hotel": "Hotel",
+    "flights": "Flights",
+    "transport": "Transport"
+  },
+  "checklistCategories": {
+    "documents": "Documents",
+    "money": "Money",
+    "packing": "Packing",
+    "electronics": "Electronics",
+    "health": "Health"
+  },
+  "weatherConditions": {
+    "sunny": "Sunny",
+    "partly-cloudy": "Partly Cloudy",
+    "cloudy": "Cloudy",
+    "rainy": "Rainy",
+    "stormy": "Stormy",
+    "clear-night": "Clear"
+  },
+  "weatherAlerts": {
+    "high": "High rain chance. Keep an umbrella or light rain jacket close.",
+    "medium": "Possible showers. Pack a compact umbrella just in case.",
+    "low": "Low rain chance. No rain gear needed for most of the day."
+  },
+  "weatherOutfits": {
+    "hot": "Light breathable clothes, comfortable walking shoes, sunscreen, and a small towel.",
+    "rainy": "Quick-dry layers, waterproof shoes if possible, and a compact umbrella.",
+    "cool": "A light jacket or cardigan for morning and evening.",
+    "default": "Comfortable layers and walking shoes for a full travel day."
+  },
+  "filters": {
+    "food": {
+      "all": "All",
+      "restaurant": "Restaurants",
+      "cafe": "Cafes",
+      "dessert": "Dessert",
+      "street-food": "Street Food"
+    },
+    "map": {
+      "all": "All",
+      "attractions": "Attractions",
+      "food": "Food",
+      "transit": "Transit"
+    }
+  },
+  "auth": {
+    "title": "Welcome back",
+    "subtitle": "Sign in with Google to access your trip",
+    "continueWithGoogle": "Continue with Google",
+    "signingIn": "Signing in…",
+    "error": "Sign-in failed. Please try again.",
+    "notConfigured": "Firebase is not configured. Add VITE_FIREBASE_* keys to your environment.",
+    "notAllowed": "This account is not allowed to access this trip.",
+    "emailFallback": "No email on file"
+  },
+  "settings": {
+    "preferences": "Preferences",
+    "appearance": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto",
+    "language": "Language",
+    "english": "English",
+    "thai": "Thai",
+    "offlineMode": "Offline Mode",
+    "notifications": "Notifications",
+    "about": "About",
+    "appVersion": "App Version",
+    "helpSupport": "Help & Support",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "rateApp": "Rate this App",
+    "account": "Account",
+    "signOut": "Sign Out"
+  },
+  "emergency": {
+    "title": "Emergency",
+    "police": "Police",
+    "fireAmbulance": "Fire / Ambulance",
+    "visitorHotline": "Japan Visitor Hotline"
+  },
+  "translator": {
+    "title": "AI Translator",
+    "subtitle": "Translate phrases on the go",
+    "sourceLanguage": "From",
+    "targetLanguage": "To",
+    "swapLanguages": "Swap languages",
+    "inputLabel": "Enter text",
+    "inputPlaceholder": "Type a phrase to translate…",
+    "outputLabel": "Translation",
+    "outputEmpty": "Your translation will appear here.",
+    "translate": "Translate",
+    "translating": "Translating…",
+    "copy": "Copy translation",
+    "savePhrase": "Save to phrasebook",
+    "saved": "Saved to phrasebook",
+    "favorite": "Favorite phrase",
+    "unfavorite": "Remove favorite",
+    "mockHint": "Offline mock translation — try “hello” or “thank you”.",
+    "emptyTitle": "Start translating",
+    "emptyDescription": "Pick languages, type a phrase, and tap Translate. Saved phrases sync across devices.",
+    "phrasebookTitle": "Phrasebook",
+    "phrasebookEmptyTitle": "No saved phrases yet",
+    "phrasebookEmptyDescription": "Save translations you want to reuse during your trip.",
+    "historyTitle": "History",
+    "historyEmptyTitle": "No history yet",
+    "historyEmptyDescription": "Recent translations will show up here automatically.",
+    "clearHistory": "Clear history",
+    "syncErrorTitle": "Phrasebook sync issue",
+    "tabs": {
+      "translate": "Translate",
+      "phrasebook": "Phrasebook",
+      "history": "History"
+    },
+    "languages": {
+      "th": "Thai",
+      "en": "English",
+      "ja": "Japanese",
+      "my": "Myanmar",
+      "zh": "Chinese",
+      "ko": "Korean"
+    },
+    "errors": {
+      "emptyInput": "Enter some text to translate.",
+      "failed": "Translation failed. Please try again."
+    },
+    "usingMock": "Offline translation used — results may be limited."
+  },
+  "explore": {
+    "search": "Search",
+    "favorites": "Favorites",
+    "food": "Food",
+    "flights": "Flights",
+    "hotel": "Hotel",
+    "places": "Places",
+    "transport": "Transport",
+    "checklist": "Checklist",
+    "weather": "Weather",
+    "currency": "Currency",
+    "translator": "AI Translator",
+    "memories": "Memories"
+  },
+  "quickActions": {
+    "search": "Search",
+    "favorites": "Favorites",
+    "map": "Map",
+    "flights": "Flights",
+    "hotel": "Hotel",
+    "checklist": "Checklist",
+    "currency": "Currency",
+    "transport": "Transport",
+    "weather": "Weather",
+    "memories": "Memories"
+  }
+}

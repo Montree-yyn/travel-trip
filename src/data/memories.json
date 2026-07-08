@@ -1,0 +1,62 @@
+[
+  {
+    "id": "mem-1",
+    "day": 1,
+    "date": "2026-07-13",
+    "title": "Landed in Osaka!",
+    "note": "First steps in Japan — the castle grounds were so green and the sky building view at sunset was unreal.",
+    "location": "Osaka Castle",
+    "photos": [
+      { "id": "p1", "photoSeed": "osaka-castle" },
+      { "id": "p2", "photoSeed": "umeda-sky-building" },
+      { "id": "p3", "photoSeed": "namba-yasaka-shrine" }
+    ]
+  },
+  {
+    "id": "mem-2",
+    "day": 2,
+    "date": "2026-07-14",
+    "title": "USJ was worth every step",
+    "note": "Super Nintendo World felt like walking into a game. Legs are dead but so happy.",
+    "location": "Universal Studios Japan",
+    "photos": [
+      { "id": "p4", "photoSeed": "universal-studios" },
+      { "id": "p5", "photoSeed": "super-nintendo-world" }
+    ]
+  },
+  {
+    "id": "mem-3",
+    "day": 3,
+    "date": "2026-07-15",
+    "title": "Bamboo grove & matcha everything",
+    "note": "Arashiyama in the morning light was so peaceful. Uji matcha soft serve might be the best thing we've eaten.",
+    "location": "Arashiyama, Kyoto",
+    "photos": [
+      { "id": "p6", "photoSeed": "arashiyama-bamboo-grove" },
+      { "id": "p7", "photoSeed": "byodo-in-temple" },
+      { "id": "p8", "photoSeed": "ujikoen" },
+      { "id": "p9", "photoSeed": "gion-district" }
+    ]
+  },
+  {
+    "id": "mem-4",
+    "day": 4,
+    "date": "2026-07-16",
+    "title": "Boathouses of Ine",
+    "note": "Ine felt like a hidden postcard town. The bay cruise breeze was the perfect break from the heat.",
+    "location": "Ine Bay",
+    "photos": [{ "id": "p10", "photoSeed": "amanohashidate" }]
+  },
+  {
+    "id": "mem-5",
+    "day": 5,
+    "date": "2026-07-17",
+    "title": "Kobe beef & harbor sunset",
+    "note": "Splurged on Kobe beef and it melted in our mouths. Watched the sunset over Harborland — a top trip moment.",
+    "location": "Kobe Harborland",
+    "photos": [
+      { "id": "p11", "photoSeed": "kobe-harborland" },
+      { "id": "p12", "photoSeed": "steak-land-kobe" }
+    ]
+  }
+]

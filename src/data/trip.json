@@ -1,0 +1,20 @@
+{
+  "id": "osaka-kyoto-ine-kobe-2026",
+  "tripName": "Osaka · Kyoto · Ine · Kobe",
+  "subtitle": "6 days, 5 nights with Cake & Noonmim",
+  "startDate": "2026-07-13",
+  "endDate": "2026-07-18",
+  "travelers": ["Cake", "Noonmim"],
+  "currency": "THB",
+  "totalBudget": 67000,
+  "destination": "Kansai, Japan",
+  "accommodation": "Smile Hotel Osaka Yotsubashi",
+  "mainTransport": ["JR / Nankai Train", "Metro / Bus", "Boat"],
+  "tips": [
+    "Book flights & hotel in advance",
+    "Reserve activity tickets ahead (USJ)",
+    "Carry Japanese yen cash — not all places accept cards",
+    "Allow 30–45 min buffer between train transfers",
+    "Pack personal medicine, allergy & pain relief"
+  ]
+}

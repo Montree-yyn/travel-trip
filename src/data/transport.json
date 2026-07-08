@@ -1,0 +1,94 @@
+{
+  "icocaTip": "Load an ICOCA IC card for tap-to-ride access on nearly all trains, subways, and buses.",
+  "routes": [
+    {
+      "id": "route-1",
+      "day": 1,
+      "from": "Kansai Airport (KIX)",
+      "to": "Namba Station",
+      "method": "train",
+      "line": "Nankai Express",
+      "duration": "~45 min",
+      "cost": "¥1,490",
+      "departureTime": "10:30",
+      "arrivalTime": "11:15"
+    },
+    {
+      "id": "route-2",
+      "day": 3,
+      "from": "Osaka Station",
+      "to": "Kyoto Station",
+      "method": "train",
+      "line": "JR Special Rapid",
+      "duration": "~30 min",
+      "cost": "¥580",
+      "departureTime": "07:30",
+      "arrivalTime": "08:00"
+    },
+    {
+      "id": "route-3",
+      "day": 3,
+      "from": "Kyoto Station",
+      "to": "Uji Station",
+      "method": "train",
+      "line": "JR Nara Line",
+      "duration": "~25 min",
+      "cost": "¥240",
+      "departureTime": "14:30",
+      "arrivalTime": "14:55"
+    },
+    {
+      "id": "route-4",
+      "day": 4,
+      "from": "Kyoto Station",
+      "to": "Amanohashidate",
+      "method": "train",
+      "line": "JR + Bus",
+      "duration": "~2 hr 15 min",
+      "cost": "¥3,200",
+      "departureTime": "07:30",
+      "arrivalTime": "09:45"
+    },
+    {
+      "id": "route-5",
+      "day": 4,
+      "from": "Amanohashidate",
+      "to": "Ine Bay",
+      "method": "bus",
+      "line": "Tango Kairiku Bus",
+      "duration": "~30 min",
+      "cost": "¥700"
+    },
+    {
+      "id": "route-6",
+      "day": 5,
+      "from": "Osaka",
+      "to": "Kobe",
+      "method": "train",
+      "line": "JR / Hanshin",
+      "duration": "~40 min",
+      "cost": "¥410",
+      "departureTime": "12:00",
+      "arrivalTime": "12:40"
+    },
+    {
+      "id": "route-7",
+      "day": 6,
+      "from": "Namba Station",
+      "to": "Kansai Airport (KIX)",
+      "method": "train",
+      "line": "Nankai / JR Express",
+      "duration": "~40 min",
+      "cost": "¥930",
+      "departureTime": "14:00",
+      "arrivalTime": "14:40"
+    }
+  ],
+  "stations": [
+    { "id": "st-1", "name": "Namba Station", "city": "Osaka", "lines": ["Nankai", "Midosuji Subway", "Osaka Metro"] },
+    { "id": "st-2", "name": "Osaka Station", "city": "Osaka", "lines": ["JR Kyoto Line", "JR Osaka Loop Line"] },
+    { "id": "st-3", "name": "Kyoto Station", "city": "Kyoto", "lines": ["JR", "Kintetsu", "Kyoto Subway"] },
+    { "id": "st-4", "name": "Uji Station", "city": "Uji", "lines": ["JR Nara Line"] },
+    { "id": "st-5", "name": "Sannomiya Station", "city": "Kobe", "lines": ["JR", "Hanshin", "Hankyu", "Port Liner"] }
+  ]
+}

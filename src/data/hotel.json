@@ -1,0 +1,26 @@
+{
+  "name": "Smile Hotel Osaka Yotsubashi",
+  "address": "1 Chome-4-12 Shinmachi, Nishi Ward, Osaka City, Osaka Prefecture, 550-0013, Japan",
+  "phone": "+81-6-65569444",
+  "checkIn": {
+    "date": "2026-07-13",
+    "time": "after 14:00"
+  },
+  "checkOut": {
+    "date": "2026-07-18",
+    "time": "before 11:00"
+  },
+  "roomType": "Double Room Non Smoking",
+  "amenities": [
+    "Free Wi-Fi",
+    "Air conditioning",
+    "Private bathroom",
+    "TV",
+    "Hair dryer",
+    "Toiletries"
+  ],
+  "confirmationNo": "T_2491310624",
+  "bookingNo": "1622928340224735",
+  "guestName": "Rossukon Theppha",
+  "notes": "5 nights"
+}

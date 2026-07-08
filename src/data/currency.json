@@ -1,0 +1,10 @@
+{
+  "exchangeRate": {
+    "base": "THB",
+    "quote": "JPY",
+    "rate": 4.26,
+    "updatedAt": "2026-07-03T09:00:00+07:00",
+    "changePercent": 0.32
+  },
+  "quickAmounts": [100, 500, 1000, 5000]
+}

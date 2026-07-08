@@ -1,0 +1,343 @@
+@import "tailwindcss";
+
+/* Enables the `dark:` variant to be toggled via a `.dark` class instead of
+   only following `prefers-color-scheme`. Controlled by <ThemeProvider>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  --bg: #fbf8f6;
+  --bg-elevated: #ffffff;
+
+  --surface: 255 255 255;
+  --surface-opacity: 0.6;
+  --surface-strong-opacity: 0.8;
+
+  --border: 255 255 255;
+  --border-opacity: 0.7;
+
+  --highlight: 255 255 255;
+  --highlight-opacity: 0.75;
+  --glass-brightness: 1.04;
+
+  --ink: #2b2024;
+  --ink-muted: #8c7981;
+  --ink-faint: #c2b3b8;
+
+  --accent: #f26c93;
+  --accent-strong: #d94f78;
+  --accent-soft: #fbe6ed;
+  --accent-contrast: #ffffff;
+
+  --shadow-tint: 217 79 120;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --bg: #100b0d;
+  --bg-elevated: #1c1519;
+
+  --surface: 44 32 37;
+  --surface-opacity: 0.6;
+  --surface-strong-opacity: 0.78;
+
+  --border: 255 255 255;
+  --border-opacity: 0.1;
+
+  --highlight: 255 255 255;
+  --highlight-opacity: 0.07;
+  --glass-brightness: 1;
+
+  --ink: #f7edf0;
+  --ink-muted: #c2a8b1;
+  --ink-faint: #85707a;
+
+  --accent: #ff93b6;
+  --accent-strong: #ff6b9d;
+  --accent-soft: #3d232c;
+  --accent-contrast: #1c1116;
+
+  --shadow-tint: 0 0 0;
+}
+
+/* Dynamic per-page accent tones — applied via <PageAccent tone="..."> to keep
+   each page's icon badges, chips and highlights feeling contextual while the
+   core brand sakura pink stays the default. */
+.accent-blue {
+  --accent: #4c86e0;
+  --accent-strong: #2f63c2;
+  --accent-soft: #e4eefc;
+  --accent-contrast: #ffffff;
+  --shadow-tint: 47 99 194;
+}
+.dark .accent-blue {
+  --accent: #86aef2;
+  --accent-strong: #5c8ce8;
+  --accent-soft: #1a2842;
+  --accent-contrast: #0d1420;
+  --shadow-tint: 0 0 0;
+}
+
+.accent-sky {
+  --accent: #3fb6e8;
+  --accent-strong: #1e93c7;
+  --accent-soft: #e1f5fc;
+  --accent-contrast: #ffffff;
+  --shadow-tint: 30 147 199;
+}
+.dark .accent-sky {
+  --accent: #7ed4f5;
+  --accent-strong: #3fb6e8;
+  --accent-soft: #123240;
+  --accent-contrast: #0d1a20;
+  --shadow-tint: 0 0 0;
+}
+
+.accent-teal {
+  --accent: #2bc9b0;
+  --accent-strong: #12a08a;
+  --accent-soft: #dff9f3;
+  --accent-contrast: #ffffff;
+  --shadow-tint: 18 160 138;
+}
+.dark .accent-teal {
+  --accent: #6ee4cd;
+  --accent-strong: #2bc9b0;
+  --accent-soft: #0f2d28;
+  --accent-contrast: #08201b;
+  --shadow-tint: 0 0 0;
+}
+
+.accent-green {
+  --accent: #6fbf8b;
+  --accent-strong: #3f9e68;
+  --accent-soft: #e5f5ea;
+  --accent-contrast: #ffffff;
+  --shadow-tint: 63 158 104;
+}
+.dark .accent-green {
+  --accent: #97e0b4;
+  --accent-strong: #5bc384;
+  --accent-soft: #16301f;
+  --accent-contrast: #0d1f14;
+  --shadow-tint: 0 0 0;
+}
+
+.accent-amber {
+  --accent: #f2a254;
+  --accent-strong: #db8630;
+  --accent-soft: #fdecda;
+  --accent-contrast: #3a2408;
+  --shadow-tint: 219 134 48;
+}
+.dark .accent-amber {
+  --accent: #ffc078;
+  --accent-strong: #f2a254;
+  --accent-soft: #3a2a14;
+  --accent-contrast: #241505;
+  --shadow-tint: 0 0 0;
+}
+
+.accent-indigo {
+  --accent: #7c8ce0;
+  --accent-strong: #5568c9;
+  --accent-soft: #eaecfb;
+  --accent-contrast: #ffffff;
+  --shadow-tint: 85 104 201;
+}
+.dark .accent-indigo {
+  --accent: #aab5f2;
+  --accent-strong: #7c8ce0;
+  --accent-soft: #20233f;
+  --accent-contrast: #12142a;
+  --shadow-tint: 0 0 0;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+
+  --font-sans: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    "Inter", "Helvetica Neue", system-ui, sans-serif;
+
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-4xl: 2.5rem;
+  --radius-pill: 999px;
+
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-rise-in: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(1.05);
+  }
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+    overscroll-behavior-y: none;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+}
+
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Liquid Glass surfaces — frosted, translucent, soft sakura-tinted shadow.
+     A subtle inset top highlight (in .glass-shadow) simulates the specular
+     edge light real frosted glass catches from above. */
+  .glass-surface {
+    background-color: rgb(var(--surface) / var(--surface-opacity));
+    backdrop-filter: blur(32px) saturate(180%) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(32px) saturate(180%) brightness(var(--glass-brightness));
+    border: 1px solid rgb(var(--border) / var(--border-opacity));
+  }
+
+  .glass-surface-strong {
+    background-color: rgb(var(--surface) / var(--surface-strong-opacity));
+    backdrop-filter: blur(40px) saturate(200%) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(var(--glass-brightness));
+    border: 1px solid rgb(var(--border) / var(--border-opacity));
+  }
+
+  .glass-shadow {
+    box-shadow:
+      inset 0 1px 0 rgb(var(--highlight) / var(--highlight-opacity)),
+      0 1px 1px rgb(var(--shadow-tint) / 0.04),
+      0 8px 24px -8px rgb(var(--shadow-tint) / 0.16),
+      0 24px 48px -24px rgb(var(--shadow-tint) / 0.22);
+  }
+
+  /* Elevated tier — hero cards, floating sheets, the bottom nav. */
+  .glass-shadow-lg {
+    box-shadow:
+      inset 0 1px 0 rgb(var(--highlight) / var(--highlight-opacity)),
+      0 2px 2px rgb(var(--shadow-tint) / 0.05),
+      0 16px 32px -12px rgb(var(--shadow-tint) / 0.22),
+      0 32px 64px -28px rgb(var(--shadow-tint) / 0.3);
+  }
+
+  /* A soft 1px light hairline along the top edge — for surfaces sitting on
+     solid gradients (e.g. hero cards) where the glass border reads too flat. */
+  .hairline-top {
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+
+  .glow-accent {
+    box-shadow: 0 14px 32px -10px rgb(var(--shadow-tint) / 0.5);
+  }
+
+  /* Elevated shadow + accent glow combined — for solid-gradient hero cards
+     (Wallet, etc.) that need both depth and a tinted "floating" glow. */
+  .glass-shadow-glow {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      0 16px 32px -14px rgb(var(--shadow-tint) / 0.55),
+      0 32px 56px -24px rgb(var(--shadow-tint) / 0.45);
+  }
+
+  /* Compact version of the above — for small solid-gradient pills (active nav
+     item, active day/segment/filter chip) that need a sheen + glow together. */
+  .pill-glow {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.35),
+      0 8px 20px -8px rgb(var(--shadow-tint) / 0.55);
+  }
+
+  /* Skeleton loading shimmer — used by <Skeleton />. */
+  .skeleton-shimmer {
+    background-color: rgb(var(--shadow-tint) / 0.08);
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      rgb(var(--shadow-tint) / 0.14) 50%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+
+  .animate-float {
+    animation: var(--animate-float);
+  }
+}
