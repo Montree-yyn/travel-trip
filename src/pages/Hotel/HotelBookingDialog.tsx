@@ -143,9 +143,20 @@ export function HotelBookingDialog({
                   <input value={draft.name} onChange={(event) => update({ name: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                 </label>
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-xs font-semibold text-ink-muted">Address</span>
+                  <span className="text-xs font-semibold text-ink-muted">Hotel address</span>
                   <input value={draft.address} onChange={(event) => update({ address: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                 </label>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Room type</span>
+                    <input value={draft.roomType} onChange={(event) => update({ roomType: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Guest</span>
+                    <input value={draft.guestName} onChange={(event) => update({ guestName: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <label className="flex flex-col gap-1.5">
@@ -154,7 +165,7 @@ export function HotelBookingDialog({
                   </label>
                   <label className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-ink-muted">Check-in time</span>
-                    <input type="time" value={draft.checkIn.time} onChange={(event) => updateCheckIn("time", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                    <input value={draft.checkIn.time} onChange={(event) => updateCheckIn("time", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                   </label>
                 </div>
 
@@ -165,13 +176,33 @@ export function HotelBookingDialog({
                   </label>
                   <label className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-ink-muted">Check-out time</span>
-                    <input type="time" value={draft.checkOut.time} onChange={(event) => updateCheckOut("time", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                    <input value={draft.checkOut.time} onChange={(event) => updateCheckOut("time", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                   </label>
                 </div>
 
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-xs font-semibold text-ink-muted">Booking reference</span>
+                  <span className="text-xs font-semibold text-ink-muted">Number of nights</span>
+                  <input inputMode="numeric" value={draft.numberOfNights ?? ""} onChange={(event) => update({ numberOfNights: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-xs font-semibold text-ink-muted">Booking number</span>
                   <input value={draft.bookingNo} onChange={(event) => update({ bookingNo: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-xs font-semibold text-ink-muted">Confirmation number</span>
+                  <input value={draft.confirmationNo} onChange={(event) => update({ confirmationNo: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-xs font-semibold text-ink-muted">Phone number</span>
+                  <input value={draft.phone} onChange={(event) => update({ phone: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-xs font-semibold text-ink-muted">Google Maps URL</span>
+                  <input type="url" value={draft.googleMapsUrl ?? ""} onChange={(event) => update({ googleMapsUrl: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                 </label>
 
                 <label className="flex flex-col gap-1.5">

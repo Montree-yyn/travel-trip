@@ -15,6 +15,7 @@ export interface FlightSegment {
   label: string;
   airline: string;
   flightNumber: string;
+  seat?: string;
   bookingReference?: string;
   notes?: string;
   pdfFileName?: string;

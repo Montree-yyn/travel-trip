@@ -41,6 +41,7 @@ function createEmptyFlight(direction: FlightDirection, index: number): FlightSeg
     label: direction === "outbound" ? "Outbound" : "Return",
     airline: "",
     flightNumber: "",
+    seat: "",
     bookingReference: "",
     notes: "",
     departure: { date: "", time: "09:00", airport: "", airportCode: "", terminal: "", city: "" },
@@ -54,8 +55,13 @@ function valueOrEmpty(value?: string) {
   return value?.trim() || "";
 }
 
-function valueOrNotProvided(value?: string) {
-  return valueOrEmpty(value) || "Not provided";
+function stripFakePlaceholder(value?: string) {
+  const cleaned = valueOrEmpty(value);
+  return /update from flight pdf/i.test(cleaned) ? "" : cleaned;
+}
+
+function valueOrDash(value?: string) {
+  return stripFakePlaceholder(value) || "-";
 }
 
 function routeCode(value?: string) {
@@ -63,8 +69,14 @@ function routeCode(value?: string) {
 }
 
 function getFlightSeat(flight: FlightSegment) {
-  const maybeWithSeat = flight as FlightSegment & { seat?: string; seats?: string };
+  const maybeWithSeat = flight as FlightSegment & { seats?: string };
   return maybeWithSeat.seat || maybeWithSeat.seats || "";
+}
+
+function routeSubtitle(flight: FlightSegment) {
+  const departureCity = valueOrEmpty(flight.departure.city);
+  const arrivalCity = valueOrEmpty(flight.arrival.city);
+  return departureCity && arrivalCity ? `${departureCity} to ${arrivalCity}` : "";
 }
 
 function isImageFile(fileName: string, url: string) {
@@ -96,7 +108,7 @@ function DetailTile({
         {label}
       </p>
       <p className="mt-1 break-words text-base font-semibold leading-snug text-neutral-950">
-        {valueOrNotProvided(value)}
+        {valueOrDash(value)}
       </p>
     </div>
   );
@@ -251,6 +263,7 @@ function FlightSegmentCard({
 }) {
   const fromCode = routeCode(flight.departure.airportCode);
   const toCode = routeCode(flight.arrival.airportCode);
+  const subtitle = routeSubtitle(flight);
 
   return (
     <motion.article variants={riseIn}>
@@ -265,10 +278,11 @@ function FlightSegmentCard({
               <ArrowRight size={23} className="shrink-0 text-neutral-400" />
               <span>{toCode}</span>
             </div>
-            <p className="mt-2 line-clamp-2 text-sm font-medium leading-relaxed text-neutral-500">
-              {[flight.departure.city, flight.arrival.city].filter(Boolean).join(" to ") ||
-                "Route details not provided"}
-            </p>
+            {subtitle && (
+              <p className="mt-2 line-clamp-2 text-sm font-medium leading-relaxed text-neutral-500">
+                {subtitle}
+              </p>
+            )}
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <button
@@ -296,10 +310,10 @@ function FlightSegmentCard({
               Depart
             </p>
             <p className="mt-1 text-3xl font-bold leading-none text-neutral-950">
-              {valueOrNotProvided(flight.departure.time)}
+              {valueOrDash(flight.departure.time)}
             </p>
             <p className="mt-2 truncate text-xs font-medium text-neutral-500">
-              {valueOrNotProvided(flight.departure.terminal)}
+              {valueOrDash(flight.departure.terminal)}
             </p>
           </div>
           <ArrowRight size={20} className="text-neutral-400" />
@@ -308,10 +322,10 @@ function FlightSegmentCard({
               Arrive
             </p>
             <p className="mt-1 text-3xl font-bold leading-none text-neutral-950">
-              {valueOrNotProvided(flight.arrival.time)}
+              {valueOrDash(flight.arrival.time)}
             </p>
             <p className="mt-2 truncate text-xs font-medium text-neutral-500">
-              {valueOrNotProvided(flight.arrival.terminal)}
+              {valueOrDash(flight.arrival.terminal)}
             </p>
           </div>
         </div>
@@ -348,7 +362,7 @@ export function FlightsPage() {
     : "";
 
   const formatDate = (date: string) => {
-    if (!date || date === "TBD") return "Date not provided";
+    if (!date || date === "TBD") return "-";
     const nextDate = new Date(`${date}T00:00:00`);
     return Number.isNaN(nextDate.getTime()) ? date : formatDateTime.format(nextDate);
   };
@@ -522,11 +536,11 @@ export function FlightsPage() {
           <motion.div variants={riseIn} className="mx-5 grid grid-cols-2 gap-3">
             <GlassCard padding="sm" className="rounded-[1.5rem] text-sm">
               <p className="text-xs text-ink-muted">{t("flights.checkedBaggage")}</p>
-              <p className="mt-1 font-semibold text-ink">{flightsData.baggage.checked}</p>
+              <p className="mt-1 font-semibold text-ink">{valueOrDash(flightsData.baggage.checked)}</p>
             </GlassCard>
             <GlassCard padding="sm" className="rounded-[1.5rem] text-sm">
               <p className="text-xs text-ink-muted">{t("flights.cabinBaggage")}</p>
-              <p className="mt-1 font-semibold text-ink">{flightsData.baggage.cabin}</p>
+              <p className="mt-1 font-semibold text-ink">{valueOrDash(flightsData.baggage.cabin)}</p>
             </GlassCard>
           </motion.div>
 

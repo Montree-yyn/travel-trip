@@ -18,7 +18,6 @@ import { riseIn, scaleIn, staggerContainer } from "@/design-system/motion";
 import { usePersistentBookings } from "@/hooks/usePersistentBookings";
 import { useLocaleDateTimeFormatter, useTranslation } from "@/i18n";
 import { deleteBookingPdf, getBookingPdfUrl, uploadBookingPdf } from "@/lib/bookingPersistence";
-import { buildGoogleMapsUrl, createMapTarget } from "@/lib/maps";
 import { cn } from "@/lib/utils";
 import type { HotelData } from "@/types/hotel";
 
@@ -45,6 +44,8 @@ function createEmptyHotel(): HotelData {
     confirmationNo: "",
     bookingNo: "",
     guestName: "",
+    numberOfNights: "",
+    googleMapsUrl: "",
     notes: "",
   };
 }
@@ -53,8 +54,8 @@ function valueOrEmpty(value?: string) {
   return value?.trim() || "";
 }
 
-function valueOrNotProvided(value?: string) {
-  return valueOrEmpty(value) || "Not provided";
+function valueOrDash(value?: string) {
+  return valueOrEmpty(value) || "-";
 }
 
 function isImageFile(fileName: string, url: string) {
@@ -115,7 +116,7 @@ function InfoTile({
         {label}
       </p>
       <p className="mt-1 break-words text-base font-semibold leading-snug text-neutral-950">
-        {valueOrNotProvided(value)}
+        {valueOrDash(value)}
       </p>
     </div>
   );
@@ -239,8 +240,8 @@ function HotelInfoCard({
   hotel: HotelData;
   formatDate: (date: string) => string;
 }) {
-  const nights = calculateNights(hotel.checkIn.date, hotel.checkOut.date);
-  const mapTarget = createMapTarget({ name: hotel.name, address: hotel.address });
+  const nights = valueOrEmpty(hotel.numberOfNights) || calculateNights(hotel.checkIn.date, hotel.checkOut.date);
+  const googleMapsUrl = valueOrEmpty(hotel.googleMapsUrl);
 
   return (
     <motion.section variants={riseIn} className="px-5">
@@ -254,7 +255,7 @@ function HotelInfoCard({
               Hotel booking
             </p>
             <h2 className="mt-1 text-2xl font-bold leading-tight tracking-normal text-neutral-950">
-              {valueOrNotProvided(hotel.name)}
+              {valueOrDash(hotel.name)}
             </h2>
           </div>
         </div>
@@ -274,20 +275,20 @@ function HotelInfoCard({
           <InfoTile label="Number of nights" value={nights} />
           <InfoTile label="Booking number" value={hotel.bookingNo} />
           <InfoTile label="Confirmation number" value={hotel.confirmationNo} className="col-span-2" />
-          {valueOrEmpty(hotel.phone) && (
-            <InfoTile label="Phone number" value={hotel.phone} className="col-span-2" />
-          )}
+          <InfoTile label="Phone number" value={hotel.phone} className="col-span-2" />
         </div>
 
-        <a
-          href={buildGoogleMapsUrl(mapTarget)}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-4 text-sm font-semibold text-neutral-800 shadow-sm shadow-neutral-200/60"
-        >
-          <MapPin size={16} />
-          Google Maps
-        </a>
+        {googleMapsUrl && (
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-4 text-sm font-semibold text-neutral-800 shadow-sm shadow-neutral-200/60"
+          >
+            <MapPin size={16} />
+            Google Maps
+          </a>
+        )}
       </div>
     </motion.section>
   );
@@ -305,7 +306,7 @@ export function HotelPage() {
   const hasHotelBooking = Boolean(hotelData.name.trim() || hotelData.bookingNo.trim() || hotelData.pdfFileName);
   const pdfUrl = getBookingPdfUrl(hotelData.pdf, hotelData.pdfDataUrl);
   const formatDate = (date: string) => {
-    if (!date) return "Date not provided";
+    if (!date) return "-";
     const nextDate = new Date(`${date}T00:00:00`);
     return Number.isNaN(nextDate.getTime()) ? date : formatDateTime.format(nextDate);
   };

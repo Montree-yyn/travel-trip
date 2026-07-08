@@ -16,6 +16,8 @@ export interface HotelData {
   confirmationNo: string;
   bookingNo: string;
   guestName: string;
+  numberOfNights?: string;
+  googleMapsUrl?: string;
   notes?: string;
   pdfFileName?: string;
   pdfDataUrl?: string;

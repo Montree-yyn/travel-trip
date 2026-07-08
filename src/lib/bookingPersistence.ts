@@ -33,9 +33,54 @@ function fallbackBookings(): BookingData {
   };
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value && typeof value === "object");
+}
+
+function stringValue(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function firstString(...values: unknown[]) {
+  return values.find((value): value is string => typeof value === "string") ?? "";
+}
+
+const emptyFlightEndpoint: FlightSegment["departure"] = {
+  date: "",
+  time: "",
+  airport: "",
+  airportCode: "",
+  terminal: "",
+  city: "",
+};
+
+function normalizeFlightEndpoint(value: unknown, fallback: FlightSegment["departure"]) {
+  const candidate = isRecord(value) ? value : {};
+  return {
+    ...fallback,
+    ...candidate,
+    date: firstString(candidate.date, fallback.date),
+    time: firstString(candidate.time, fallback.time),
+    airport: firstString(candidate.airport, candidate.airportName, fallback.airport),
+    airportCode: firstString(candidate.airportCode, candidate.code, fallback.airportCode),
+    terminal: firstString(candidate.terminal, fallback.terminal),
+    city: firstString(candidate.city, fallback.city),
+  };
+}
+
+function normalizeBookingPdf(value: unknown) {
+  if (!isRecord(value)) return undefined;
+  const fileName = stringValue(value.fileName);
+  const storagePath = stringValue(value.storagePath);
+  const downloadURL = stringValue(value.downloadURL);
+  const uploadedAt = stringValue(value.uploadedAt);
+  if (!fileName || !storagePath || !downloadURL || !uploadedAt) return undefined;
+  return { fileName, storagePath, downloadURL, uploadedAt };
+}
+
 function normalizeFlightSegment(value: unknown): FlightSegment | null {
   if (!value || typeof value !== "object") return null;
-  const candidate = value as Partial<FlightSegment>;
+  const candidate = value as Partial<FlightSegment> & Record<string, unknown>;
   if (
     typeof candidate.id !== "string" ||
     typeof candidate.direction !== "string" ||
@@ -48,7 +93,53 @@ function normalizeFlightSegment(value: unknown): FlightSegment | null {
     return null;
   }
 
-  return candidate as FlightSegment;
+  return {
+    ...candidate,
+    bookingReference: firstString(candidate.bookingReference, candidate.bookingRef),
+    notes: stringValue(candidate.notes),
+    seat: firstString(candidate.seat, candidate.seats),
+    departure: normalizeFlightEndpoint(candidate.departure, emptyFlightEndpoint),
+    arrival: normalizeFlightEndpoint(candidate.arrival, emptyFlightEndpoint),
+    transitTime: firstString(candidate.transitTime, candidate.duration),
+    baggage: stringValue(candidate.baggage),
+  } as FlightSegment;
+}
+
+function normalizeHotel(value: unknown): HotelData {
+  const candidate = isRecord(value) ? value : {};
+  const checkIn = isRecord(candidate.checkIn) ? candidate.checkIn : {};
+  const checkOut = isRecord(candidate.checkOut) ? candidate.checkOut : {};
+
+  return {
+    ...hotelData,
+    ...candidate,
+    name: firstString(candidate.name, candidate.hotelName, hotelData.name),
+    address: firstString(candidate.address, candidate.hotelAddress, hotelData.address),
+    phone: firstString(candidate.phone, candidate.phoneNumber, hotelData.phone),
+    checkIn: {
+      ...hotelData.checkIn,
+      ...checkIn,
+      date: firstString(checkIn.date, candidate.checkInDate, hotelData.checkIn.date),
+      time: firstString(checkIn.time, candidate.checkInTime, hotelData.checkIn.time),
+    },
+    checkOut: {
+      ...hotelData.checkOut,
+      ...checkOut,
+      date: firstString(checkOut.date, candidate.checkOutDate, hotelData.checkOut.date),
+      time: firstString(checkOut.time, candidate.checkOutTime, hotelData.checkOut.time),
+    },
+    roomType: firstString(candidate.roomType, candidate.room, hotelData.roomType),
+    amenities: Array.isArray(candidate.amenities) ? candidate.amenities : hotelData.amenities,
+    confirmationNo: firstString(candidate.confirmationNo, candidate.confirmationNumber, hotelData.confirmationNo),
+    bookingNo: firstString(candidate.bookingNo, candidate.bookingNumber, candidate.bookingReference, hotelData.bookingNo),
+    guestName: firstString(candidate.guestName, candidate.guest, hotelData.guestName),
+    numberOfNights: firstString(candidate.numberOfNights, candidate.nights),
+    googleMapsUrl: firstString(candidate.googleMapsUrl, candidate.googleMapsURL, candidate.mapsUrl, candidate.mapUrl),
+    notes: firstString(candidate.notes, hotelData.notes),
+    pdfFileName: firstString(candidate.pdfFileName),
+    pdfDataUrl: firstString(candidate.pdfDataUrl),
+    pdf: normalizeBookingPdf(candidate.pdf),
+  };
 }
 
 function normalizeBookings(value: unknown): BookingData {
@@ -67,13 +158,7 @@ function normalizeBookings(value: unknown): BookingData {
       passengers: Array.isArray(candidate.flights?.passengers) ? candidate.flights.passengers : flightsData.passengers,
       baggage: candidate.flights?.baggage ?? flightsData.baggage,
     },
-    hotel: {
-      ...hotelData,
-      ...candidate.hotel,
-      checkIn: candidate.hotel?.checkIn ?? hotelData.checkIn,
-      checkOut: candidate.hotel?.checkOut ?? hotelData.checkOut,
-      amenities: Array.isArray(candidate.hotel?.amenities) ? candidate.hotel.amenities : hotelData.amenities,
-    },
+    hotel: normalizeHotel(candidate.hotel),
   };
 }
 

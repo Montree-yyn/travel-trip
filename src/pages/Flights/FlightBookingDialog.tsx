@@ -160,12 +160,34 @@ export function FlightBookingDialog({
 
                 <div className="grid grid-cols-2 gap-3">
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-xs font-semibold text-ink-muted">Departure airport</span>
+                    <span className="text-xs font-semibold text-ink-muted">Duration</span>
+                    <input value={draft.transitTime} onChange={(event) => update({ transitTime: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Seat</span>
+                    <input value={draft.seat ?? ""} onChange={(event) => update({ seat: event.target.value })} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Departure airport code</span>
                     <input value={draft.departure.airportCode} onChange={(event) => updateDeparture("airportCode", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                   </label>
                   <label className="flex flex-col gap-1.5">
-                    <span className="text-xs font-semibold text-ink-muted">Arrival airport</span>
+                    <span className="text-xs font-semibold text-ink-muted">Arrival airport code</span>
                     <input value={draft.arrival.airportCode} onChange={(event) => updateArrival("airportCode", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Departure city</span>
+                    <input value={draft.departure.city} onChange={(event) => updateDeparture("city", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Arrival city</span>
+                    <input value={draft.arrival.city} onChange={(event) => updateArrival("city", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                   </label>
                 </div>
 
@@ -188,6 +210,17 @@ export function FlightBookingDialog({
                   <label className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-ink-muted">Arrival time</span>
                     <input type="time" value={draft.arrival.time} onChange={(event) => updateArrival("time", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Departure terminal</span>
+                    <input value={draft.departure.terminal} onChange={(event) => updateDeparture("terminal", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
+                  </label>
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-xs font-semibold text-ink-muted">Arrival terminal</span>
+                    <input value={draft.arrival.terminal} onChange={(event) => updateArrival("terminal", event.target.value)} className="h-12 rounded-2xl bg-ink/5 px-3 text-sm font-semibold text-ink outline-none" />
                   </label>
                 </div>
 
