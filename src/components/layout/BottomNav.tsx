@@ -48,13 +48,13 @@ export function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex w-full max-w-md justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)] md:max-w-lg lg:max-w-xl">
-      <ul className="glass-surface-strong glass-shadow-lg pointer-events-auto flex items-center gap-0.5 rounded-pill p-1.5">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex w-full justify-center px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
+      <ul className="glass-surface-strong glass-shadow-lg pointer-events-auto flex w-full max-w-[calc(100vw-1rem)] items-center justify-between gap-1 rounded-[2rem] p-1.5 sm:max-w-md md:max-w-lg">
         {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end, activePaths }) => {
           const isActive = isNavActive(pathname, to, end, activePaths);
 
           return (
-            <motion.li key={to} whileTap={tapScaleFirm} transition={motionEasing.snappySpring}>
+            <motion.li key={to} className="flex-1" whileTap={tapScaleFirm} transition={motionEasing.snappySpring}>
               <button
                 type="button"
                 aria-current={isActive ? "page" : undefined}
@@ -62,15 +62,16 @@ export function BottomNav() {
                 onPointerEnter={() => preloadRoute(to)}
                 onTouchStart={() => preloadRoute(to)}
                 onClick={() => navigate(to)}
-                className="relative flex min-w-[4.65rem] flex-col items-center gap-0.5 rounded-pill px-3 py-2.5 focus-visible:outline-none"
+                className="relative flex h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[1.65rem] px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               >
                 {isActive && (
                   <motion.span
                     layoutId="bottom-nav-active"
-                    className="pill-glow absolute inset-0 rounded-pill bg-gradient-to-b from-accent to-accent-strong"
+                    className="pill-glow absolute inset-0 rounded-[1.65rem] bg-gradient-to-b from-accent to-accent-strong"
                     transition={motionEasing.snappySpring}
                   />
                 )}
+
                 <motion.span
                   className="relative z-10"
                   animate={{ scale: isActive ? 1.1 : 1, y: isActive ? -1 : 0 }}
@@ -82,10 +83,10 @@ export function BottomNav() {
                     className={isActive ? "text-accent-contrast" : "text-ink-muted"}
                   />
                 </motion.span>
+
                 <span
-                  className={`relative z-10 text-[0.6875rem] font-semibold leading-none transition-colors duration-200 ${
-                    isActive ? "text-accent-contrast" : "text-ink-muted/75"
-                  }`}
+                  className={`relative z-10 text-[0.6875rem] font-semibold leading-none transition-colors duration-200 ${isActive ? "text-accent-contrast" : "text-ink-muted/75"
+                    }`}
                 >
                   {t(labelKey)}
                 </span>
