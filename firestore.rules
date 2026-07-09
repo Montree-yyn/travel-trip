@@ -2,8 +2,56 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function memberPath(tripId, uid) {
+      return /databases/$(database)/documents/trips/$(tripId)/members/$(uid);
+    }
+
+    function isTripMember(tripId) {
+      return signedIn() && exists(memberPath(tripId, request.auth.uid));
+    }
+
+    function isTripOwner(tripId) {
+      return isTripMember(tripId) &&
+        get(memberPath(tripId, request.auth.uid)).data.role == "owner";
+    }
+
+    match /users/{userId} {
+      allow read, write: if isSelf(userId);
+      match /{document=**} {
+        allow read, write: if isSelf(userId);
+      }
+    }
+
+    match /trips/{tripId} {
+      allow get, create: if signedIn();
+      allow list, update: if isTripMember(tripId);
+      allow delete: if isTripOwner(tripId);
+
+      match /members/{memberId} {
+        allow get: if isSelf(memberId) || isTripMember(tripId);
+        allow list: if isTripMember(tripId);
+        allow create: if isSelf(memberId) &&
+          request.resource.data.uid == request.auth.uid &&
+          request.resource.data.role in ["owner", "editor"];
+        allow update: if (
+          isSelf(memberId) &&
+          request.resource.data.uid == resource.data.uid &&
+          request.resource.data.role == resource.data.role
+        ) || isTripOwner(tripId);
+        allow delete: if isTripOwner(tripId);
+      }
+
+      match /{document=**} {
+        allow read, write: if isTripMember(tripId);
+      }
     }
   }
 }

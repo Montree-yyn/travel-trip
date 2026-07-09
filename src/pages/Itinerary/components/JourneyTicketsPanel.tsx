@@ -2,9 +2,8 @@ import { motion } from "framer-motion";
 import { Hotel, Plane, Ticket } from "lucide-react";
 
 import { GlassCard, SectionHeader, TripImage } from "@/components/ui";
-import { flightsData, outboundFlight, returnFlight } from "@/data/flights";
-import { hotelData } from "@/data/hotel";
 import { riseIn, staggerContainer } from "@/design-system/motion";
+import { usePersistentBookings } from "@/hooks/usePersistentBookings";
 import { useLocaleDateFormatter, useTranslation } from "@/i18n";
 
 function formatShortDate(date: string, formatDate: Intl.DateTimeFormat) {
@@ -14,6 +13,10 @@ function formatShortDate(date: string, formatDate: Intl.DateTimeFormat) {
 export function JourneyTicketsPanel() {
   const { t } = useTranslation();
   const formatDate = useLocaleDateFormatter();
+  const { bookings } = usePersistentBookings();
+  const flightsData = bookings.flights;
+  const ticketFlights = flightsData.segments.slice(0, 2);
+  const hotelData = bookings.hotel;
 
   return (
     <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-5">
@@ -36,7 +39,7 @@ export function JourneyTicketsPanel() {
 
       <div className="flex flex-col gap-3.5">
         <SectionHeader title={t("flights.flightDetails")} />
-        {[outboundFlight, returnFlight].map((flight) => (
+        {ticketFlights.map((flight) => (
           <motion.div key={flight.id} variants={riseIn} className="px-5">
             <GlassCard padding="md" className="flex flex-col gap-3">
               <TripImage

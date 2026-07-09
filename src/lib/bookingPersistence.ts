@@ -8,6 +8,8 @@ import {
 } from "@/firebase/storage";
 import type { FlightsData, FlightSegment } from "@/types/flight";
 import type { HotelData } from "@/types/hotel";
+import { deleteTripDocument, parseTripDocumentStoragePath, saveTripDocument } from "@/lib/tripDocuments";
+import { getActiveTripId } from "@/sync/sharedTrip";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const STORAGE_KEY = `travel-trip-bookings:${sampleTrip.id}:v1`;
@@ -19,6 +21,7 @@ export interface BookingPdfMetadata {
   storagePath: string;
   downloadURL: string;
   uploadedAt: string;
+  documentId?: string;
 }
 
 export interface BookingData {
@@ -172,10 +175,6 @@ export function readBookingsFromStorage(): BookingData {
   }
 }
 
-export function writeBookingsToStorage(bookings: BookingData) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-}
-
 function validateBookingFile(file: File) {
   if (!BOOKING_FILE_TYPES.has(file.type)) {
     throw new Error("Please choose a PDF, JPG, PNG, or WebP booking file.");
@@ -197,21 +196,25 @@ function isObjectNotFoundError(error: unknown) {
 
 export async function uploadBookingPdf({
   uid,
+  tripId = getActiveTripId(),
   bookingType,
   bookingId,
   file,
 }: {
   uid: string;
+  tripId?: string;
   bookingType: "flight" | "hotel";
   bookingId: string;
   file: File;
 }): Promise<BookingPdfMetadata> {
+  void uid;
   validateBookingFile(file);
 
+  const documentId = `${bookingType}-${bookingId}`;
   const storagePath =
     bookingType === "flight"
-      ? buildFlightBookingPdfStoragePath(uid, bookingId, file.name)
-      : buildHotelBookingPdfStoragePath(uid, bookingId, file.name);
+      ? buildFlightBookingPdfStoragePath(tripId, bookingId, file.name)
+      : buildHotelBookingPdfStoragePath(tripId, bookingId, file.name);
   const storageRef = ref(getFirebaseStorage(), storagePath);
 
   try {
@@ -220,23 +223,52 @@ export async function uploadBookingPdf({
       customMetadata: { fileName: file.name },
     });
 
-    return {
+    const downloadURL = await getDownloadURL(storageRef);
+    const metadata = {
       fileName: file.name,
       storagePath,
-      downloadURL: await getDownloadURL(storageRef),
+      downloadURL,
       uploadedAt: new Date().toISOString(),
+      documentId,
     };
+
+    await saveTripDocument({
+      id: documentId,
+      tripId,
+      owner: uid,
+      category: bookingType,
+      title: bookingType === "flight" ? "Flight booking" : "Hotel booking",
+      fileName: file.name,
+      fileType: file.type,
+      fileUrl: downloadURL,
+      downloadUrl: downloadURL,
+      storagePath,
+      createdBy: uid,
+      updatedBy: uid,
+    });
+
+    return metadata;
   } catch {
+    await deleteObject(storageRef).catch(() => undefined);
     throw new Error("Could not upload this booking file. Please try again.");
   }
 }
 
 export async function deleteBookingPdf(storagePath: string) {
+  const documentLocation = parseTripDocumentStoragePath(storagePath);
   try {
     await deleteObject(ref(getFirebaseStorage(), storagePath));
   } catch (error) {
     if (!isObjectNotFoundError(error)) {
       throw new Error("Could not remove this PDF. Please try again.");
+    }
+  }
+
+  if (documentLocation?.tripId && documentLocation.documentId) {
+    try {
+      await deleteTripDocument(documentLocation.tripId, documentLocation.documentId);
+    } catch {
+      throw new Error("Could not remove this PDF metadata. Please try again.");
     }
   }
 }

@@ -3,12 +3,12 @@ import { Camera, ImagePlus, Loader, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/auth";
-import { Button, GlassCard, IconButton } from "@/components/ui";
+import { Button, GlassCard, IconButton, ModalPortal } from "@/components/ui";
 import type { BudgetExpenseInput } from "@/hooks/usePersistentBudget";
 import { useTranslation } from "@/i18n";
 import { prepareReceiptAttachment } from "@/lib/budget-receipts";
 import { BUDGET_CURRENCIES, BUDGET_EXPENSE_CATEGORIES, BUDGET_PAYMENT_METHODS } from "@/lib/budget";
-import { TRIP_ID } from "@/sync/keys";
+import { getActiveTripId } from "@/sync/sharedTrip";
 import type { BudgetExpense, BudgetExpenseCategory, BudgetPaymentMethod } from "@/types/budget";
 
 export function ExpenseFormDialog({
@@ -70,7 +70,7 @@ export function ExpenseFormDialog({
       const attachment = await prepareReceiptAttachment({
         file,
         uid: user?.uid ?? null,
-        tripId: TRIP_ID,
+        tripId: getActiveTripId(),
       });
       setReceiptPhotoUrl(attachment.url);
       setReceiptPhotoPath(attachment.storagePath);
@@ -115,25 +115,26 @@ export function ExpenseFormDialog({
   }
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-0 pt-4 pb-[calc(env(safe-area-inset-bottom)+96px)] sm:p-4"
-          onClick={onClose}
-        >
+    <ModalPortal>
+      <AnimatePresence>
+        {open && (
           <motion.div
-            initial={{ y: 32, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 32, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 420, damping: 34 }}
-            className="w-full max-w-md"
-            onClick={(event) => event.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-0 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] sm:items-center sm:p-4"
+            onClick={onClose}
           >
-            <GlassCard elevated padding="none" className="flex max-h-[calc(100dvh-env(safe-area-inset-bottom)-112px)] flex-col overflow-hidden rounded-b-none rounded-t-4xl sm:max-h-[92dvh] sm:rounded-4xl">
-              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/30 px-5 py-4 dark:border-white/10">
+            <motion.div
+              initial={{ y: 32, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 32, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 420, damping: 34 }}
+              className="w-full max-w-md"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <GlassCard elevated padding="none" className="flex max-h-[85dvh] w-full flex-col overflow-hidden rounded-b-none rounded-t-4xl sm:max-h-[84dvh] sm:rounded-4xl">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/30 px-5 py-3.5 dark:border-white/10">
                 <div>
                   <p className="text-xs font-semibold uppercase text-accent-strong">{mode === "add" ? "Fast entry" : "Edit expense"}</p>
                   <h2 className="text-xl font-semibold text-ink">
@@ -145,7 +146,7 @@ export function ExpenseFormDialog({
                 </IconButton>
               </div>
 
-              <div className="no-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-4">
+              <div className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-5 py-3.5">
                 <div className="grid grid-cols-[1fr_6.5rem] gap-3">
                   <label className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-ink-muted">{t("budget.fields.amount")}</span>
@@ -200,13 +201,13 @@ export function ExpenseFormDialog({
 
                 <div className="flex flex-col gap-2">
                   <span className="text-xs font-semibold text-ink-muted">{t("budget.fields.category")}</span>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-1.5">
                     {BUDGET_EXPENSE_CATEGORIES.map((value) => (
                       <button
                         key={value}
                         type="button"
                         onClick={() => setCategory(value)}
-                        className={`h-11 rounded-2xl text-xs font-bold transition-colors ${
+                        className={`h-10 rounded-2xl text-xs font-bold transition-colors ${
                           category === value
                             ? "pill-glow bg-gradient-to-b from-accent to-accent-strong text-accent-contrast"
                             : "bg-ink/5 text-ink-muted"
@@ -220,13 +221,13 @@ export function ExpenseFormDialog({
 
                 <div className="flex flex-col gap-2">
                   <span className="text-xs font-semibold text-ink-muted">{t("budget.fields.paymentMethod")}</span>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-1.5">
                     {BUDGET_PAYMENT_METHODS.map((value) => (
                       <button
                         key={value}
                         type="button"
                         onClick={() => setPaymentMethod(value)}
-                        className={`h-11 rounded-2xl text-xs font-bold transition-colors ${
+                        className={`h-10 rounded-2xl text-xs font-bold transition-colors ${
                           paymentMethod === value
                             ? "bg-accent text-accent-contrast"
                             : "bg-ink/5 text-ink-muted"
@@ -308,7 +309,7 @@ export function ExpenseFormDialog({
                 {error && <p className="rounded-2xl bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-500">{error}</p>}
               </div>
 
-              <div className="grid shrink-0 grid-cols-2 gap-2 border-t border-white/30 px-5 py-4 dark:border-white/10">
+              <div className="sticky bottom-0 grid shrink-0 grid-cols-2 gap-2 border-t border-white/30 bg-[rgb(var(--surface))]/80 px-5 py-3.5 backdrop-blur-xl dark:border-white/10">
                 {mode === "edit" && onDelete ? (
                   <Button variant="secondary" fullWidth className="text-red-500" onClick={onDelete}>
                     {t("budget.deleteExpense")}
@@ -323,10 +324,11 @@ export function ExpenseFormDialog({
                   {t("budget.saveExpense")}
                 </Button>
               </div>
-            </GlassCard>
+              </GlassCard>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </ModalPortal>
   );
 }

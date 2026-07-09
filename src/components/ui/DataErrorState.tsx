@@ -11,6 +11,7 @@ import { GlassCard } from "./GlassCard";
 export interface DataErrorStateProps {
   icon?: LucideIcon;
   titleKey?: string;
+  description?: string;
   descriptionKey?: string;
   onRetry?: () => void;
 }
@@ -18,6 +19,7 @@ export interface DataErrorStateProps {
 export function DataErrorState({
   icon: Icon = RefreshCw,
   titleKey = "errors.dataTitle",
+  description,
   descriptionKey = "errors.dataDescription",
   onRetry,
 }: DataErrorStateProps) {
@@ -31,7 +33,7 @@ export function DataErrorState({
         </span>
         <div className="space-y-1.5">
           <h2 className="text-lg font-semibold text-ink">{t(titleKey)}</h2>
-          <p className="text-sm leading-relaxed text-ink-muted">{t(descriptionKey)}</p>
+          <p className="text-sm leading-relaxed text-ink-muted">{description ?? t(descriptionKey)}</p>
         </div>
         {onRetry && (
           <Button variant="secondary" onClick={onRetry}>

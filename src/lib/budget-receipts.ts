@@ -2,7 +2,7 @@ import { getDownloadURL, ref, uploadBytesResumable, type UploadTask } from "fire
 
 import { isFirebaseConfigured } from "@/firebase/config";
 import { buildBudgetReceiptStoragePath, getFirebaseStorage } from "@/firebase/storage";
-import { blobToDataUrl, compressFullPhoto, createThumbnail } from "@/lib/memory-photos";
+import { compressFullPhoto } from "@/lib/memory-photos";
 import { logSyncOperationError } from "@/sync/syncDebugLog";
 
 export interface ReceiptAttachment {
@@ -38,16 +38,13 @@ export async function prepareReceiptAttachment({
     throw new Error("budget.errors.receiptInvalidType");
   }
 
-  const thumbnail = await createThumbnail(file, MAX_RECEIPT_FILE_BYTES);
-  const localUrl = await blobToDataUrl(thumbnail);
-
   if (!uid || !isFirebaseConfigured() || !navigator.onLine) {
-    return { url: localUrl };
+    throw new Error("budget.errors.receiptUploadFailed");
   }
 
   const receiptId = createReceiptId();
   const fullPhoto = await compressFullPhoto(file, MAX_RECEIPT_FILE_BYTES);
-  const storagePath = buildBudgetReceiptStoragePath(uid, tripId, receiptId);
+  const storagePath = buildBudgetReceiptStoragePath(tripId, receiptId);
   const storageRef = ref(getFirebaseStorage(), storagePath);
   const task = uploadBytesResumable(storageRef, fullPhoto, { contentType: "image/jpeg" });
 
@@ -65,6 +62,6 @@ export async function prepareReceiptAttachment({
       phase: "uploadBytesResumable",
       error,
     });
-    return { url: localUrl };
+    throw new Error("budget.errors.receiptUploadFailed");
   }
 }

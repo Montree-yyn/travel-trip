@@ -2,8 +2,8 @@ import { Search, X } from "lucide-react";
 
 import { FilterChips } from "@/components/ui";
 import { useTranslation } from "@/i18n";
-import { BUDGET_EXPENSE_CATEGORIES } from "@/lib/budget";
-import type { ExpenseCategoryFilter, ExpenseDateFilter, ExpenseFilters } from "@/types/budget";
+import { BUDGET_EXPENSE_CATEGORIES, BUDGET_WALLET_CURRENCIES } from "@/lib/budget";
+import type { ExpenseCategoryFilter, ExpenseCurrencyFilter, ExpenseDateFilter, ExpenseFilters } from "@/types/budget";
 import type { TripDay } from "@/types/trip";
 
 export function ExpenseFiltersBar({
@@ -33,6 +33,14 @@ export function ExpenseFiltersBar({
     })),
   ];
 
+  const currencyOptions = [
+    { value: "all" as const, label: t("common.all") },
+    ...BUDGET_WALLET_CURRENCIES.map((value) => ({
+      value,
+      label: value,
+    })),
+  ];
+
   return (
     <div className="flex flex-col gap-3 px-5">
       <div className="glass-surface glass-shadow flex items-center gap-2.5 rounded-2xl px-4 py-3">
@@ -59,6 +67,12 @@ export function ExpenseFiltersBar({
         options={categoryOptions}
         value={filters.category}
         onChange={(category) => onChange({ ...filters, category: category as ExpenseCategoryFilter })}
+      />
+
+      <FilterChips
+        options={currencyOptions}
+        value={filters.currency}
+        onChange={(currency) => onChange({ ...filters, currency: currency as ExpenseCurrencyFilter })}
       />
 
       <FilterChips

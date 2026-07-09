@@ -1,9 +1,19 @@
 import { motion } from "framer-motion";
-import { CalendarDays, ChevronRight, Clock, Hotel, MapPin, Plane, type LucideIcon } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronRight,
+  Hotel,
+  MapPin,
+  Pencil,
+  Plane,
+  Ticket,
+  TrainFront,
+  type LucideIcon,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
 
-import { TripBudgetCard } from "@/components/trip/TripBudgetCard";
-import { Avatar, Chip, GlassCard, ProgressBar, SectionHeader, ThemeToggle } from "@/components/ui";
+import { Avatar, EmptyState, GlassCard, IconButton, ProgressRing, SectionHeader, ThemeToggle, TripImage } from "@/components/ui";
 import { PageLoadingGate } from "@/components/layout";
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { sampleForecast, getTripDayForecast } from "@/data/sample-weather";
@@ -11,20 +21,22 @@ import { riseIn, staggerContainer } from "@/design-system/motion";
 import { usePersistentBudget } from "@/hooks/usePersistentBudget";
 import { usePersistentBookings } from "@/hooks/usePersistentBookings";
 import { useLocaleDateFormatter, useTranslation, type TranslateParams } from "@/i18n";
+import { BUDGET_EXPENSE_CATEGORY_ICONS, sortExpensesByDate } from "@/lib/budget";
 import {
   getCurrentTripDay,
   getDaysUntilStart,
   getNextActivity,
-  getRemainingTripDays,
   getTripProgressPercent,
 } from "@/lib/trip-progress";
+import { WEATHER_ICONS } from "@/lib/weather";
 import { ROUTES } from "@/router/paths";
+import type { BudgetCurrency, BudgetExpense, BudgetWalletSummary } from "@/types/budget";
 import type { FlightSegment } from "@/types/flight";
 import type { HotelData } from "@/types/hotel";
 import type { TimelineItem } from "@/types/trip";
 
 import { QuickActionsGrid } from "./components/QuickActionsGrid";
-import { WeatherMiniCard } from "./components/WeatherMiniCard";
+import { TotalBudgetDialog } from "@/pages/Budget/components/TotalBudgetDialog";
 
 function cleanValue(value?: string) {
   const trimmed = value?.trim();
@@ -47,7 +59,7 @@ function formatDate(date: string | undefined, formatter: Intl.DateTimeFormat) {
 function formatDateRange(start: string, end: string, formatter: Intl.DateTimeFormat) {
   const formattedStart = formatDate(start, formatter);
   const formattedEnd = formatDate(end, formatter);
-  return formattedStart && formattedEnd ? `${formattedStart} → ${formattedEnd}` : "";
+  return formattedStart && formattedEnd ? `${formattedStart} / ${formattedEnd}` : "";
 }
 
 function getFlightDateTime(flight: FlightSegment) {
@@ -62,185 +74,248 @@ function getNextFlight(flights: FlightSegment[]) {
   return [...flights]
     .map((flight) => ({ flight, time: getFlightDateTime(flight) }))
     .filter((item): item is { flight: FlightSegment; time: number } => item.time !== null && item.time >= now)
-    .sort((a, b) => a.time - b.time)[0]?.flight;
+    .sort((a, b) => a.time - b.time)[0]?.flight ?? flights[0];
 }
 
 function getFlightSummary(flight: FlightSegment | undefined, t: (key: string, params?: TranslateParams) => string) {
   const departureCode = cleanValue(flight?.departure.airportCode);
   const arrivalCode = cleanValue(flight?.arrival.airportCode);
-  if (!departureCode || !arrivalCode) {
-    return {
-      title: t("home.wallet.noUpcomingFlight"),
-      subtitle: "",
-      meta: "",
-    };
-  }
-
-  const airline = cleanValue(flight?.airline);
-  const flightNumber = cleanValue(flight?.flightNumber);
-  const departureTime = cleanValue(flight?.departure.time);
-  const arrivalTime = cleanValue(flight?.arrival.time);
-
-  return {
-    title: `${departureCode} → ${arrivalCode}`,
-    subtitle: [airline, flightNumber].filter(Boolean).join(" "),
-    meta: departureTime && arrivalTime ? `${departureTime} → ${arrivalTime}` : "",
-  };
+  if (!departureCode || !arrivalCode) return t("home.wallet.noUpcomingFlight");
+  return `${departureCode} → ${arrivalCode}`;
 }
 
-function getHotelSummary(hotel: HotelData, formatter: Intl.DateTimeFormat) {
-  return {
-    title: cleanValue(hotel.name),
-    subtitle: formatDateRange(hotel.checkIn.date, hotel.checkOut.date, formatter),
-  };
+function getHotelSummary(hotel: HotelData) {
+  return cleanValue(hotel.name) || "Hotel";
 }
 
 function getActivitySummary(activity: TimelineItem | undefined, t: (key: string) => string) {
-  const title = cleanValue(activity?.activity);
-  return {
-    title: title || t("home.wallet.noActivityToday"),
-    subtitle: title && cleanValue(activity?.time) ? cleanValue(activity?.time) : "",
-  };
+  return cleanValue(activity?.activity) || t("home.wallet.noActivityToday");
 }
 
-function tripStatusText(
-  countdownDays: number,
-  remainingDays: number,
-  currentDay: number,
-  t: (key: string, params?: TranslateParams) => string,
-) {
+function getTrainSummary() {
+  const leg = sampleTrip.transportLegs[0];
+  if (!leg) return "Train route";
+  return `${leg.from} → ${leg.to}`;
+}
+
+function tripCountdownText(countdownDays: number, currentDay: number, t: (key: string, params?: TranslateParams) => string) {
   if (countdownDays > 0) return t("home.status.daysToGo", { count: countdownDays });
-  if (remainingDays <= 0) return t("home.status.complete");
   return t("home.status.dayNow", { day: currentDay });
 }
 
-function CountdownStatusCard({
-  countdownDays,
-  remainingDays,
-  currentDay,
-  progressPercent,
-  t,
-}: {
-  countdownDays: number;
-  remainingDays: number;
-  currentDay: number;
-  progressPercent: number;
-  t: (key: string, params?: TranslateParams) => string;
-}) {
+function TripHeroCard({ tripDates }: { tripDates: string }) {
+  const { t } = useTranslation();
+
   return (
     <motion.div variants={riseIn} className="px-5">
-      <GlassCard elevated padding="lg">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("home.status.title")}</p>
-            <h2 className="mt-1 text-[1.65rem] font-bold leading-tight tracking-tight text-ink">
-              {tripStatusText(countdownDays, remainingDays, currentDay, t)}
-            </h2>
+      <Link to={ROUTES.itinerary}>
+        <GlassCard interactive padding="none" className="flex overflow-hidden rounded-3xl">
+          <TripImage seed="trip-hero" priority className="h-[6.5rem] w-[7rem] shrink-0" />
+          <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3">
+            <p className="truncate text-[0.6875rem] font-bold uppercase tracking-wide text-accent-strong">
+              Osaka · Kyoto · Ine · Kobe
+            </p>
+            <h2 className="mt-1 truncate text-lg font-bold tracking-tight text-ink">Kansai, Japan</h2>
+            <p className="mt-1 line-clamp-2 text-xs font-semibold leading-relaxed text-ink-muted">
+              {tripDates} · {t("home.status.dayCount", { count: sampleTrip.days })}
+            </p>
           </div>
-          <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-contrast">
-            <Clock size={22} />
+          <span className="mr-3 flex items-center text-ink-faint">
+            <ChevronRight size={18} />
           </span>
-        </div>
-        <div className="mt-4">
-          <ProgressBar value={progressPercent} />
-          <div className="mt-2 flex items-center justify-between text-xs font-semibold text-ink-muted">
-            <span>{t("home.status.dayOfTotal", { current: currentDay, total: sampleTrip.days })}</span>
-            <span>{t("home.status.percentComplete", { percent: progressPercent })}</span>
+        </GlassCard>
+      </Link>
+    </motion.div>
+  );
+}
+
+function StatusWeatherCard({
+  countdownDays,
+  currentDay,
+  progressPercent,
+}: {
+  countdownDays: number;
+  currentDay: number;
+  progressPercent: number;
+}) {
+  const { t } = useTranslation();
+  const currentDayData = getCurrentTripDay(sampleTrip);
+  const forecast = getTripDayForecast(currentDayData.city, currentDayData.date) ?? sampleForecast[0]!;
+  const WeatherIcon = WEATHER_ICONS[forecast.condition];
+
+  return (
+    <motion.div variants={riseIn} className="px-5">
+      <GlassCard padding="md" className="grid grid-cols-[1fr_auto] gap-4">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("home.status.title")}</p>
+          <p className="mt-1 text-lg font-bold text-ink">
+            {tripCountdownText(countdownDays, currentDay, t)}
+          </p>
+          <div className="mt-2">
+            <div className="h-1.5 overflow-hidden rounded-pill bg-ink/10">
+              <div className="h-full rounded-pill bg-accent-strong" style={{ width: `${progressPercent}%` }} />
+            </div>
+            <p className="mt-1.5 text-xs font-semibold text-ink-muted">
+              {t("home.status.dayOfTotal", { current: currentDay, total: sampleTrip.days })}
+            </p>
           </div>
         </div>
+        <Link to={ROUTES.weather} className="min-w-[7.25rem] rounded-2xl bg-accent-soft/70 px-3 py-2.5 text-right">
+          <WeatherIcon size={22} className="ml-auto text-accent-strong" />
+          <p className="mt-1 text-xs font-bold text-accent-strong">{forecast.city}</p>
+          <p className="text-xl font-bold leading-tight text-ink">{forecast.high}°C</p>
+          <p className="text-[0.6875rem] font-semibold text-ink-muted">
+            {t(`weatherConditions.${forecast.condition}`)}
+          </p>
+          <p className="text-[0.625rem] text-ink-faint">Feels {forecast.high}°</p>
+        </Link>
       </GlassCard>
     </motion.div>
   );
 }
 
-function WalletSummaryRow({
-  to,
-  icon: Icon,
-  label,
-  title,
-  subtitle,
-  meta,
-}: {
-  to: string;
-  icon: LucideIcon;
-  label: string;
-  title: string;
-  subtitle?: string;
-  meta?: string;
-}) {
+function PlanItem({ to, icon: Icon, label, title }: { to: string; icon: LucideIcon; label: string; title: string }) {
   return (
-    <Link to={to} className="flex items-center gap-3 rounded-2xl bg-white/70 p-3 transition active:scale-[0.99] dark:bg-white/8">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
-        <Icon size={18} />
+    <Link to={to} className="flex items-center gap-3 rounded-2xl bg-white/65 p-2.5 dark:bg-white/8">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
+        <Icon size={17} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[0.6875rem] font-bold uppercase tracking-wide text-accent-strong">{label}</span>
-        <span className="mt-0.5 block truncate text-sm font-bold text-ink">{title}</span>
-        {subtitle && <span className="mt-0.5 block truncate text-xs font-semibold text-ink-muted">{subtitle}</span>}
-        {meta && <span className="mt-0.5 block truncate text-xs text-ink-muted">{meta}</span>}
+        <span className="block text-[0.625rem] font-bold uppercase tracking-wide text-accent-strong">{label}</span>
+        <span className="mt-0.5 block truncate text-xs font-bold text-ink">{title}</span>
       </span>
-      <ChevronRight size={17} className="shrink-0 text-ink-faint" />
     </Link>
   );
 }
 
-function TodaysTripCard({
+function TodaysPlanSection({
   flight,
   hotel,
   activity,
-  formatDateShort,
-  t,
 }: {
   flight?: FlightSegment;
   hotel: HotelData;
   activity?: TimelineItem;
-  formatDateShort: Intl.DateTimeFormat;
-  t: (key: string, params?: TranslateParams) => string;
 }) {
-  const flightSummary = getFlightSummary(flight, t);
-  const hotelSummary = getHotelSummary(hotel, formatDateShort);
-  const activitySummary = getActivitySummary(activity, t);
+  const { t } = useTranslation();
 
   return (
-    <motion.div variants={riseIn} className="px-5">
-      <GlassCard padding="md" className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("home.wallet.title")}</p>
-            <p className="mt-1 text-sm text-ink-muted">{t("home.wallet.subtitle")}</p>
-          </div>
-          <Link to={ROUTES.travelWallet}>
-            <Chip tone="accent">{t("nav.travelWallet")}</Chip>
-          </Link>
+    <motion.div variants={riseIn} className="flex flex-col gap-2.5">
+      <SectionHeader
+        title={t("home.todayPlan")}
+        action={<Link to={ROUTES.itinerary} className="text-xs font-bold text-accent-strong">{t("common.viewAll")}</Link>}
+      />
+      <div className="px-5">
+        <GlassCard padding="sm" className="grid grid-cols-2 gap-2.5">
+          <PlanItem to={ROUTES.flights} icon={Plane} label={t("home.flight")} title={getFlightSummary(flight, t)} />
+          <PlanItem to={ROUTES.hotel} icon={Hotel} label={t("home.hotel")} title={getHotelSummary(hotel)} />
+          <PlanItem to={ROUTES.itinerary} icon={Ticket} label={t("home.attraction")} title={getActivitySummary(activity, t)} />
+          <PlanItem to={ROUTES.transport} icon={TrainFront} label={t("home.trainRoute")} title={getTrainSummary()} />
+        </GlassCard>
+      </div>
+    </motion.div>
+  );
+}
+
+function CompactWalletCard({ wallet, onEdit }: { wallet: BudgetWalletSummary; onEdit: () => void }) {
+  const { t } = useTranslation();
+  const isThb = wallet.currency === "THB";
+
+  return (
+    <GlassCard padding="sm" className="min-w-0">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs font-bold text-accent-strong">{isThb ? "🇹🇭" : "🇯🇵"} {wallet.currency} Wallet</p>
+          <p className="mt-1 truncate text-lg font-bold text-ink">{wallet.remaining.toLocaleString()}</p>
         </div>
+        <IconButton size="sm" variant="ghost" aria-label={t("budget.editTotalBudget")} onClick={onEdit}>
+          <Pencil size={14} />
+        </IconButton>
+      </div>
+      <div className="mt-2 flex items-end justify-between gap-2">
+        <div className="min-w-0 text-[0.625rem] font-semibold leading-relaxed text-ink-muted">
+          <p>{t("budget.spent")}: {wallet.totalSpent.toLocaleString()}</p>
+          <p>{t("budget.totalBudget")}: {wallet.totalBudget.toLocaleString()}</p>
+        </div>
+        <ProgressRing value={wallet.spentPercent} size={42} strokeWidth={5}>
+          <span className="text-[0.625rem] font-bold text-ink">{wallet.spentPercent}%</span>
+        </ProgressRing>
+      </div>
+    </GlassCard>
+  );
+}
 
-        <WalletSummaryRow
-          to={ROUTES.flights}
-          icon={Plane}
-          label={t("home.wallet.nextFlight")}
-          title={flightSummary.title}
-          subtitle={flightSummary.subtitle}
-          meta={flightSummary.meta}
-        />
+function DualWalletSection({ wallets, onEdit }: { wallets: BudgetWalletSummary[]; onEdit: () => void }) {
+  const { t } = useTranslation();
+  const safeWallets = wallets.length > 0 ? wallets : ["THB", "JPY"].map((currency) => ({
+    currency: currency as BudgetCurrency,
+    totalBudget: 0,
+    totalSpent: 0,
+    remaining: 0,
+    spentPercent: 0,
+  }));
 
-        {hotelSummary.title && (
-          <WalletSummaryRow
-            to={ROUTES.hotel}
-            icon={Hotel}
-            label={t("home.wallet.hotel")}
-            title={hotelSummary.title}
-            subtitle={hotelSummary.subtitle}
-          />
-        )}
+  return (
+    <motion.div variants={riseIn} className="flex flex-col gap-2.5">
+      <SectionHeader title={t("budget.tripWallet")} action={<Link to={ROUTES.budget} className="text-xs font-bold text-accent-strong">{t("common.viewAll")}</Link>} />
+      <div className="grid grid-cols-2 gap-2.5 px-5">
+        {safeWallets.map((wallet) => (
+          <CompactWalletCard key={wallet.currency} wallet={wallet} onEdit={onEdit} />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
-        <WalletSummaryRow
-          to={ROUTES.itinerary}
-          icon={Clock}
-          label={t("home.wallet.nextActivity")}
-          title={activitySummary.title}
-          subtitle={activitySummary.subtitle}
-        />
-      </GlassCard>
+function ExpenseRow({ expense }: { expense: BudgetExpense }) {
+  const { t } = useTranslation();
+  const formatDateShort = useLocaleDateFormatter();
+  const Icon = BUDGET_EXPENSE_CATEGORY_ICONS[expense.category];
+
+  return (
+    <Link to={ROUTES.budget} className="flex items-center gap-3 rounded-2xl bg-white/65 p-2.5 dark:bg-white/8">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
+        <Icon size={17} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-bold text-ink">{expense.merchant || expense.title}</span>
+        <span className="mt-0.5 block truncate text-xs text-ink-muted">
+          {t(`budget.categories.${expense.category}`)} · {formatDate(expense.date, formatDateShort)}
+        </span>
+      </span>
+      <span className="shrink-0 text-right">
+        <span className="rounded-pill bg-accent-soft px-2 py-0.5 text-[0.625rem] font-bold text-accent-strong">
+          {expense.currency}
+        </span>
+        <span className="mt-1 block text-sm font-bold text-ink">{expense.amount.toLocaleString()}</span>
+      </span>
+    </Link>
+  );
+}
+
+function LatestExpensesSection({ expenses }: { expenses: BudgetExpense[] }) {
+  const { t } = useTranslation();
+  const latestExpenses = sortExpensesByDate(expenses).slice(0, 3);
+
+  return (
+    <motion.div variants={riseIn} className="flex flex-col gap-2.5">
+      <SectionHeader
+        title={t("home.latestExpenses")}
+        action={<Link to={ROUTES.budget} className="text-xs font-bold text-accent-strong">{t("common.viewAll")}</Link>}
+      />
+      <div className="px-5">
+        <GlassCard padding="sm" className="flex flex-col gap-2">
+          {latestExpenses.length > 0 ? (
+            latestExpenses.map((expense) => <ExpenseRow key={expense.id} expense={expense} />)
+          ) : (
+            <EmptyState
+              icon={CheckCircle2}
+              title={t("empty.budget.title")}
+              description={t("empty.budget.description")}
+            />
+          )}
+        </GlassCard>
+      </div>
     </motion.div>
   );
 }
@@ -250,24 +325,25 @@ export function HomePage() {
   const formatDateShort = useLocaleDateFormatter();
   const { bookings } = usePersistentBookings();
   const {
-    totalBudget,
-    spent,
-    remaining,
-    currency,
-    lastUpdated,
+    currencyBudgets,
+    expenses,
+    walletSummaries,
+    updateBudgetSettings,
   } = usePersistentBudget({
     defaultTotalBudget: sampleTrip.budget.totalMax,
     defaultCurrency: sampleTrip.budget.currency,
   });
+  const [budgetDialogOpen, setBudgetDialogOpen] = useState(false);
   const currentDay = getCurrentTripDay(sampleTrip);
   const currentDayIndex = currentDay.dayNumber;
-  const forecast = getTripDayForecast(currentDay.city, currentDay.date) ?? sampleForecast[0]!;
   const countdownDays = getDaysUntilStart(sampleTrip);
-  const remainingDays = getRemainingTripDays(sampleTrip);
   const progressPercent = countdownDays > 0 ? 0 : getTripProgressPercent(currentDayIndex, sampleTrip.days);
   const nextFlight = getNextFlight(bookings.flights.segments);
   const nextActivity = currentDay.timeline.length > 0 ? getNextActivity(currentDay) : undefined;
-  const tripDates = formatDateRange(sampleTrip.dateRange.start, sampleTrip.dateRange.end, formatDateShort);
+  const tripDates = useMemo(
+    () => formatDateRange(sampleTrip.dateRange.start, sampleTrip.dateRange.end, formatDateShort),
+    [formatDateShort],
+  );
 
   return (
     <PageLoadingGate>
@@ -275,22 +351,18 @@ export function HomePage() {
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="flex flex-col gap-5 pb-8"
+        className="flex flex-col gap-4 pb-8"
       >
-        <motion.header variants={riseIn} className="flex items-start justify-between px-5 pt-4">
+        <motion.header variants={riseIn} className="flex items-center justify-between px-5 pt-4">
           <div className="min-w-0 pr-3">
-            <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">Home</p>
-            <h1 className="mt-1 text-[1.9rem] font-bold leading-tight tracking-tight text-ink">{sampleTrip.title}</h1>
-            <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-muted">
-              <MapPin size={14} className="shrink-0 text-accent-strong" />
+            <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("home.greeting.morning")}</p>
+            <h1 className="mt-0.5 truncate text-2xl font-bold tracking-tight text-ink">{sampleTrip.title}</h1>
+            <p className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-ink-muted">
+              <MapPin size={13} className="shrink-0 text-accent-strong" />
               <span className="truncate">{tripSettings.destination}</span>
             </p>
-            <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-muted">
-              <CalendarDays size={14} className="shrink-0 text-accent-strong" />
-              <span>{tripDates} · {t("home.status.dayCount", { count: sampleTrip.days })}</span>
-            </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2 pt-1">
+          <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
             <Link to={ROUTES.more}>
               <Avatar
@@ -302,38 +374,35 @@ export function HomePage() {
           </div>
         </motion.header>
 
-        <CountdownStatusCard
+        <TripHeroCard tripDates={tripDates} />
+
+        <StatusWeatherCard
           countdownDays={countdownDays}
-          remainingDays={remainingDays}
           currentDay={currentDayIndex}
           progressPercent={progressPercent}
-          t={t}
         />
 
-        <motion.div variants={riseIn} className="px-5">
-          <WeatherMiniCard forecast={forecast} />
-        </motion.div>
-
-        <TodaysTripCard
+        <TodaysPlanSection
           flight={nextFlight}
           hotel={bookings.hotel}
           activity={nextActivity}
-          formatDateShort={formatDateShort}
-          t={t}
         />
 
-        <TripBudgetCard
-          totalBudget={totalBudget}
-          spent={spent}
-          remaining={remaining}
-          currency={currency}
-          lastUpdated={lastUpdated}
-        />
+        <DualWalletSection wallets={walletSummaries} onEdit={() => setBudgetDialogOpen(true)} />
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           <SectionHeader title={t("home.quickActions")} />
           <QuickActionsGrid />
         </div>
+
+        <LatestExpensesSection expenses={expenses} />
+
+        <TotalBudgetDialog
+          open={budgetDialogOpen}
+          budgets={currencyBudgets}
+          onClose={() => setBudgetDialogOpen(false)}
+          onSave={updateBudgetSettings}
+        />
       </motion.div>
     </PageLoadingGate>
   );

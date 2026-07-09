@@ -19,6 +19,7 @@ import { ExpenseFormDialog } from "@/pages/Budget/components/ExpenseFormDialog";
 const defaultFilters: ExpenseFilters = {
   query: "",
   category: "all",
+  currency: "all",
   date: "all",
 };
 
@@ -30,6 +31,7 @@ export function JourneyBudgetPanel() {
     spent,
     remaining,
     currency,
+    walletSummaries,
     lastUpdated,
     addExpense,
     updateExpense,
@@ -71,6 +73,7 @@ export function JourneyBudgetPanel() {
           spent={spent}
           remaining={remaining}
           currency={currency}
+          wallets={walletSummaries}
           lastUpdated={lastUpdated}
         />
 

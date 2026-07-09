@@ -36,20 +36,21 @@ import { TotalBudgetDialog } from "./components/TotalBudgetDialog";
 const defaultFilters: ExpenseFilters = {
   query: "",
   category: "all",
+  currency: "all",
   date: "all",
 };
 
 export function BudgetPage() {
   const { t } = useTranslation();
-  const { ready, error, retry } = useTripSync();
+  const { ready, error: syncError, retry } = useTripSync();
   const defaultCurrency = sampleTrip.budget.currency;
   const {
     expenses,
     totalBudget,
-    spent,
-    remaining,
+    currencyBudgets,
+    walletSummaries,
     currency,
-    lastUpdated,
+    error: budgetError,
     addExpense,
     updateExpense,
     deleteExpense,
@@ -108,22 +109,22 @@ export function BudgetPage() {
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative flex flex-col gap-6 pb-28">
         <PageHeader title={t("budget.title")} subtitle={t("budget.subtitle")} actions={<ThemeToggle />} />
 
-        {error && (
+        {(syncError || budgetError) && (
           <div className="px-5">
             <DataErrorState
               titleKey="budget.syncErrorTitle"
-              descriptionKey="sync.unavailable"
+              description={budgetError || t("sync.unavailable")}
               onRetry={retry}
             />
           </div>
         )}
 
         <TripBudgetCard
-          totalBudget={totalBudget}
-          spent={spent}
-          remaining={remaining}
+          totalBudget={budgetSummary.totalBudget}
+          spent={budgetSummary.totalSpent}
+          remaining={budgetSummary.remaining}
           currency={currency}
-          lastUpdated={lastUpdated}
+          wallets={walletSummaries}
           onEdit={() => setBudgetDialogOpen(true)}
         />
 
@@ -224,8 +225,7 @@ export function BudgetPage() {
 
         <TotalBudgetDialog
           open={budgetDialogOpen}
-          totalBudget={totalBudget}
-          currency={currency}
+          budgets={currencyBudgets}
           onClose={() => setBudgetDialogOpen(false)}
           onSave={updateBudgetSettings}
         />

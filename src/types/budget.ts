@@ -5,6 +5,7 @@ export type BudgetExpenseCategory = BudgetCategoryIcon;
 export type LegacyBudgetExpenseCategory = "flight" | "train" | "activities";
 
 export type BudgetPaymentMethod = "cash" | "card" | "icoca" | "mobile";
+export type BudgetCurrency = "THB" | "JPY";
 
 export interface BudgetExpense {
   id: string;
@@ -37,8 +38,17 @@ export interface DailySpending {
 export interface BudgetData {
   expenses: BudgetExpense[];
   totalBudget?: number;
+  budgets?: Partial<Record<BudgetCurrency, number>>;
   currency?: string;
   lastUpdated?: string;
+}
+
+export interface BudgetWalletSummary {
+  currency: BudgetCurrency;
+  totalBudget: number;
+  totalSpent: number;
+  remaining: number;
+  spentPercent: number;
 }
 
 export interface BudgetSummary {
@@ -51,11 +61,13 @@ export interface BudgetSummary {
 }
 
 export type ExpenseCategoryFilter = BudgetExpenseCategory | "all";
+export type ExpenseCurrencyFilter = BudgetCurrency | "all";
 export type ExpenseDateFilter = "all" | string;
 
 export interface ExpenseFilters {
   query: string;
   category: ExpenseCategoryFilter;
+  currency: ExpenseCurrencyFilter;
   date: ExpenseDateFilter;
 }
 

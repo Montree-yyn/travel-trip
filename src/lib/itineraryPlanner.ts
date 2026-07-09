@@ -4,7 +4,6 @@ import type { EditableTimelineItem, TimelineItem, TripDay } from "@/types/trip";
 import { readMapItineraryAdditions } from "./mapItineraryAdditions";
 
 const STORAGE_KEY = `travel-trip-itinerary-planner:${sampleTrip.id}:v1`;
-const PLANNER_SYNC_EVENT = "travel-trip-itinerary-planner";
 
 export interface EditableTripDay extends Omit<TripDay, "timeline"> {
   timeline: EditableTimelineItem[];
@@ -101,11 +100,6 @@ export function readItineraryPlannerDays(fallbackDays: TripDay[] = sampleTrip.it
   }
 }
 
-export function writeItineraryPlannerDays(days: EditableTripDay[]) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
-  window.dispatchEvent(new CustomEvent(PLANNER_SYNC_EVENT));
-}
-
 export function createBlankActivity(): EditableTimelineItem {
   return {
     id: createNewActivityId(),
@@ -118,5 +112,3 @@ export function createBlankActivity(): EditableTimelineItem {
     travelTime: "",
   };
 }
-
-export { PLANNER_SYNC_EVENT };

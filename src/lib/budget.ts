@@ -12,9 +12,11 @@ import type { TripDay } from "@/types/trip";
 import type {
   BudgetCategoryIcon,
   BudgetCategorySpending,
+  BudgetCurrency,
   BudgetData,
   BudgetExpense,
   BudgetExpenseCategory,
+  BudgetWalletSummary,
   BudgetSummary,
   DailySpending,
   ExpenseFilters,
@@ -47,6 +49,7 @@ export const BUDGET_EXPENSE_CATEGORIES: BudgetExpenseCategory[] = [
 export const BUDGET_PAYMENT_METHODS = ["cash", "card", "icoca", "mobile"] as const;
 
 export const BUDGET_CURRENCIES = ["THB", "JPY", "USD"] as const;
+export const BUDGET_WALLET_CURRENCIES: BudgetCurrency[] = ["THB", "JPY"];
 
 const categoryTemplates: BudgetCategorySpending[] = [
   { id: "food", label: "Food", icon: "food", spent: 0, allocated: 0 },
@@ -131,6 +134,7 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
   const totalBudget = typeof candidate.totalBudget === "number" && Number.isFinite(candidate.totalBudget)
     ? Math.max(0, candidate.totalBudget)
     : undefined;
+  const budgets = normalizeCurrencyBudgets(candidate.budgets);
   const currency = typeof candidate.currency === "string" && candidate.currency.trim()
     ? candidate.currency.trim()
     : undefined;
@@ -144,6 +148,7 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
         .map((expense) => normalizeExpense(expense, defaultCurrency))
         .filter((expense): expense is BudgetExpense => expense !== null),
       totalBudget,
+      budgets,
       currency,
       lastUpdated,
     };
@@ -152,9 +157,26 @@ export function normalizeBudgetData(value: unknown, defaultCurrency = "THB"): Bu
   return {
     ...migrateLegacyBudget(candidate, defaultCurrency),
     totalBudget,
+    budgets,
     currency,
     lastUpdated,
   };
+}
+
+function normalizeCurrencyBudgets(value: unknown): Partial<Record<BudgetCurrency, number>> | undefined {
+  if (!value || typeof value !== "object") return undefined;
+
+  const candidate = value as Partial<Record<BudgetCurrency, unknown>>;
+  const budgets: Partial<Record<BudgetCurrency, number>> = {};
+
+  for (const currency of BUDGET_WALLET_CURRENCIES) {
+    const amount = candidate[currency];
+    if (typeof amount === "number" && Number.isFinite(amount)) {
+      budgets[currency] = Math.max(0, amount);
+    }
+  }
+
+  return Object.keys(budgets).length > 0 ? budgets : undefined;
 }
 
 export function migrateLegacyBudget(legacy: LegacyBudgetData, defaultCurrency = "THB"): BudgetData {
@@ -230,6 +252,31 @@ export function calculateBudgetSummary({
   };
 }
 
+export function calculateWalletSummaries({
+  budgets,
+  expenses,
+}: {
+  budgets: Record<BudgetCurrency, number>;
+  expenses: BudgetExpense[];
+}): BudgetWalletSummary[] {
+  return BUDGET_WALLET_CURRENCIES.map((currency) => {
+    const totalBudget = budgets[currency];
+    const totalSpent = expenses
+      .filter((expense) => expense.currency === currency)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+    const remaining = Math.max(totalBudget - totalSpent, 0);
+    const spentPercent = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+
+    return {
+      currency,
+      totalBudget,
+      totalSpent,
+      remaining,
+      spentPercent,
+    };
+  });
+}
+
 export function sortExpensesByDate(expenses: BudgetExpense[]) {
   return [...expenses].sort((left, right) => right.date.localeCompare(left.date) || right.title.localeCompare(left.title));
 }
@@ -239,6 +286,10 @@ export function filterExpenses(expenses: BudgetExpense[], filters: ExpenseFilter
 
   return expenses.filter((expense) => {
     if (filters.category !== "all" && expense.category !== filters.category) {
+      return false;
+    }
+
+    if (filters.currency !== "all" && expense.currency !== filters.currency) {
       return false;
     }
 
@@ -264,5 +315,5 @@ export function filterExpenses(expenses: BudgetExpense[], filters: ExpenseFilter
 }
 
 export function hasActiveExpenseFilters(filters: ExpenseFilters) {
-  return filters.query.trim().length > 0 || filters.category !== "all" || filters.date !== "all";
+  return filters.query.trim().length > 0 || filters.category !== "all" || filters.currency !== "all" || filters.date !== "all";
 }

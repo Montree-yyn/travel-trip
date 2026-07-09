@@ -5,16 +5,23 @@ import { ProgressRing } from "@/components/ui";
 import { scaleIn } from "@/design-system/motion";
 import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
+import type { BudgetWalletSummary } from "@/types/budget";
 
 export interface TripBudgetCardProps {
-  totalBudget: number;
-  spent: number;
-  remaining: number;
-  currency: string;
+  totalBudget?: number;
+  spent?: number;
+  remaining?: number;
+  currency?: string;
+  wallets?: BudgetWalletSummary[];
   lastUpdated?: string;
   onEdit?: () => void;
   className?: string;
 }
+
+const walletLabels = {
+  THB: { flag: "🇹🇭", label: "THB Wallet" },
+  JPY: { flag: "🇯🇵", label: "JPY Wallet" },
+} as const;
 
 function formatLastUpdated(value: string | undefined) {
   if (!value) return null;
@@ -23,18 +30,39 @@ function formatLastUpdated(value: string | undefined) {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function safeNumber(value: number | undefined) {
+  return Number.isFinite(value) ? Number(value) : 0;
+}
+
 export function TripBudgetCard({
   totalBudget,
   spent,
   remaining,
-  currency,
+  currency = "THB",
+  wallets,
   lastUpdated,
   onEdit,
   className,
 }: TripBudgetCardProps) {
   const { t } = useTranslation();
-  const percent = totalBudget > 0 ? Math.round((spent / totalBudget) * 100) : 0;
+
+  const safeTotalBudget = safeNumber(totalBudget);
+  const safeSpent = safeNumber(spent);
+  const safeRemaining = Number.isFinite(remaining)
+    ? Number(remaining)
+    : safeTotalBudget - safeSpent;
+
+  const percent = safeTotalBudget > 0 ? Math.round((safeSpent / safeTotalBudget) * 100) : 0;
   const updatedLabel = formatLastUpdated(lastUpdated) ?? t("common.updatedJustNow");
+  const displayedWallets = wallets?.length
+    ? wallets
+    : [{
+        currency: currency === "JPY" ? "JPY" as const : "THB" as const,
+        totalBudget: safeTotalBudget,
+        totalSpent: safeSpent,
+        remaining: safeRemaining,
+        spentPercent: percent,
+      }];
 
   return (
     <motion.div
@@ -75,9 +103,6 @@ export function TripBudgetCard({
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="rounded-pill bg-white/20 px-2.5 py-1 text-xs font-semibold ring-1 ring-white/25">
-            {currency}
-          </span>
           {onEdit && (
             <button
               type="button"
@@ -94,46 +119,59 @@ export function TripBudgetCard({
         </div>
       </div>
 
-      <div className="relative mt-7 flex items-end justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[0.6875rem] font-medium uppercase tracking-wider text-white/70">{t("budget.remaining")}</p>
-          <p className="mt-1 truncate text-[2.25rem] font-bold leading-none tracking-tight">
-            {remaining.toLocaleString()}
-          </p>
-          <p className="mt-3 text-xs font-medium text-white/70">
-            {t("budget.spentOf", {
-              currency,
-              spent: spent.toLocaleString(),
-              total: totalBudget.toLocaleString(),
-            })}
-          </p>
-        </div>
-        <ProgressRing
-          value={percent}
-          size={76}
-          strokeWidth={7}
-          trackClassName="stroke-white/20"
-          progressClassName="stroke-white"
-        >
-          <span className="text-sm font-bold">{percent}%</span>
-        </ProgressRing>
+      <div className="relative mt-5 grid gap-3">
+        {displayedWallets.map((wallet) => {
+          const label = walletLabels[wallet.currency];
+
+          return (
+            <div key={wallet.currency} className="rounded-3xl bg-white/12 p-3 ring-1 ring-white/15">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[0.75rem] font-bold uppercase tracking-wide text-white/85">
+                    {label.flag} {label.label}
+                  </p>
+                  <p className="mt-1 truncate text-2xl font-bold leading-none tracking-tight">
+                    {wallet.remaining.toLocaleString()}
+                  </p>
+                  <p className="mt-1.5 text-xs font-medium text-white/70">
+                    {t("budget.spentOf", {
+                      currency: wallet.currency,
+                      spent: wallet.totalSpent.toLocaleString(),
+                      total: wallet.totalBudget.toLocaleString(),
+                    })}
+                  </p>
+                </div>
+                <ProgressRing
+                  value={wallet.spentPercent}
+                  size={58}
+                  strokeWidth={6}
+                  trackClassName="stroke-white/20"
+                  progressClassName="stroke-white"
+                >
+                  <span className="text-xs font-bold">{wallet.spentPercent}%</span>
+                </ProgressRing>
+              </div>
+
+              <div className="mt-3 grid grid-cols-3 gap-2 border-t border-white/15 pt-3 text-[0.6875rem] font-semibold">
+                <span>
+                  <span className="block text-white/55">{t("budget.totalBudget")}</span>
+                  {wallet.totalBudget.toLocaleString()}
+                </span>
+                <span>
+                  <span className="block text-white/55">{t("budget.spent")}</span>
+                  {wallet.totalSpent.toLocaleString()}
+                </span>
+                <span>
+                  <span className="block text-white/55">{t("budget.remaining")}</span>
+                  {wallet.remaining.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="relative mt-6 flex items-center gap-1.5 border-t border-white/15 pt-4">
-        <div className="grid flex-1 grid-cols-3 gap-2 text-[0.6875rem] font-semibold">
-          <span>
-            <span className="block text-white/55">{t("budget.totalBudget")}</span>
-            {totalBudget.toLocaleString()}
-          </span>
-          <span>
-            <span className="block text-white/55">{t("budget.spent")}</span>
-            {spent.toLocaleString()}
-          </span>
-          <span>
-            <span className="block text-white/55">{t("budget.remaining")}</span>
-            {remaining.toLocaleString()}
-          </span>
-        </div>
+      <div className="relative mt-4 flex justify-end border-t border-white/15 pt-3">
         <span className="ml-auto text-[0.6875rem] font-medium tracking-wide text-white/60">
           {updatedLabel}
         </span>

@@ -1,6 +1,4 @@
 import {
-  saveTripBudget,
-  saveTripChecklist,
   saveTripFavorites,
   saveTripMemories,
   saveTripSettings,
@@ -8,8 +6,6 @@ import {
   saveTripVisited,
 } from "./firestoreSync";
 import {
-  readBudgetFromStorage,
-  readChecklistFromStorage,
   readFavoritesFromStorage,
   readMemoriesFromStorage,
   readSettingsFromStorage,
@@ -79,26 +75,10 @@ export async function performFirstSync(uid: string, tripId: string, snapshot: Tr
     );
   }
 
-  if (!snapshot.checklist) {
-    uploads.push(
-      uploadMissingDoc("performFirstSync.checklist", uid, () =>
-        saveTripChecklist(uid, tripId, readChecklistFromStorage()),
-      ),
-    );
-  }
-
   if (!snapshot.memories) {
     uploads.push(
       uploadMissingDoc("performFirstSync.memories", uid, () =>
         saveTripMemories(uid, tripId, readMemoriesFromStorage()),
-      ),
-    );
-  }
-
-  if (!snapshot.budget) {
-    uploads.push(
-      uploadMissingDoc("performFirstSync.budget", uid, () =>
-        saveTripBudget(uid, tripId, readBudgetFromStorage()),
       ),
     );
   }

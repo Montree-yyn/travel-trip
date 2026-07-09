@@ -7,6 +7,7 @@ export * from "./FilterChips";
 export * from "./GlassCard";
 export * from "./IconButton";
 export * from "./MapActionButtons";
+export * from "./ModalPortal";
 export * from "./DataErrorState";
 export * from "./GenericPageSkeleton";
 export * from "./TripImage";

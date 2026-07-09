@@ -14,15 +14,11 @@ import { isFirebaseConfigured } from "@/firebase/config";
 
 import { TRIP_ID } from "./keys";
 import {
-  readBudgetFromStorage,
-  readChecklistFromStorage,
   readFavoritesFromStorage,
   readMemoriesFromStorage,
   readSettingsFromStorage,
   readTranslatorFromStorage,
   readVisitedFromStorage,
-  writeBudgetToStorage,
-  writeChecklistToStorage,
   writeFavoritesToStorage,
   writeMemoriesToStorage,
   writeSettingsToStorage,
@@ -30,10 +26,9 @@ import {
   writeVisitedToStorage,
 } from "./localStorage";
 import { dispatchSettingsSync, registerSettingsSaveHandler } from "./settingsBridge";
+import { ensureSharedTripMembership } from "./sharedTrip";
 import { logSyncEarlyReturn, logSyncFlow, logSyncProviderError, summarizeSyncSnapshot } from "./syncDebugLog";
 import type {
-  TripBudgetDoc,
-  TripChecklistDoc,
   TripFavoritesDoc,
   TripMemoriesDoc,
   TripSettingsDoc,
@@ -52,9 +47,7 @@ interface TripSyncContextValue {
   retry: () => void;
   saveFavorites: (favorites: TripFavoritesDoc) => Promise<void>;
   saveVisited: (visited: TripVisitedDoc) => Promise<void>;
-  saveChecklist: (checklist: TripChecklistDoc) => Promise<void>;
   saveMemories: (memories: TripMemoriesDoc) => Promise<void>;
-  saveBudget: (budget: TripBudgetDoc) => Promise<void>;
   saveTranslator: (translator: TripTranslatorDoc) => Promise<void>;
 }
 
@@ -72,9 +65,7 @@ function hydrateLocalStorage(snapshot: TripSyncSnapshot) {
 
   if (snapshot.favorites) writeFavoritesToStorage(snapshot.favorites);
   if (snapshot.visited) writeVisitedToStorage(snapshot.visited);
-  if (snapshot.checklist) writeChecklistToStorage(snapshot.checklist);
   if (snapshot.memories) writeMemoriesToStorage(snapshot.memories);
-  if (snapshot.budget) writeBudgetToStorage(snapshot.budget);
   if (snapshot.translator) writeTranslatorToStorage(snapshot.translator);
 }
 
@@ -210,21 +201,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
     [queueWrite, uid],
   );
 
-  const saveChecklist = useCallback(
-    async (checklist: TripChecklistDoc) => {
-      if (!uid) {
-        logSyncEarlyReturn("saveChecklist", "missing uid");
-        return;
-      }
-      writeChecklistToStorage(checklist);
-      queueWrite("checklist", async () => {
-        const { saveTripChecklist } = await loadFirestoreSync();
-        return saveTripChecklist(uid, TRIP_ID, checklist);
-      });
-    },
-    [queueWrite, uid],
-  );
-
   const saveMemories = useCallback(
     async (memories: TripMemoriesDoc) => {
       if (!uid) {
@@ -235,21 +211,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       queueWrite("memories", async () => {
         const { saveTripMemories } = await loadFirestoreSync();
         return saveTripMemories(uid, TRIP_ID, memories);
-      });
-    },
-    [queueWrite, uid],
-  );
-
-  const saveBudget = useCallback(
-    async (budget: TripBudgetDoc) => {
-      if (!uid) {
-        logSyncEarlyReturn("saveBudget", "missing uid");
-        return;
-      }
-      writeBudgetToStorage(budget);
-      queueWrite("budget", async () => {
-        const { saveTripBudget } = await loadFirestoreSync();
-        return saveTripBudget(uid, TRIP_ID, budget);
       });
     },
     [queueWrite, uid],
@@ -315,7 +276,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (!uid) {
+    if (!uid || !user) {
       logSyncEarlyReturn("bootstrap", "no uid — logged out");
       setLoading(false);
       setReady(true);
@@ -325,6 +286,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
 
     let cancelled = false;
     const activeUid = uid;
+    const activeUser = user;
 
     async function bootstrap() {
       logSyncFlow("bootstrap.start", { uid: activeUid, tripId: TRIP_ID });
@@ -332,6 +294,12 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       try {
+        await ensureSharedTripMembership(activeUser, TRIP_ID);
+        if (cancelled) {
+          logSyncEarlyReturn("bootstrap", "cancelled after ensureSharedTripMembership", { uid: activeUid });
+          return;
+        }
+
         const { loadTripSyncSnapshot } = await loadFirestoreSync();
         const snapshot = await loadTripSyncSnapshot(activeUid, TRIP_ID);
         if (cancelled) {
@@ -374,9 +342,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
         readSettingsFromStorage();
         readFavoritesFromStorage();
         readVisitedFromStorage();
-        readChecklistFromStorage();
         readMemoriesFromStorage();
-        readBudgetFromStorage();
         readTranslatorFromStorage();
         markSyncError("bootstrap.loadTripSyncSnapshot", "bootstrap", error);
         setReady(true);
@@ -391,7 +357,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       logSyncFlow("bootstrap.cleanup", { uid: activeUid });
     };
-  }, [authLoading, markSyncError, reloadToken, uid]);
+  }, [authLoading, markSyncError, reloadToken, uid, user]);
 
   const status = useMemo<SyncStatus>(() => {
     if (error) return "error";
@@ -409,9 +375,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       retry,
       saveFavorites,
       saveVisited,
-      saveChecklist,
       saveMemories,
-      saveBudget,
       saveTranslator,
     }),
     [
@@ -423,9 +387,7 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       retry,
       saveFavorites,
       saveVisited,
-      saveChecklist,
       saveMemories,
-      saveBudget,
       saveTranslator,
     ],
   );

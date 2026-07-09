@@ -26,8 +26,8 @@ import { ChecklistSection } from "./components/ChecklistSection";
 
 export function ChecklistPage() {
   const { t } = useTranslation();
-  const { ready, error, retry } = useTripSync();
-  const { items, addItem, updateItem, deleteItem, toggleItem } = usePersistentChecklist();
+  const { ready, error: syncError, retry } = useTripSync();
+  const { items, error: checklistError, addItem, updateItem, deleteItem, toggleItem } = usePersistentChecklist();
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<"add" | "edit">("add");
   const [activeItem, setActiveItem] = useState<ChecklistItem | null>(null);
@@ -69,11 +69,11 @@ export function ChecklistPage() {
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6 pb-28">
         <PageHeader title={t("checklist.title")} subtitle={t("checklist.subtitle")} actions={<ThemeToggle />} />
 
-        {error && (
+        {(syncError || checklistError) && (
           <div className="px-5">
             <DataErrorState
               titleKey="checklist.syncErrorTitle"
-              descriptionKey="sync.unavailable"
+              description={checklistError || t("sync.unavailable")}
               onRetry={retry}
             />
           </div>

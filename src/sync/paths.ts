@@ -4,9 +4,7 @@ export type TripSyncCollection =
   | "settings"
   | "favorites"
   | "visited"
-  | "checklist"
   | "memories"
-  | "budget"
   | "translator";
 
 export function tripSyncDocPath(uid: string, tripId: string, collection: TripSyncCollection) {

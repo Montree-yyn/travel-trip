@@ -29,8 +29,8 @@ export function buildMemoryPhotoStoragePath(
   return `users/${uid}/trips/${tripId}/memories/${entryId}/${photoId}${suffix}.jpg`;
 }
 
-export function buildBudgetReceiptStoragePath(uid: string, tripId: string, receiptId: string) {
-  return `users/${uid}/trips/${tripId}/budget/receipts/${receiptId}.jpg`;
+export function buildBudgetReceiptStoragePath(tripId: string, receiptId: string) {
+  return `trips/${cleanStorageSegment(tripId)}/expenses/receipts/${cleanStorageSegment(receiptId)}.jpg`;
 }
 
 export function buildTravelDocumentStoragePath(uid: string, tripId: string, documentId: string, fileName: string) {
@@ -46,10 +46,14 @@ function cleanStorageSegment(value: string) {
     || "booking";
 }
 
-export function buildFlightBookingPdfStoragePath(uid: string, bookingId: string, fileName: string) {
-  return `users/${uid}/bookings/flights/${cleanStorageSegment(bookingId)}/${cleanStorageSegment(fileName)}`;
+export function buildTripDocumentStoragePath(tripId: string, documentId: string, fileName: string) {
+  return `trips/${cleanStorageSegment(tripId)}/documents/${cleanStorageSegment(documentId)}/${cleanStorageSegment(fileName)}`;
 }
 
-export function buildHotelBookingPdfStoragePath(uid: string, bookingId: string, fileName: string) {
-  return `users/${uid}/bookings/hotels/${cleanStorageSegment(bookingId)}/${cleanStorageSegment(fileName)}`;
+export function buildFlightBookingPdfStoragePath(tripId: string, bookingId: string, fileName: string) {
+  return buildTripDocumentStoragePath(tripId, `flight-${bookingId}`, fileName);
+}
+
+export function buildHotelBookingPdfStoragePath(tripId: string, bookingId: string, fileName: string) {
+  return buildTripDocumentStoragePath(tripId, `hotel-${bookingId}`, fileName);
 }

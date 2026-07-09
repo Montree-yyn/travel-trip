@@ -32,6 +32,7 @@ export interface BookingPdfMetadata {
   storagePath: string;
   downloadURL: string;
   uploadedAt: string;
+  documentId?: string;
 }
 
 export interface FlightBaggageSummary {

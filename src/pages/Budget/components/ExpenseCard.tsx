@@ -48,9 +48,14 @@ export function ExpenseCard({
                 <p className="mt-0.5 truncate text-xs text-ink-muted">{expense.title}</p>
               )}
             </div>
-            <p className="shrink-0 text-sm font-bold text-ink">
-              {expense.currency} {expense.amount.toLocaleString()}
-            </p>
+            <div className="shrink-0 text-right">
+              <span className="rounded-pill bg-accent-soft px-2 py-0.5 text-[0.625rem] font-bold text-accent-strong">
+                {expense.currency}
+              </span>
+              <p className="mt-1 text-sm font-bold text-ink">
+                {expense.amount.toLocaleString()}
+              </p>
+            </div>
           </div>
 
           {expense.note && (

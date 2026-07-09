@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Camera, ListChecks, Map, Wallet, type LucideIcon } from "lucide-react";
+import { Hotel, ListChecks, Plane, Route, Wallet, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { staggerContainer, riseIn } from "@/design-system/motion";
@@ -13,24 +13,25 @@ interface QuickAction {
 }
 
 const ACTIONS: QuickAction[] = [
-  { to: ROUTES.map, labelKey: "quickActions.map", icon: Map },
-  { to: ROUTES.budget, labelKey: "quickActions.budget", icon: Wallet },
+  { to: ROUTES.travelWallet, labelKey: "quickActions.wallet", icon: Wallet },
+  { to: ROUTES.flights, labelKey: "quickActions.flightFiles", icon: Plane },
+  { to: ROUTES.hotel, labelKey: "quickActions.hotel", icon: Hotel },
+  { to: ROUTES.itinerary, labelKey: "quickActions.itinerary", icon: Route },
   { to: ROUTES.checklist, labelKey: "quickActions.checklist", icon: ListChecks },
-  { to: ROUTES.memories, labelKey: "quickActions.memories", icon: Camera },
 ];
 
 export function QuickActionsGrid() {
   const { t } = useTranslation();
 
   return (
-    <motion.div variants={staggerContainer} className="grid grid-cols-4 gap-2.5 px-5">
+    <motion.div variants={staggerContainer} className="grid grid-cols-5 gap-2 px-5">
       {ACTIONS.map(({ to, labelKey, icon: Icon }) => (
         <motion.div key={to} variants={riseIn}>
           <Link to={to} className="flex flex-col items-center gap-2">
-            <span className="glass-surface glass-shadow flex size-[3.75rem] items-center justify-center rounded-2xl text-accent-strong transition-transform active:scale-[0.96]">
-              <Icon size={22} strokeWidth={1.75} />
+            <span className="glass-surface glass-shadow flex size-12 items-center justify-center rounded-2xl text-accent-strong transition-transform active:scale-[0.96]">
+              <Icon size={19} strokeWidth={1.85} />
             </span>
-            <span className="max-w-[4.5rem] text-center text-[0.6875rem] font-medium leading-tight text-ink-muted">
+            <span className="max-w-[3.9rem] text-center text-[0.625rem] font-semibold leading-tight text-ink-muted">
               {t(labelKey)}
             </span>
           </Link>
