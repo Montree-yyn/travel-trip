@@ -429,6 +429,89 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
     [days, user],
   );
 
+  const moveDayActivities = useCallback(
+    (fromDayNumber: number, toDayNumber: number) => {
+      if (fromDayNumber === toDayNumber) return false;
+      const sourceDay = days.find((item) => item.dayNumber === fromDayNumber);
+      const destinationDay = days.find((item) => item.dayNumber === toDayNumber);
+      if (!sourceDay || !destinationDay) return false;
+
+      const movedActivities = sourceDay.timeline;
+      const nextDays = days.map((day) => {
+        if (day.dayNumber === fromDayNumber) return { ...day, timeline: [] };
+        if (day.dayNumber === toDayNumber) {
+          return { ...day, timeline: [...day.timeline, ...movedActivities] };
+        }
+        return day;
+      });
+
+      setDays(nextDays);
+
+      if (user && isFirebaseConfigured()) {
+        const tripId = getActiveTripId();
+        const batch = writeBatch(sharedTripCollection(tripId, "itinerary").firestore);
+        for (const dayNumber of [fromDayNumber, toDayNumber]) {
+          const day = findDay(nextDays, dayNumber);
+          if (!day) continue;
+          day.timeline.forEach((activity, order) => {
+            batch.set(
+              sharedTripSubDoc(tripId, "itinerary", activity.id),
+              serializeActivity({ day, activity, order, tripId, uid: user.uid }),
+              { merge: true },
+            );
+          });
+        }
+        void batch.commit().catch((saveError) => {
+          console.error("[travel-trip-sync] Itinerary day move failed", saveError);
+          setError("Could not move this itinerary day. Please try again.");
+        });
+      }
+
+      return true;
+    },
+    [days, user],
+  );
+
+  const swapDayActivities = useCallback(
+    (sourceDayNumber: number, targetDayNumber: number) => {
+      if (sourceDayNumber === targetDayNumber) return false;
+      const sourceDay = days.find((item) => item.dayNumber === sourceDayNumber);
+      const targetDay = days.find((item) => item.dayNumber === targetDayNumber);
+      if (!sourceDay || !targetDay) return false;
+
+      const nextDays = days.map((day) => {
+        if (day.dayNumber === sourceDayNumber) return { ...day, timeline: targetDay.timeline };
+        if (day.dayNumber === targetDayNumber) return { ...day, timeline: sourceDay.timeline };
+        return day;
+      });
+
+      setDays(nextDays);
+
+      if (user && isFirebaseConfigured()) {
+        const tripId = getActiveTripId();
+        const batch = writeBatch(sharedTripCollection(tripId, "itinerary").firestore);
+        for (const dayNumber of [sourceDayNumber, targetDayNumber]) {
+          const day = findDay(nextDays, dayNumber);
+          if (!day) continue;
+          day.timeline.forEach((activity, order) => {
+            batch.set(
+              sharedTripSubDoc(tripId, "itinerary", activity.id),
+              serializeActivity({ day, activity, order, tripId, uid: user.uid }),
+              { merge: true },
+            );
+          });
+        }
+        void batch.commit().catch((saveError) => {
+          console.error("[travel-trip-sync] Itinerary day swap failed", saveError);
+          setError("Could not swap these itinerary days. Please try again.");
+        });
+      }
+
+      return true;
+    },
+    [days, user],
+  );
+
   return {
     days,
     error,
@@ -437,5 +520,7 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
     deleteActivity,
     moveActivity,
     moveActivityToDay,
+    moveDayActivities,
+    swapDayActivities,
   };
 }

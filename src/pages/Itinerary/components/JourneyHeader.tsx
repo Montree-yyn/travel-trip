@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
-import { CalendarDays, MapPin } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRightLeft, CalendarDays, MapPin, MoreHorizontal, MoveRight } from "lucide-react";
+import { useState } from "react";
 
-import { ThemeToggle } from "@/components/ui";
+import { GlassCard, ThemeToggle } from "@/components/ui";
 import { CURRENT_DAY_INDEX } from "@/data/app-state";
 import { riseIn } from "@/design-system/motion";
 import { useLocaleDateFormatter, useTranslation } from "@/i18n";
@@ -11,12 +12,19 @@ export interface JourneyHeaderProps {
   trip: TripPlan;
   day: TripDay;
   totalDays: number;
+  onMoveDay?: () => void;
+  onSwapDay?: () => void;
 }
 
-export function JourneyHeader({ trip, day, totalDays }: JourneyHeaderProps) {
+export function JourneyHeader({ trip, day, totalDays, onMoveDay, onSwapDay }: JourneyHeaderProps) {
   const { t } = useTranslation();
   const formatDate = useLocaleDateFormatter();
   const parsedDate = new Date(`${day.date}T00:00:00`);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  function closeMenu() {
+    setMenuOpen(false);
+  }
 
   return (
     <motion.header variants={riseIn} className="flex items-start justify-between gap-3 px-5 pt-3">
@@ -42,7 +50,54 @@ export function JourneyHeader({ trip, day, totalDays }: JourneyHeaderProps) {
           </span>
         </div>
       </div>
-      <ThemeToggle />
+      <div className="relative flex shrink-0 items-center gap-2">
+        <ThemeToggle />
+        <button
+          type="button"
+          aria-label="Open day actions"
+          onClick={() => setMenuOpen((open) => !open)}
+          className="glass-surface glass-shadow flex size-10 items-center justify-center rounded-full text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+        >
+          <MoreHorizontal size={18} />
+        </button>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -4, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 420, damping: 34 }}
+              className="absolute right-0 top-12 z-30 w-48"
+            >
+              <GlassCard elevated padding="sm" className="grid gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeMenu();
+                    onMoveDay?.();
+                  }}
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-3 text-left text-sm font-semibold text-ink transition hover:bg-ink/5 dark:hover:bg-white/5"
+                >
+                  <MoveRight size={17} className="text-accent-strong" />
+                  Move Day
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeMenu();
+                    onSwapDay?.();
+                  }}
+                  className="flex min-h-11 items-center gap-3 rounded-2xl px-3 text-left text-sm font-semibold text-ink transition hover:bg-ink/5 dark:hover:bg-white/5"
+                >
+                  <ArrowRightLeft size={17} className="text-accent-strong" />
+                  Swap Day
+                </button>
+              </GlassCard>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.header>
   );
 }

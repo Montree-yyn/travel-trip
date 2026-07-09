@@ -20,6 +20,7 @@ import { JourneyHeader } from "./components/JourneyHeader";
 import { JourneyTabs, type JourneyTab } from "./components/JourneyTabs";
 import { JourneyTicketsPanel } from "./components/JourneyTicketsPanel";
 import { MoveActivityDialog } from "./components/MoveActivityDialog";
+import { MoveSwapDayDialog, type DayMoveMode } from "./components/MoveSwapDayDialog";
 
 export function ItineraryPage() {
   const { t } = useTranslation();
@@ -32,7 +33,8 @@ export function ItineraryPage() {
     activity: EditableTimelineItem;
     fromDayNumber: number;
   } | null>(null);
-  const [successToastVisible, setSuccessToastVisible] = useState(false);
+  const [dayActionMode, setDayActionMode] = useState<DayMoveMode | null>(null);
+  const [successToastMessage, setSuccessToastMessage] = useState("");
   const { items: bookmarkIds, toggle: toggleBookmark } = usePersistedSet(
     `travel-trip-bookmarks:${sampleTrip.id}`,
   );
@@ -46,16 +48,18 @@ export function ItineraryPage() {
     deleteActivity,
     moveActivity,
     moveActivityToDay,
+    moveDayActivities,
+    swapDayActivities,
   } = usePersistentItinerary(fallbackDays);
   const status: "ready" | "error" = itineraryDays.length > 0 ? "ready" : "error";
   const fallbackDayNumber = itineraryDays[0]?.dayNumber ?? CURRENT_DAY_INDEX;
   const safeSelectedDay = itineraryDays.some((d) => d.dayNumber === selectedDay) ? selectedDay : fallbackDayNumber;
 
   useEffect(() => {
-    if (!successToastVisible) return;
-    const timeout = window.setTimeout(() => setSuccessToastVisible(false), 2400);
+    if (!successToastMessage) return;
+    const timeout = window.setTimeout(() => setSuccessToastMessage(""), 2400);
     return () => window.clearTimeout(timeout);
-  }, [successToastVisible]);
+  }, [successToastMessage]);
 
   if (status === "error") {
     return (
@@ -110,14 +114,31 @@ export function ItineraryPage() {
     if (!movingActivity) return false;
     const moved = moveActivityToDay(movingActivity.fromDayNumber, toDayNumber, movingActivity.activity.id);
     if (moved) {
-      setSuccessToastVisible(true);
+      setSuccessToastMessage("Activity moved successfully");
     }
     return moved;
   }
 
+  function confirmDayAction(targetDayNumber: number) {
+    if (!dayActionMode) return false;
+    const success = dayActionMode === "move"
+      ? moveDayActivities(day.dayNumber, targetDayNumber)
+      : swapDayActivities(day.dayNumber, targetDayNumber);
+    if (success) {
+      setSuccessToastMessage(dayActionMode === "move" ? "Day moved successfully" : "Days swapped successfully");
+    }
+    return success;
+  }
+
   return (
     <div className="relative flex flex-col gap-4 pb-28">
-      <JourneyHeader trip={sampleTrip} day={day} totalDays={totalDays} />
+      <JourneyHeader
+        trip={sampleTrip}
+        day={day}
+        totalDays={totalDays}
+        onMoveDay={() => setDayActionMode("move")}
+        onSwapDay={() => setDayActionMode("swap")}
+      />
       <JourneyTabs value={activeTab} onChange={setActiveTab} />
 
       {activeTab === "itinerary" && (
@@ -199,8 +220,17 @@ export function ItineraryPage() {
             onConfirm={confirmMoveActivity}
           />
 
+          <MoveSwapDayDialog
+            open={dayActionMode !== null}
+            mode={dayActionMode ?? "move"}
+            sourceDayNumber={day.dayNumber}
+            days={itineraryDays}
+            onClose={() => setDayActionMode(null)}
+            onConfirm={confirmDayAction}
+          />
+
           <AnimatePresence>
-            {successToastVisible && (
+            {successToastMessage && (
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -208,7 +238,7 @@ export function ItineraryPage() {
                 className="fixed inset-x-0 bottom-28 z-[60] mx-auto flex max-w-md justify-center px-5 md:max-w-lg lg:max-w-xl"
               >
                 <div className="glass-surface-strong glass-shadow-lg rounded-pill px-4 py-3 text-sm font-bold text-ink">
-                  Activity moved successfully
+                  {successToastMessage}
                 </div>
               </motion.div>
             )}
