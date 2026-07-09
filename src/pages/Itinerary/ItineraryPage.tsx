@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, Lightbulb, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button, EmptyState, GlassCard } from "@/components/ui";
 import { CURRENT_DAY_INDEX } from "@/data/app-state";
@@ -19,6 +19,7 @@ import { JourneyChecklistPanel } from "./components/JourneyChecklistPanel";
 import { JourneyHeader } from "./components/JourneyHeader";
 import { JourneyTabs, type JourneyTab } from "./components/JourneyTabs";
 import { JourneyTicketsPanel } from "./components/JourneyTicketsPanel";
+import { MoveActivityDialog } from "./components/MoveActivityDialog";
 
 export function ItineraryPage() {
   const { t } = useTranslation();
@@ -27,6 +28,11 @@ export function ItineraryPage() {
   const [editorMode, setEditorMode] = useState<"add" | "edit" | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<EditableTimelineItem | null>(null);
   const [selectedActivityDay, setSelectedActivityDay] = useState(CURRENT_DAY_INDEX);
+  const [movingActivity, setMovingActivity] = useState<{
+    activity: EditableTimelineItem;
+    fromDayNumber: number;
+  } | null>(null);
+  const [successToastVisible, setSuccessToastVisible] = useState(false);
   const { items: bookmarkIds, toggle: toggleBookmark } = usePersistedSet(
     `travel-trip-bookmarks:${sampleTrip.id}`,
   );
@@ -39,10 +45,17 @@ export function ItineraryPage() {
     updateActivity,
     deleteActivity,
     moveActivity,
+    moveActivityToDay,
   } = usePersistentItinerary(fallbackDays);
   const status: "ready" | "error" = itineraryDays.length > 0 ? "ready" : "error";
   const fallbackDayNumber = itineraryDays[0]?.dayNumber ?? CURRENT_DAY_INDEX;
   const safeSelectedDay = itineraryDays.some((d) => d.dayNumber === selectedDay) ? selectedDay : fallbackDayNumber;
+
+  useEffect(() => {
+    if (!successToastVisible) return;
+    const timeout = window.setTimeout(() => setSuccessToastVisible(false), 2400);
+    return () => window.clearTimeout(timeout);
+  }, [successToastVisible]);
 
   if (status === "error") {
     return (
@@ -83,6 +96,23 @@ export function ItineraryPage() {
   function closeEditor() {
     setEditorMode(null);
     setSelectedActivity(null);
+  }
+
+  function openMoveActivity(item: EditableTimelineItem) {
+    setMovingActivity({ activity: item, fromDayNumber: day.dayNumber });
+  }
+
+  function closeMoveDialog() {
+    setMovingActivity(null);
+  }
+
+  function confirmMoveActivity(toDayNumber: number) {
+    if (!movingActivity) return false;
+    const moved = moveActivityToDay(movingActivity.fromDayNumber, toDayNumber, movingActivity.activity.id);
+    if (moved) {
+      setSuccessToastVisible(true);
+    }
+    return moved;
   }
 
   return (
@@ -139,6 +169,7 @@ export function ItineraryPage() {
               onToggleBookmark={toggleBookmark}
               onSelectActivity={openEditActivity}
               onMoveActivity={(activityId, direction) => moveActivity(day.dayNumber, activityId, direction)}
+              onRequestMoveActivity={openMoveActivity}
               onDeleteActivity={deleteActivity}
             />
           </motion.div>
@@ -158,6 +189,30 @@ export function ItineraryPage() {
             }}
             onDelete={deleteActivity}
           />
+
+          <MoveActivityDialog
+            open={movingActivity !== null}
+            activity={movingActivity?.activity ?? null}
+            currentDayNumber={movingActivity?.fromDayNumber ?? day.dayNumber}
+            days={itineraryDays}
+            onClose={closeMoveDialog}
+            onConfirm={confirmMoveActivity}
+          />
+
+          <AnimatePresence>
+            {successToastVisible && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 16 }}
+                className="fixed inset-x-0 bottom-28 z-[60] mx-auto flex max-w-md justify-center px-5 md:max-w-lg lg:max-w-xl"
+              >
+                <div className="glass-surface-strong glass-shadow-lg rounded-pill px-4 py-3 text-sm font-bold text-ink">
+                  Activity moved successfully
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
 

@@ -18,6 +18,7 @@ export interface ActivityTimelineProps {
   onToggleBookmark?: (id: string) => void;
   onSelectActivity?: (item: EditableTimelineItem) => void;
   onMoveActivity?: (activityId: string, direction: "up" | "down") => void;
+  onRequestMoveActivity?: (item: EditableTimelineItem) => void;
   onDeleteActivity?: (activityId: string) => boolean;
 }
 
@@ -29,6 +30,7 @@ export function ActivityTimeline({
   onToggleBookmark,
   onSelectActivity,
   onMoveActivity,
+  onRequestMoveActivity,
   onDeleteActivity,
 }: ActivityTimelineProps) {
   const { t } = useTranslation();
@@ -227,12 +229,12 @@ export function ActivityTimeline({
                     type="button"
                     onClick={() => {
                       closeMenu();
-                      onSelectActivity?.(activeMenu.item);
+                      onRequestMoveActivity?.(activeMenu.item);
                     }}
                     className="glass-surface flex min-h-12 items-center gap-3 rounded-2xl px-4 text-left text-sm font-semibold text-ink"
                   >
                     <CalendarDays size={17} className="text-accent-strong" />
-                    Move to Day
+                    Move to another day...
                   </button>
                   {onToggleBookmark && (
                     <button

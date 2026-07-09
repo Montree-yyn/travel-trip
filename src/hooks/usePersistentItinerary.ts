@@ -69,6 +69,19 @@ function normalizeItineraryDoc(snapshot: QueryDocumentSnapshot) {
   if (typeof data.dayNumber !== "number" || typeof data.time !== "string" || typeof data.activity !== "string") {
     return null;
   }
+  const activityFields = { ...data } as Partial<EditableTimelineItem> & Record<string, unknown>;
+  delete activityFields.dayNumber;
+  delete activityFields.date;
+  delete activityFields.weekday;
+  delete activityFields.title;
+  delete activityFields.theme;
+  delete activityFields.city;
+  delete activityFields.order;
+  delete activityFields.tripId;
+  delete activityFields.createdAt;
+  delete activityFields.updatedAt;
+  delete activityFields.createdBy;
+  delete activityFields.updatedBy;
 
   return {
     id: snapshot.id,
@@ -80,14 +93,10 @@ function normalizeItineraryDoc(snapshot: QueryDocumentSnapshot) {
     city: typeof data.city === "string" ? data.city : "",
     order: typeof data.order === "number" ? data.order : 0,
     activity: {
+      ...activityFields,
       id: snapshot.id,
       time: data.time,
       activity: data.activity,
-      location: typeof data.location === "string" ? data.location : undefined,
-      notes: typeof data.notes === "string" ? data.notes : undefined,
-      category: typeof data.category === "string" ? data.category : undefined,
-      duration: typeof data.duration === "string" ? data.duration : undefined,
-      travelTime: typeof data.travelTime === "string" ? data.travelTime : undefined,
     },
   };
 }
@@ -369,6 +378,57 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
     [days, user],
   );
 
+  const moveActivityToDay = useCallback(
+    (fromDayNumber: number, toDayNumber: number, activityId: string) => {
+      if (fromDayNumber === toDayNumber) return false;
+      const sourceDay = days.find((item) => item.dayNumber === fromDayNumber);
+      const destinationDay = days.find((item) => item.dayNumber === toDayNumber);
+      const activity = sourceDay?.timeline.find((item) => item.id === activityId);
+      if (!sourceDay || !destinationDay || !activity) return false;
+
+      const nextDays = days.map((day) => {
+        if (day.dayNumber === fromDayNumber) {
+          return {
+            ...day,
+            timeline: day.timeline.filter((item) => item.id !== activityId),
+          };
+        }
+        if (day.dayNumber === toDayNumber) {
+          return {
+            ...day,
+            timeline: [...day.timeline.filter((item) => item.id !== activityId), activity],
+          };
+        }
+        return day;
+      });
+
+      setDays(nextDays);
+
+      if (user && isFirebaseConfigured()) {
+        const tripId = getActiveTripId();
+        const batch = writeBatch(sharedTripCollection(tripId, "itinerary").firestore);
+        for (const dayNumber of [fromDayNumber, toDayNumber]) {
+          const day = findDay(nextDays, dayNumber);
+          if (!day) continue;
+          day.timeline.forEach((nextActivity, order) => {
+            batch.set(
+              sharedTripSubDoc(tripId, "itinerary", nextActivity.id),
+              serializeActivity({ day, activity: nextActivity, order, tripId, uid: user.uid }),
+              { merge: true },
+            );
+          });
+        }
+        void batch.commit().catch((saveError) => {
+          console.error("[travel-trip-sync] Itinerary day move failed", saveError);
+          setError("Could not move this itinerary item to another day. Please try again.");
+        });
+      }
+
+      return true;
+    },
+    [days, user],
+  );
+
   return {
     days,
     error,
@@ -376,5 +436,6 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
     updateActivity,
     deleteActivity,
     moveActivity,
+    moveActivityToDay,
   };
 }

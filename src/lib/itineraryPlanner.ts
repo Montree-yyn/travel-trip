@@ -27,6 +27,7 @@ function normalizeActivity(value: unknown, dayNumber: number, index: number): Ed
   if (typeof candidate.time !== "string" || typeof candidate.activity !== "string") return null;
 
   const item: EditableTimelineItem = {
+    ...candidate,
     id: typeof candidate.id === "string" && candidate.id
       ? candidate.id
       : createActivityId(dayNumber, { time: candidate.time, activity: candidate.activity }, index),
