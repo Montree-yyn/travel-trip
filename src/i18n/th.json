@@ -167,7 +167,10 @@
   "budget": {
     "title": "งบประมาณ",
     "subtitle": "ติดตามค่าใช้จ่ายทริป",
+    "dashboardTitle": "กระเป๋าทริป",
+    "dashboardSubtitle": "จัดการงบประมาณและค่าใช้จ่ายของทริป",
     "expenses": "รายการค่าใช้จ่าย",
+    "todaySpending": "ค่าใช้จ่ายวันนี้",
     "addExpense": "เพิ่มค่าใช้จ่าย",
     "editExpense": "แก้ไขค่าใช้จ่าย",
     "deleteExpense": "ลบค่าใช้จ่าย",
@@ -244,6 +247,8 @@
     "remaining": "เหลือ {{count}} รายการ",
     "addItem": "เพิ่มรายการ",
     "editItem": "แก้ไขรายการ",
+    "markComplete": "ทำเครื่องหมายว่าเสร็จแล้ว",
+    "markIncomplete": "ทำเครื่องหมายว่ายังไม่เสร็จ",
     "deleteItem": "ลบรายการ",
     "deleteConfirm": "ลบ \"{{label}}\" ออกจากเช็กลิสต์?",
     "confirmDelete": "ลบ",
@@ -383,7 +388,7 @@
         "subtitle": "กรมธรรม์ บัตรประกัน เบอร์ติดต่อฉุกเฉิน และข้อมูลเคลม"
       },
       "usj-tickets": {
-        "title": "บัตร USJ",
+        "title": "Universal Studios Japan / USJ Ticket",
         "subtitle": "บัตรเข้า Universal Studios Japan และ QR tickets"
       },
       "visit-japan-web": {
@@ -401,8 +406,18 @@
     }
   },
   "explorePage": {
-    "title": "วางแผนสถานที่และวันเดินทาง",
-    "subtitle": "เปิดเครื่องมือวางแผนทริปโดยไม่ปะปนกับกระเป๋าเอกสาร",
+    "title": "สำรวจ",
+    "subtitle": "วางแผนสถานที่และวันเดินทาง",
+    "bannerTitle": "Osaka · Kyoto · Ine · Kobe",
+    "bannerSubtitle": "Kansai, Japan",
+    "recentActivity": "กิจกรรมล่าสุด",
+    "todayHighlight": {
+      "label": "ไฮไลต์วันนี้",
+      "anytime": "เวลาใดก็ได้",
+      "noLocation": "รอยืนยันสถานที่",
+      "fallbackTitle": "เช็กแผนวันนี้",
+      "fallbackNote": "เปิดแผนการเดินทางเพื่อดูขั้นตอนสำคัญถัดไป"
+    },
     "soon": "เร็ว ๆ นี้",
     "stats": {
       "days": "วัน",
@@ -430,6 +445,10 @@
       "attractions": {
         "title": "สถานที่เที่ยว",
         "subtitle": "แลนด์มาร์กและสถานที่ที่อยากไป"
+      },
+      "documents": {
+        "title": "Documents",
+        "subtitle": "Visit Japan Web, Universal Studios Japan tickets, ประกันเดินทาง, Passport/Visa, ไฟล์โรงแรมและเที่ยวบิน"
       },
       "notes": {
         "title": "โน้ต",
@@ -679,6 +698,7 @@
     "favorites": "รายการโปรด",
     "map": "แผนที่",
     "wallet": "กระเป๋าเงิน",
+    "documents": "เอกสาร",
     "budget": "งบประมาณ",
     "flightFiles": "ไฟล์เที่ยวบิน",
     "flights": "เที่ยวบิน",

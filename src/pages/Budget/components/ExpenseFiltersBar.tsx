@@ -42,14 +42,14 @@ export function ExpenseFiltersBar({
   ];
 
   return (
-    <div className="flex flex-col gap-2 px-5">
-      <div className="glass-surface glass-shadow flex items-center gap-2 rounded-2xl px-3.5 py-2.5">
+    <div className="flex flex-col gap-1.5 px-5">
+      <div className="glass-surface glass-shadow flex items-center gap-2 rounded-2xl px-3 py-2">
         <Search size={15} className="shrink-0 text-ink-faint" />
         <input
           value={filters.query}
           onChange={(event) => onChange({ ...filters, query: event.target.value })}
           placeholder={t("budget.searchPlaceholder")}
-          className="min-w-0 flex-1 bg-transparent text-[0.8125rem] text-ink outline-none placeholder:text-ink-faint"
+          className="min-w-0 flex-1 bg-transparent text-xs font-semibold text-ink outline-none placeholder:text-ink-faint"
         />
         {filters.query && (
           <button
@@ -66,21 +66,21 @@ export function ExpenseFiltersBar({
       <FilterChips
         options={currencyOptions}
         value={filters.currency}
-        className="[&>button]:px-3 [&>button]:py-1"
+        className="[&>button]:px-3 [&>button]:py-1 [&>button]:text-[0.6875rem]"
         onChange={(currency) => onChange({ ...filters, currency: currency as ExpenseCurrencyFilter })}
       />
 
       <FilterChips
         options={categoryOptions}
         value={filters.category}
-        className="[&>button]:px-3 [&>button]:py-1"
+        className="[&>button]:px-3 [&>button]:py-1 [&>button]:text-[0.6875rem]"
         onChange={(category) => onChange({ ...filters, category: category as ExpenseCategoryFilter })}
       />
 
       <FilterChips
         options={dateOptions}
         value={filters.date}
-        className="[&>button]:px-3 [&>button]:py-1"
+        className="[&>button]:px-3 [&>button]:py-1 [&>button]:text-[0.6875rem]"
         onChange={(date) => onChange({ ...filters, date: date as ExpenseDateFilter })}
       />
     </div>

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Image, Pencil, Trash2 } from "lucide-react";
+import { Image, Trash2 } from "lucide-react";
 
 import { GlassCard, IconButton } from "@/components/ui";
 import { riseIn } from "@/design-system/motion";
@@ -22,7 +22,22 @@ export function ExpenseCard({
 
   return (
     <motion.div variants={riseIn}>
-      <GlassCard padding="sm" className="mx-5 flex items-start gap-3.5">
+      <GlassCard
+        interactive
+        padding="sm"
+        role="button"
+        tabIndex={0}
+        onClick={onEdit}
+        onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onEdit();
+          }
+        }}
+        aria-label={t("budget.editExpense")}
+        className="mx-5 flex items-start gap-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+      >
         {expense.receiptPhotoUrl ? (
           <span className="relative size-14 shrink-0 overflow-hidden rounded-2xl bg-ink/5">
             <img src={expense.receiptPhotoUrl} alt="" loading="lazy" className="size-full object-cover" />
@@ -64,17 +79,6 @@ export function ExpenseCard({
         </div>
 
         <div className="flex shrink-0 flex-col gap-1.5">
-          <IconButton
-            size="sm"
-            variant="ghost"
-            aria-label={t("budget.editExpense")}
-            onClick={(event) => {
-              event.stopPropagation();
-              onEdit();
-            }}
-          >
-            <Pencil size={15} />
-          </IconButton>
           <IconButton
             size="sm"
             variant="ghost"

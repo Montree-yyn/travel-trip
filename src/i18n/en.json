@@ -167,7 +167,10 @@
   "budget": {
     "title": "Budget",
     "subtitle": "Track your trip spending",
+    "dashboardTitle": "Trip Wallet",
+    "dashboardSubtitle": "Manage trip budgets and expenses",
     "expenses": "Expenses",
+    "todaySpending": "Today's Spending",
     "addExpense": "Add expense",
     "editExpense": "Edit expense",
     "deleteExpense": "Delete expense",
@@ -244,6 +247,8 @@
     "remaining": "{{count}} remaining",
     "addItem": "Add item",
     "editItem": "Edit item",
+    "markComplete": "Mark complete",
+    "markIncomplete": "Mark incomplete",
     "deleteItem": "Delete item",
     "deleteConfirm": "Remove \"{{label}}\" from your checklist?",
     "confirmDelete": "Delete",
@@ -383,7 +388,7 @@
         "subtitle": "Policies, cards, emergency contacts, and claim details."
       },
       "usj-tickets": {
-        "title": "USJ Tickets",
+        "title": "Universal Studios Japan / USJ Ticket",
         "subtitle": "Universal Studios Japan entry passes and QR tickets."
       },
       "visit-japan-web": {
@@ -401,8 +406,18 @@
     }
   },
   "explorePage": {
-    "title": "Plan places and days",
-    "subtitle": "Open trip planning tools without mixing them into your booking wallet.",
+    "title": "Explore",
+    "subtitle": "Plan places and travel days",
+    "bannerTitle": "Osaka · Kyoto · Ine · Kobe",
+    "bannerSubtitle": "Kansai, Japan",
+    "recentActivity": "Recent Activity",
+    "todayHighlight": {
+      "label": "Today Highlight",
+      "anytime": "Anytime",
+      "noLocation": "Location to confirm",
+      "fallbackTitle": "Check today's plan",
+      "fallbackNote": "Open the itinerary to review the next useful trip step."
+    },
     "soon": "Soon",
     "stats": {
       "days": "Days",
@@ -430,6 +445,10 @@
       "attractions": {
         "title": "Attractions",
         "subtitle": "Landmarks and places to visit."
+      },
+      "documents": {
+        "title": "Documents",
+        "subtitle": "Visit Japan Web, Universal Studios Japan tickets, travel insurance, passport/visa, hotel and flight files."
       },
       "notes": {
         "title": "Notes",
@@ -679,6 +698,7 @@
     "favorites": "Favorites",
     "map": "Map",
     "wallet": "Wallet",
+    "documents": "Documents",
     "budget": "Budget",
     "flightFiles": "Flight Files",
     "flights": "Flights",

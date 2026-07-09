@@ -19,10 +19,10 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: ROUTES.home, labelKey: "nav.home", icon: Home, end: true },
   {
-    to: ROUTES.travelWallet,
+    to: ROUTES.budget,
     labelKey: "nav.travelWallet",
     icon: Wallet,
-    activePaths: [ROUTES.flights, ROUTES.hotel, "/travel-wallet/documents", "/more/documents"],
+    activePaths: [ROUTES.travelWallet, ROUTES.flights, ROUTES.hotel, "/travel-wallet/documents", "/more/documents"],
   },
   {
     to: ROUTES.explore,

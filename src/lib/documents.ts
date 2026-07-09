@@ -24,7 +24,7 @@ export const DOCUMENT_CATEGORIES: DocumentCategory[] = [
   },
   {
     id: "usj-tickets",
-    title: "USJ Tickets",
+    title: "Universal Studios Japan / USJ Ticket",
     description: "Universal Studios Japan entry passes and QR tickets.",
   },
   {

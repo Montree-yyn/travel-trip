@@ -6,24 +6,24 @@ import {
   DataErrorState,
   EmptyState,
   GenericPageSkeleton,
+  GlassCard,
   IconButton,
+  ProgressRing,
   SectionHeader,
   ThemeToggle,
 } from "@/components/ui";
-import { PageHeader, PageLoadingGate } from "@/components/layout";
-import { TripBudgetCard } from "@/components/trip/TripBudgetCard";
+import { PageLoadingGate } from "@/components/layout";
 import { sampleTrip } from "@/data/sample-trip";
-import { staggerContainer } from "@/design-system/motion";
+import { riseIn, staggerContainer } from "@/design-system/motion";
 import { usePersistentBudget } from "@/hooks/usePersistentBudget";
 import { useTranslation } from "@/i18n";
 import {
-  calculateBudgetSummary,
   filterExpenses,
   sortExpensesByDate,
 } from "@/lib/budget";
 import { getCurrentTripDay } from "@/lib/trip-progress";
 import { useTripSync } from "@/sync";
-import type { BudgetExpense, ExpenseFilters } from "@/types/budget";
+import type { BudgetCurrency, BudgetExpense, BudgetWalletSummary, ExpenseFilters } from "@/types/budget";
 
 import { ExpenseCard } from "./components/ExpenseCard";
 import { ExpenseDeleteDialog } from "./components/ExpenseDeleteDialog";
@@ -38,13 +38,121 @@ const defaultFilters: ExpenseFilters = {
   date: "all",
 };
 
+function createFallbackWallets(): BudgetWalletSummary[] {
+  return ["THB", "JPY"].map((currency) => ({
+    currency: currency as BudgetCurrency,
+    totalBudget: 0,
+    totalSpent: 0,
+    remaining: 0,
+    spentPercent: 0,
+  }));
+}
+
+function WalletDashboardCard({ wallet, onEdit }: { wallet: BudgetWalletSummary; onEdit: () => void }) {
+  const { t } = useTranslation();
+  const isThb = wallet.currency === "THB";
+
+  return (
+    <motion.button
+      type="button"
+      variants={riseIn}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 340, damping: 28 }}
+      className="glass-surface glass-shadow min-w-0 rounded-3xl p-3.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+      aria-label={`${t("budget.editTotalBudget")} ${wallet.currency}`}
+      onClick={onEdit}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs font-bold text-accent-strong">
+            {isThb ? "🇹🇭" : "🇯🇵"} {wallet.currency} Wallet
+          </p>
+          <p className="mt-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-faint">
+            {t("budget.remaining")}
+          </p>
+          <p className="mt-0.5 truncate text-2xl font-bold tracking-tight text-ink">
+            {wallet.remaining.toLocaleString()}
+          </p>
+        </div>
+        <ProgressRing value={wallet.spentPercent} size={46} strokeWidth={5}>
+          <span className="text-[0.625rem] font-bold text-ink">{wallet.spentPercent}%</span>
+        </ProgressRing>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-white/55 p-2.5 text-[0.6875rem] font-semibold dark:bg-white/8">
+        <span className="min-w-0">
+          <span className="block text-ink-faint">{t("budget.spent")}</span>
+          <span className="block truncate text-ink">{wallet.totalSpent.toLocaleString()}</span>
+        </span>
+        <span className="min-w-0">
+          <span className="block text-ink-faint">{t("budget.totalBudget")}</span>
+          <span className="block truncate text-ink">{wallet.totalBudget.toLocaleString()}</span>
+        </span>
+      </div>
+    </motion.button>
+  );
+}
+
+function WalletDashboardSection({
+  wallets,
+  onEdit,
+}: {
+  wallets: BudgetWalletSummary[];
+  onEdit: () => void;
+}) {
+  const safeWallets = wallets.length > 0 ? wallets : createFallbackWallets();
+
+  return (
+    <section className="flex flex-col gap-2.5 px-5">
+      <div className="grid grid-cols-2 gap-2.5">
+        {safeWallets.map((wallet) => (
+          <WalletDashboardCard key={wallet.currency} wallet={wallet} onEdit={onEdit} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TodaysSpendingCard({ expenses, date }: { expenses: BudgetExpense[]; date: string }) {
+  const { t } = useTranslation();
+  const totals = {
+    THB: expenses
+      .filter((expense) => expense.date === date && expense.currency === "THB")
+      .reduce((sum, expense) => sum + expense.amount, 0),
+    JPY: expenses
+      .filter((expense) => expense.date === date && expense.currency === "JPY")
+      .reduce((sum, expense) => sum + expense.amount, 0),
+  };
+
+  return (
+    <motion.div variants={riseIn} className="px-5">
+      <GlassCard padding="sm" className="grid grid-cols-[1fr_auto_auto] items-center gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("budget.todaySpending")}</p>
+          <p className="mt-0.5 truncate text-xs font-semibold text-ink-muted">
+            {t("budget.filters.dayOption", { day: getCurrentTripDay(sampleTrip).dayNumber })}
+          </p>
+        </div>
+        <div className="rounded-2xl bg-white/65 px-3 py-2 text-right dark:bg-white/8">
+          <p className="text-[0.625rem] font-bold text-accent-strong">THB</p>
+          <p className="text-sm font-bold text-ink">{totals.THB.toLocaleString()}</p>
+        </div>
+        <div className="rounded-2xl bg-white/65 px-3 py-2 text-right dark:bg-white/8">
+          <p className="text-[0.625rem] font-bold text-accent-strong">JPY</p>
+          <p className="text-sm font-bold text-ink">{totals.JPY.toLocaleString()}</p>
+        </div>
+      </GlassCard>
+    </motion.div>
+  );
+}
+
 export function BudgetPage() {
   const { t } = useTranslation();
   const { ready, error: syncError, retry } = useTripSync();
   const defaultCurrency = sampleTrip.budget.currency;
   const {
     expenses,
-    totalBudget,
     currencyBudgets,
     walletSummaries,
     currency,
@@ -72,16 +180,6 @@ export function BudgetPage() {
     [expenses, filters],
   );
 
-  const budgetSummary = useMemo(
-    () =>
-      calculateBudgetSummary({
-        expenses,
-        totalBudget,
-        tripDays: sampleTrip.itinerary,
-      }),
-    [expenses, totalBudget],
-  );
-
   function openAddDialog() {
     setFormMode("add");
     setActiveExpense(null);
@@ -105,7 +203,14 @@ export function BudgetPage() {
   return (
     <PageLoadingGate>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative flex flex-col gap-4 pb-28">
-        <PageHeader title={t("budget.title")} subtitle={t("budget.subtitle")} actions={<ThemeToggle />} />
+        <motion.header variants={riseIn} className="flex items-start justify-between gap-3 px-5 pt-4">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-wide text-accent-strong">{t("budget.tripWallet")}</p>
+            <h1 className="mt-1 truncate text-2xl font-bold tracking-tight text-ink">{t("budget.dashboardTitle")}</h1>
+            <p className="mt-1 text-sm leading-relaxed text-ink-muted">{t("budget.dashboardSubtitle")}</p>
+          </div>
+          <ThemeToggle />
+        </motion.header>
 
         {(syncError || budgetError) && (
           <div className="px-5">
@@ -117,14 +222,12 @@ export function BudgetPage() {
           </div>
         )}
 
-        <TripBudgetCard
-          totalBudget={budgetSummary.totalBudget}
-          spent={budgetSummary.totalSpent}
-          remaining={budgetSummary.remaining}
-          currency={currency}
+        <WalletDashboardSection
           wallets={walletSummaries}
           onEdit={() => setBudgetDialogOpen(true)}
         />
+
+        <TodaysSpendingCard expenses={expenses} date={defaultDate} />
 
         {expenses.length > 0 && (
           <ExpenseFiltersBar filters={filters} tripDays={sampleTrip.itinerary} onChange={setFilters} />

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Hotel, ListChecks, Plane, Route, Wallet, type LucideIcon } from "lucide-react";
+import { FileText, Hotel, ListChecks, Plane, Route, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { staggerContainer, riseIn } from "@/design-system/motion";
@@ -13,7 +13,7 @@ interface QuickAction {
 }
 
 const ACTIONS: QuickAction[] = [
-  { to: ROUTES.travelWallet, labelKey: "quickActions.wallet", icon: Wallet },
+  { to: ROUTES.travelWallet, labelKey: "quickActions.documents", icon: FileText },
   { to: ROUTES.flights, labelKey: "quickActions.flightFiles", icon: Plane },
   { to: ROUTES.hotel, labelKey: "quickActions.hotel", icon: Hotel },
   { to: ROUTES.itinerary, labelKey: "quickActions.itinerary", icon: Route },

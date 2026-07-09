@@ -267,7 +267,19 @@ function FlightSegmentCard({
 
   return (
     <motion.article variants={riseIn}>
-      <div className="rounded-[1.8rem] border border-neutral-200 bg-white p-4 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.45)]">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onEdit}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onEdit();
+          }
+        }}
+        className="cursor-pointer rounded-[1.8rem] border border-neutral-200 bg-white p-4 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.45)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_22px_48px_-34px_rgba(15,23,42,0.5)] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+        aria-label={`Edit ${flight.label} flight booking`}
+      >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-normal text-neutral-500">
@@ -287,16 +299,11 @@ function FlightSegmentCard({
           <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
-              aria-label={`Edit ${flight.label} flight booking`}
-              onClick={onEdit}
-              className="flex size-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-600 shadow-sm"
-            >
-              <Pencil size={15} />
-            </button>
-            <button
-              type="button"
               aria-label={`Delete ${flight.label} flight booking`}
-              onClick={onDelete}
+              onClick={(event) => {
+                event.stopPropagation();
+                onDelete();
+              }}
               className="flex size-9 items-center justify-center rounded-full border border-orange-200 bg-orange-50 text-orange-700 shadow-sm"
             >
               <Trash2 size={15} />

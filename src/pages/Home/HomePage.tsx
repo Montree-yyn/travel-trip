@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import {
-  CheckCircle2,
   ChevronRight,
   Hotel,
   MapPin,
@@ -10,17 +9,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import { Avatar, EmptyState, GlassCard, ProgressRing, SectionHeader, ThemeToggle, TripImage } from "@/components/ui";
+import { Avatar, GlassCard, SectionHeader, ThemeToggle, TripImage } from "@/components/ui";
 import { PageLoadingGate } from "@/components/layout";
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { sampleForecast, getTripDayForecast } from "@/data/sample-weather";
 import { riseIn, staggerContainer } from "@/design-system/motion";
-import { usePersistentBudget } from "@/hooks/usePersistentBudget";
 import { usePersistentBookings } from "@/hooks/usePersistentBookings";
 import { useLocaleDateFormatter, useTranslation, type TranslateParams } from "@/i18n";
-import { BUDGET_EXPENSE_CATEGORY_ICONS, sortExpensesByDate } from "@/lib/budget";
 import {
   getCurrentTripDay,
   getDaysUntilStart,
@@ -29,13 +26,11 @@ import {
 } from "@/lib/trip-progress";
 import { WEATHER_ICONS } from "@/lib/weather";
 import { ROUTES } from "@/router/paths";
-import type { BudgetCurrency, BudgetExpense, BudgetWalletSummary } from "@/types/budget";
 import type { FlightSegment } from "@/types/flight";
 import type { HotelData } from "@/types/hotel";
 import type { TimelineItem } from "@/types/trip";
 
 import { QuickActionsGrid } from "./components/QuickActionsGrid";
-import { TotalBudgetDialog } from "@/pages/Budget/components/TotalBudgetDialog";
 
 function cleanValue(value?: string) {
   const trimmed = value?.trim();
@@ -216,131 +211,10 @@ function TodaysPlanSection({
   );
 }
 
-function CompactWalletCard({ wallet, onEdit }: { wallet: BudgetWalletSummary; onEdit: () => void }) {
-  const { t } = useTranslation();
-  const isThb = wallet.currency === "THB";
-
-  return (
-    <motion.button
-      type="button"
-      whileHover={{ y: -3 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 340, damping: 28 }}
-      className="glass-surface glass-shadow min-w-0 cursor-pointer rounded-3xl p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
-      aria-label={`${t("budget.editTotalBudget")} ${wallet.currency}`}
-      onClick={onEdit}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-bold text-accent-strong">{isThb ? "🇹🇭" : "🇯🇵"} {wallet.currency} Wallet</p>
-          <p className="mt-1 truncate text-lg font-bold text-ink">{wallet.remaining.toLocaleString()}</p>
-        </div>
-        <span className="rounded-pill bg-accent-soft px-2 py-0.5 text-[0.625rem] font-bold text-accent-strong">
-          {t("budget.editTotalBudget")}
-        </span>
-      </div>
-      <div className="mt-2 flex items-end justify-between gap-2">
-        <div className="min-w-0 text-[0.625rem] font-semibold leading-relaxed text-ink-muted">
-          <p>{t("budget.spent")}: {wallet.totalSpent.toLocaleString()}</p>
-          <p>{t("budget.totalBudget")}: {wallet.totalBudget.toLocaleString()}</p>
-        </div>
-        <ProgressRing value={wallet.spentPercent} size={42} strokeWidth={5}>
-          <span className="text-[0.625rem] font-bold text-ink">{wallet.spentPercent}%</span>
-        </ProgressRing>
-      </div>
-    </motion.button>
-  );
-}
-
-function DualWalletSection({ wallets, onEdit }: { wallets: BudgetWalletSummary[]; onEdit: () => void }) {
-  const { t } = useTranslation();
-  const safeWallets = wallets.length > 0 ? wallets : ["THB", "JPY"].map((currency) => ({
-    currency: currency as BudgetCurrency,
-    totalBudget: 0,
-    totalSpent: 0,
-    remaining: 0,
-    spentPercent: 0,
-  }));
-
-  return (
-    <motion.div variants={riseIn} className="flex flex-col gap-2.5">
-      <SectionHeader title={t("budget.tripWallet")} action={<Link to={ROUTES.budget} className="text-xs font-bold text-accent-strong">{t("common.viewAll")}</Link>} />
-      <div className="grid grid-cols-2 gap-2.5 px-5">
-        {safeWallets.map((wallet) => (
-          <CompactWalletCard key={wallet.currency} wallet={wallet} onEdit={onEdit} />
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-function ExpenseRow({ expense }: { expense: BudgetExpense }) {
-  const { t } = useTranslation();
-  const formatDateShort = useLocaleDateFormatter();
-  const Icon = BUDGET_EXPENSE_CATEGORY_ICONS[expense.category];
-
-  return (
-    <Link to={ROUTES.budget} className="flex items-center gap-3 rounded-2xl bg-white/65 p-2.5 dark:bg-white/8">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
-        <Icon size={17} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-bold text-ink">{expense.merchant || expense.title}</span>
-        <span className="mt-0.5 block truncate text-xs text-ink-muted">
-          {t(`budget.categories.${expense.category}`)} · {formatDate(expense.date, formatDateShort)}
-        </span>
-      </span>
-      <span className="shrink-0 text-right">
-        <span className="rounded-pill bg-accent-soft px-2 py-0.5 text-[0.625rem] font-bold text-accent-strong">
-          {expense.currency}
-        </span>
-        <span className="mt-1 block text-sm font-bold text-ink">{expense.amount.toLocaleString()}</span>
-      </span>
-    </Link>
-  );
-}
-
-function LatestExpensesSection({ expenses }: { expenses: BudgetExpense[] }) {
-  const { t } = useTranslation();
-  const latestExpenses = sortExpensesByDate(expenses).slice(0, 3);
-
-  return (
-    <motion.div variants={riseIn} className="flex flex-col gap-2.5">
-      <SectionHeader
-        title={t("home.latestExpenses")}
-        action={<Link to={ROUTES.budget} className="text-xs font-bold text-accent-strong">{t("common.viewAll")}</Link>}
-      />
-      <div className="px-5">
-        <GlassCard padding="sm" className="flex flex-col gap-2">
-          {latestExpenses.length > 0 ? (
-            latestExpenses.map((expense) => <ExpenseRow key={expense.id} expense={expense} />)
-          ) : (
-            <EmptyState
-              icon={CheckCircle2}
-              title={t("empty.budget.title")}
-              description={t("empty.budget.description")}
-            />
-          )}
-        </GlassCard>
-      </div>
-    </motion.div>
-  );
-}
-
 export function HomePage() {
   const { t } = useTranslation();
   const formatDateShort = useLocaleDateFormatter();
   const { bookings } = usePersistentBookings();
-  const {
-    currencyBudgets,
-    expenses,
-    walletSummaries,
-    updateBudgetSettings,
-  } = usePersistentBudget({
-    defaultTotalBudget: sampleTrip.budget.totalMax,
-    defaultCurrency: sampleTrip.budget.currency,
-  });
-  const [budgetDialogOpen, setBudgetDialogOpen] = useState(false);
   const currentDay = getCurrentTripDay(sampleTrip);
   const currentDayIndex = currentDay.dayNumber;
   const countdownDays = getDaysUntilStart(sampleTrip);
@@ -395,21 +269,10 @@ export function HomePage() {
           activity={nextActivity}
         />
 
-        <DualWalletSection wallets={walletSummaries} onEdit={() => setBudgetDialogOpen(true)} />
-
         <div className="flex flex-col gap-2.5">
           <SectionHeader title={t("home.quickActions")} />
           <QuickActionsGrid />
         </div>
-
-        <LatestExpensesSection expenses={expenses} />
-
-        <TotalBudgetDialog
-          open={budgetDialogOpen}
-          budgets={currencyBudgets}
-          onClose={() => setBudgetDialogOpen(false)}
-          onSave={updateBudgetSettings}
-        />
       </motion.div>
     </PageLoadingGate>
   );
