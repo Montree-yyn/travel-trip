@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { DataErrorState, GlassCard, MapActionButtons, ThemeToggle } from "@/components/ui";
 import { PageAccent, PageHeader, PageLoadingGate } from "@/components/layout";
@@ -8,6 +9,7 @@ import { staggerContainer } from "@/design-system/motion";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useTranslation } from "@/i18n";
 import { createMapTarget } from "@/lib/maps";
+import { ROUTES } from "@/router/paths";
 
 import { InfoStatGrid } from "./components/InfoStatGrid";
 import { NearbyPlacesRow } from "./components/NearbyPlacesRow";
@@ -18,9 +20,16 @@ import { PlaceSelector } from "./components/PlaceSelector";
 
 export function PlacesPage() {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
   const [selectedId, setSelectedId] = useState(samplePlaces[0]?.id ?? "");
   const place = samplePlaces.find((p) => p.id === selectedId) ?? samplePlaces[0];
   const { isPlaceFavorite, togglePlaceFavorite } = useFavorites();
+
+  useEffect(() => {
+    if (pathname !== ROUTES.places) {
+      setSelectedId("");
+    }
+  }, [pathname]);
 
   if (samplePlaces.length === 0) {
     return (
@@ -40,7 +49,7 @@ export function PlacesPage() {
 
   return (
     <PageAccent tone="green">
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6 pb-8">
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative z-0 flex flex-col gap-6 pb-32">
         <PageHeader
           title={t("places.title")}
           subtitle={t("places.subtitle", { count: samplePlaces.length })}
@@ -50,7 +59,7 @@ export function PlacesPage() {
         <PlaceSelector places={samplePlaces} selectedId={selectedId} onSelect={setSelectedId} />
 
         <PageLoadingGate skeleton={<PlaceDetailSkeleton />}>
-          <motion.div key={place.id} variants={staggerContainer} initial="hidden" animate="visible" className="flex flex-col gap-6">
+          <motion.div key={place.id} variants={staggerContainer} initial="hidden" animate="visible" className="relative z-0 flex flex-col gap-6">
             <PlaceHero place={place} />
             <GlassCard padding="md" className="mx-5 flex flex-col gap-3">
               <div className="flex items-center justify-between gap-3">

@@ -404,6 +404,12 @@
     "title": "Plan places and days",
     "subtitle": "Open trip planning tools without mixing them into your booking wallet.",
     "soon": "Soon",
+    "stats": {
+      "days": "Days",
+      "savedPlaces": "Saved Places",
+      "activities": "Activities",
+      "budgetLeft": "Budget Left"
+    },
     "items": {
       "itinerary": {
         "title": "Itinerary",

@@ -16,7 +16,7 @@ export function NearbyPlacesRow({ nearby }: { nearby: NearbyPlace[] }) {
       <SectionHeader title={t("places.nearby")} />
       <div className="flex flex-col gap-2 px-5">
         {nearby.map((place) => (
-          <GlassCard key={place.name} padding="sm" interactive className="flex items-center gap-3">
+          <GlassCard key={place.name} padding="sm" className="flex items-center gap-3">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
               <Navigation size={15} />
             </span>

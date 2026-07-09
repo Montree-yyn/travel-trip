@@ -48,7 +48,7 @@ export function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)]">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex w-full max-w-md justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)] md:max-w-lg lg:max-w-xl">
       <ul className="glass-surface-strong glass-shadow-lg pointer-events-auto flex items-center gap-0.5 rounded-pill p-1.5">
         {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end, activePaths }) => {
           const isActive = isNavActive(pathname, to, end, activePaths);

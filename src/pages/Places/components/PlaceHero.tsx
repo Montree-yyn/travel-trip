@@ -16,14 +16,14 @@ export function PlaceHero({ place }: { place: Place }) {
         iconClassName="size-16"
         priority
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
-      <div className="absolute right-4 top-4 flex items-center gap-1 rounded-pill bg-white/25 px-3 py-1.5 backdrop-blur-md ring-1 ring-white/30">
+      <div className="pointer-events-none absolute right-4 top-4 flex items-center gap-1 rounded-pill bg-white/25 px-3 py-1.5 backdrop-blur-md ring-1 ring-white/30">
         <Star size={12} className="fill-white text-white" />
         <span className="text-xs font-semibold text-white">{place.rating.toFixed(1)}</span>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 p-5">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5">
         <span className="mb-1.5 inline-block rounded-pill bg-white/25 px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-white backdrop-blur-md ring-1 ring-white/30">
           {place.category}
         </span>
