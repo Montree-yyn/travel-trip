@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 
 import { ProgressRing } from "@/components/ui";
 import { scaleIn } from "@/design-system/motion";
@@ -67,16 +67,6 @@ export function TripBudgetCard({
   return (
     <motion.div
       variants={scaleIn}
-      role={onEdit ? "button" : undefined}
-      tabIndex={onEdit ? 0 : undefined}
-      onClick={onEdit}
-      onKeyDown={(event) => {
-        if (!onEdit) return;
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onEdit();
-        }
-      }}
       className={cn(
         "glass-shadow-glow relative mx-5 overflow-hidden rounded-4xl bg-gradient-to-br from-[#FF9CB8] via-accent-strong to-[#7A2453] p-6 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50",
         className,
@@ -102,29 +92,26 @@ export function TripBudgetCard({
             {t("budget.tripWallet")}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          {onEdit && (
-            <button
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEdit();
-              }}
-              className="inline-flex size-8 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/25"
-              aria-label={t("budget.editTotalBudget")}
-            >
-              <Pencil size={13} />
-            </button>
-          )}
-        </div>
       </div>
 
       <div className="relative mt-5 grid gap-3">
         {displayedWallets.map((wallet) => {
           const label = walletLabels[wallet.currency];
+          const WalletSurface = onEdit ? motion.button : motion.div;
 
           return (
-            <div key={wallet.currency} className="rounded-3xl bg-white/12 p-3 ring-1 ring-white/15">
+            <WalletSurface
+              key={wallet.currency}
+              type={onEdit ? "button" : undefined}
+              onClick={onEdit}
+              whileHover={onEdit ? { y: -2 } : undefined}
+              whileTap={onEdit ? { scale: 0.985 } : undefined}
+              className={cn(
+                "w-full rounded-3xl bg-white/12 p-3 text-left ring-1 ring-white/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
+                onEdit && "cursor-pointer hover:bg-white/16",
+              )}
+              aria-label={onEdit ? `${t("budget.editTotalBudget")} ${wallet.currency}` : undefined}
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[0.75rem] font-bold uppercase tracking-wide text-white/85">
@@ -166,7 +153,7 @@ export function TripBudgetCard({
                   {wallet.remaining.toLocaleString()}
                 </span>
               </div>
-            </div>
+            </WalletSurface>
           );
         })}
       </div>

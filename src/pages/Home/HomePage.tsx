@@ -4,7 +4,6 @@ import {
   ChevronRight,
   Hotel,
   MapPin,
-  Pencil,
   Plane,
   Ticket,
   TrainFront,
@@ -13,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 
-import { Avatar, EmptyState, GlassCard, IconButton, ProgressRing, SectionHeader, ThemeToggle, TripImage } from "@/components/ui";
+import { Avatar, EmptyState, GlassCard, ProgressRing, SectionHeader, ThemeToggle, TripImage } from "@/components/ui";
 import { PageLoadingGate } from "@/components/layout";
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { sampleForecast, getTripDayForecast } from "@/data/sample-weather";
@@ -222,15 +221,23 @@ function CompactWalletCard({ wallet, onEdit }: { wallet: BudgetWalletSummary; on
   const isThb = wallet.currency === "THB";
 
   return (
-    <GlassCard padding="sm" className="min-w-0">
+    <motion.button
+      type="button"
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 340, damping: 28 }}
+      className="glass-surface glass-shadow min-w-0 cursor-pointer rounded-3xl p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+      aria-label={`${t("budget.editTotalBudget")} ${wallet.currency}`}
+      onClick={onEdit}
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-xs font-bold text-accent-strong">{isThb ? "🇹🇭" : "🇯🇵"} {wallet.currency} Wallet</p>
           <p className="mt-1 truncate text-lg font-bold text-ink">{wallet.remaining.toLocaleString()}</p>
         </div>
-        <IconButton size="sm" variant="ghost" aria-label={t("budget.editTotalBudget")} onClick={onEdit}>
-          <Pencil size={14} />
-        </IconButton>
+        <span className="rounded-pill bg-accent-soft px-2 py-0.5 text-[0.625rem] font-bold text-accent-strong">
+          {t("budget.editTotalBudget")}
+        </span>
       </div>
       <div className="mt-2 flex items-end justify-between gap-2">
         <div className="min-w-0 text-[0.625rem] font-semibold leading-relaxed text-ink-muted">
@@ -241,7 +248,7 @@ function CompactWalletCard({ wallet, onEdit }: { wallet: BudgetWalletSummary; on
           <span className="text-[0.625rem] font-bold text-ink">{wallet.spentPercent}%</span>
         </ProgressRing>
       </div>
-    </GlassCard>
+    </motion.button>
   );
 }
 

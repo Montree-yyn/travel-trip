@@ -22,7 +22,7 @@ export function ExpenseCard({
 
   return (
     <motion.div variants={riseIn}>
-      <GlassCard interactive padding="sm" className="mx-5 flex items-start gap-3.5" onClick={onEdit}>
+      <GlassCard padding="sm" className="mx-5 flex items-start gap-3.5">
         {expense.receiptPhotoUrl ? (
           <span className="relative size-14 shrink-0 overflow-hidden rounded-2xl bg-ink/5">
             <img src={expense.receiptPhotoUrl} alt="" loading="lazy" className="size-full object-cover" />

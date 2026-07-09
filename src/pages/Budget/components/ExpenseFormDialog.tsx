@@ -133,8 +133,8 @@ export function ExpenseFormDialog({
               className="w-full max-w-md"
               onClick={(event) => event.stopPropagation()}
             >
-              <GlassCard elevated padding="none" className="flex max-h-[85dvh] w-full flex-col overflow-hidden rounded-b-none rounded-t-4xl sm:max-h-[84dvh] sm:rounded-4xl">
-              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/30 px-5 py-3.5 dark:border-white/10">
+              <GlassCard elevated padding="none" className="flex max-h-[72dvh] w-full flex-col overflow-hidden rounded-b-none rounded-t-4xl sm:max-h-[74dvh] sm:rounded-4xl">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/30 px-5 py-3 dark:border-white/10">
                 <div>
                   <p className="text-xs font-semibold uppercase text-accent-strong">{mode === "add" ? "Fast entry" : "Edit expense"}</p>
                   <h2 className="text-xl font-semibold text-ink">
@@ -146,7 +146,7 @@ export function ExpenseFormDialog({
                 </IconButton>
               </div>
 
-              <div className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-5 py-3.5">
+              <div className="no-scrollbar flex flex-1 flex-col gap-2.5 overflow-y-auto px-5 py-3">
                 <div className="grid grid-cols-[1fr_6.5rem] gap-3">
                   <label className="flex flex-col gap-1.5">
                     <span className="text-xs font-semibold text-ink-muted">{t("budget.fields.amount")}</span>
@@ -309,7 +309,7 @@ export function ExpenseFormDialog({
                 {error && <p className="rounded-2xl bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-500">{error}</p>}
               </div>
 
-              <div className="sticky bottom-0 grid shrink-0 grid-cols-2 gap-2 border-t border-white/30 bg-[rgb(var(--surface))]/80 px-5 py-3.5 backdrop-blur-xl dark:border-white/10">
+              <div className="sticky bottom-0 grid shrink-0 grid-cols-2 gap-2 border-t border-white/30 bg-[rgb(var(--surface))]/80 px-5 py-3 backdrop-blur-xl dark:border-white/10">
                 {mode === "edit" && onDelete ? (
                   <Button variant="secondary" fullWidth className="text-red-500" onClick={onDelete}>
                     {t("budget.deleteExpense")}

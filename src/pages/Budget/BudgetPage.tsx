@@ -25,8 +25,6 @@ import { getCurrentTripDay } from "@/lib/trip-progress";
 import { useTripSync } from "@/sync";
 import type { BudgetExpense, ExpenseFilters } from "@/types/budget";
 
-import { CategoryRow } from "./components/CategoryRow";
-import { DailySpendingChart } from "./components/DailySpendingChart";
 import { ExpenseCard } from "./components/ExpenseCard";
 import { ExpenseDeleteDialog } from "./components/ExpenseDeleteDialog";
 import { ExpenseFiltersBar } from "./components/ExpenseFiltersBar";
@@ -106,7 +104,7 @@ export function BudgetPage() {
 
   return (
     <PageLoadingGate>
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative flex flex-col gap-6 pb-28">
+      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="relative flex flex-col gap-4 pb-28">
         <PageHeader title={t("budget.title")} subtitle={t("budget.subtitle")} actions={<ThemeToggle />} />
 
         {(syncError || budgetError) && (
@@ -159,24 +157,6 @@ export function BudgetPage() {
             </motion.div>
           )}
         </div>
-
-        {expenses.length > 0 && budgetSummary.dailySpending.some((day) => day.amount > 0) && (
-          <div className="flex flex-col gap-3.5">
-            <SectionHeader title={t("budget.dailySpending")} />
-            <DailySpendingChart days={budgetSummary.dailySpending} />
-          </div>
-        )}
-
-        {expenses.length > 0 && (
-          <div className="flex flex-col gap-3.5">
-            <SectionHeader title={t("budget.categorySummary")} />
-            <motion.div variants={staggerContainer} className="flex flex-col gap-3">
-              {budgetSummary.categories.map((category) => (
-                <CategoryRow key={category.id} category={category} />
-              ))}
-            </motion.div>
-          </div>
-        )}
 
         <div className="pointer-events-none fixed inset-x-0 bottom-24 z-30 mx-auto flex max-w-md justify-end px-5 md:max-w-lg lg:max-w-xl">
           <IconButton
