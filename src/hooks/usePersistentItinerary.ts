@@ -379,24 +379,34 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
   );
 
   const moveActivityToDay = useCallback(
-    (fromDayNumber: number, toDayNumber: number, activityId: string) => {
-      if (fromDayNumber === toDayNumber) return false;
+    (fromDayNumber: number, toDayNumber: number, activityId: string, insertIndex?: number) => {
       const sourceDay = days.find((item) => item.dayNumber === fromDayNumber);
       const destinationDay = days.find((item) => item.dayNumber === toDayNumber);
-      const activity = sourceDay?.timeline.find((item) => item.id === activityId);
+      const sourceIndex = sourceDay?.timeline.findIndex((item) => item.id === activityId) ?? -1;
+      const activity = sourceIndex >= 0 ? sourceDay?.timeline[sourceIndex] : undefined;
       if (!sourceDay || !destinationDay || !activity) return false;
 
+      const clampIndex = (index: number | undefined, length: number) =>
+        Math.max(0, Math.min(index ?? length, length));
+
       const nextDays = days.map((day) => {
+        if (fromDayNumber === toDayNumber && day.dayNumber === fromDayNumber) {
+          const timeline = day.timeline.filter((item) => item.id !== activityId);
+          const requestedIndex = clampIndex(insertIndex, day.timeline.length);
+          const adjustedIndex = requestedIndex > sourceIndex ? requestedIndex - 1 : requestedIndex;
+          timeline.splice(clampIndex(adjustedIndex, timeline.length), 0, activity);
+          return { ...day, timeline };
+        }
+
         if (day.dayNumber === fromDayNumber) {
-          return {
-            ...day,
-            timeline: day.timeline.filter((item) => item.id !== activityId),
-          };
+          return { ...day, timeline: day.timeline.filter((item) => item.id !== activityId) };
         }
         if (day.dayNumber === toDayNumber) {
+          const timeline = [...day.timeline.filter((item) => item.id !== activityId)];
+          timeline.splice(clampIndex(insertIndex, timeline.length), 0, activity);
           return {
             ...day,
-            timeline: [...day.timeline.filter((item) => item.id !== activityId), activity],
+            timeline,
           };
         }
         return day;
@@ -407,7 +417,7 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
       if (user && isFirebaseConfigured()) {
         const tripId = getActiveTripId();
         const batch = writeBatch(sharedTripCollection(tripId, "itinerary").firestore);
-        for (const dayNumber of [fromDayNumber, toDayNumber]) {
+        for (const dayNumber of Array.from(new Set([fromDayNumber, toDayNumber]))) {
           const day = findDay(nextDays, dayNumber);
           if (!day) continue;
           day.timeline.forEach((nextActivity, order) => {

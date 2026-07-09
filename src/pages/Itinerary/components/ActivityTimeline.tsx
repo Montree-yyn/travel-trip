@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, ArrowDown, ArrowUp, Bookmark, CalendarDays, Car, Clock, MoreHorizontal, Pencil, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import { Chip, GlassCard, TripImage } from "@/components/ui";
 import { staggerContainer, riseIn } from "@/design-system/motion";
@@ -19,7 +19,33 @@ export interface ActivityTimelineProps {
   onSelectActivity?: (item: EditableTimelineItem) => void;
   onMoveActivity?: (activityId: string, direction: "up" | "down") => void;
   onRequestMoveActivity?: (item: EditableTimelineItem) => void;
+  onDragTargetDayChange?: (dayNumber: number | null) => void;
+  onDropActivity?: (activityId: string, toDayNumber: number, insertIndex?: number) => boolean;
   onDeleteActivity?: (activityId: string) => boolean;
+}
+
+interface PendingDrag {
+  item: EditableTimelineItem;
+  activityId: string;
+  index: number;
+  pointerId: number;
+  startX: number;
+  startY: number;
+  rect: DOMRect;
+  timer: number;
+}
+
+interface DragState {
+  item: EditableTimelineItem;
+  activityId: string;
+  index: number;
+  pointerId: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  targetDayNumber: number;
+  insertIndex: number;
 }
 
 export function ActivityTimeline({
@@ -31,15 +57,175 @@ export function ActivityTimeline({
   onSelectActivity,
   onMoveActivity,
   onRequestMoveActivity,
+  onDragTargetDayChange,
+  onDropActivity,
   onDeleteActivity,
 }: ActivityTimelineProps) {
   const { t } = useTranslation();
+  const itemRefs = useRef(new Map<string, HTMLLIElement>());
+  const pendingDragRef = useRef<PendingDrag | null>(null);
+  const dragStateRef = useRef<DragState | null>(null);
+  const suppressClickRef = useRef(false);
+  const [dragState, setDragState] = useState<DragState | null>(null);
   const [activeMenu, setActiveMenu] = useState<{
     item: EditableTimelineItem;
     activityId: string;
     index: number;
     isBookmarked: boolean;
   } | null>(null);
+
+  function setNextDragState(nextState: DragState | null) {
+    dragStateRef.current = nextState;
+    setDragState(nextState);
+    onDragTargetDayChange?.(nextState?.targetDayNumber ?? null);
+  }
+
+  function getDayDropTarget(clientX: number, clientY: number) {
+    const element = document.elementFromPoint(clientX, clientY);
+    const target = element?.closest<HTMLElement>("[data-day-drop-target]");
+    const dayValue = target?.dataset.dayDropTarget;
+    const targetDayNumber = dayValue ? Number(dayValue) : dayNumber;
+    return Number.isFinite(targetDayNumber) ? targetDayNumber : dayNumber;
+  }
+
+  function getSameDayInsertIndex(clientY: number, draggedActivityId: string) {
+    let insertIndex = items.length;
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index];
+      if (!item) continue;
+      const activityId = item.id || getActivityId(dayNumber, item);
+      if (activityId === draggedActivityId) continue;
+      const element = itemRefs.current.get(activityId);
+      if (!element) continue;
+      const rect = element.getBoundingClientRect();
+      if (clientY < rect.top + rect.height / 2) {
+        insertIndex = index;
+        break;
+      }
+    }
+    return insertIndex;
+  }
+
+  function autoScroll(clientY: number) {
+    const edgeSize = 86;
+    const maxSpeed = 18;
+    if (clientY < edgeSize) {
+      window.scrollBy({ top: -maxSpeed, behavior: "auto" });
+      return;
+    }
+    if (window.innerHeight - clientY < edgeSize) {
+      window.scrollBy({ top: maxSpeed, behavior: "auto" });
+    }
+  }
+
+  function startDrag(pending: PendingDrag) {
+    suppressClickRef.current = true;
+    document.body.style.userSelect = "none";
+    const nextState: DragState = {
+      item: pending.item,
+      activityId: pending.activityId,
+      index: pending.index,
+      pointerId: pending.pointerId,
+      x: pending.startX,
+      y: pending.startY,
+      width: pending.rect.width,
+      height: pending.rect.height,
+      targetDayNumber: dayNumber,
+      insertIndex: pending.index,
+    };
+    setNextDragState(nextState);
+  }
+
+  function clearPendingDrag() {
+    if (pendingDragRef.current) window.clearTimeout(pendingDragRef.current.timer);
+    pendingDragRef.current = null;
+  }
+
+  function finishDrag() {
+    const state = dragStateRef.current;
+    clearPendingDrag();
+    document.body.style.userSelect = "";
+    setNextDragState(null);
+    if (!state) return;
+    const moved = onDropActivity?.(
+      state.activityId,
+      state.targetDayNumber,
+      state.targetDayNumber === dayNumber ? state.insertIndex : undefined,
+    );
+    if (!moved) suppressClickRef.current = false;
+    window.setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+  }
+
+  function handlePointerDown(
+    event: ReactPointerEvent,
+    item: EditableTimelineItem,
+    activityId: string,
+    index: number,
+  ) {
+    if (event.button !== 0 || event.pointerType === "mouse" && event.buttons !== 1) return;
+    if ((event.target as HTMLElement).closest("button")) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    clearPendingDrag();
+    pendingDragRef.current = {
+      item,
+      activityId,
+      index,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      rect,
+      timer: window.setTimeout(() => {
+        const pending = pendingDragRef.current;
+        if (pending) startDrag(pending);
+      }, 280),
+    };
+  }
+
+  useEffect(() => {
+    function handlePointerMove(event: PointerEvent) {
+      const pending = pendingDragRef.current;
+      const state = dragStateRef.current;
+      if (pending && pending.pointerId === event.pointerId && !state) {
+        const distance = Math.hypot(event.clientX - pending.startX, event.clientY - pending.startY);
+        if (distance > 12) clearPendingDrag();
+        return;
+      }
+      if (!state || state.pointerId !== event.pointerId) return;
+      event.preventDefault();
+      autoScroll(event.clientY);
+      const targetDayNumber = getDayDropTarget(event.clientX, event.clientY);
+      const insertIndex = targetDayNumber === dayNumber
+        ? getSameDayInsertIndex(event.clientY, state.activityId)
+        : items.length;
+      setNextDragState({
+        ...state,
+        x: event.clientX,
+        y: event.clientY,
+        targetDayNumber,
+        insertIndex,
+      });
+    }
+
+    function handlePointerUp(event: PointerEvent) {
+      const pending = pendingDragRef.current;
+      const state = dragStateRef.current;
+      if (pending && pending.pointerId === event.pointerId) clearPendingDrag();
+      if (state && state.pointerId === event.pointerId) finishDrag();
+    }
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: false });
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      clearPendingDrag();
+      document.body.style.userSelect = "";
+    };
+  });
 
   function closeMenu() {
     setActiveMenu(null);
@@ -68,17 +254,37 @@ export function ActivityTimeline({
           const activityId = item.id || getActivityId(dayNumber, item);
           const isBookmarked = bookmarkIds.has(activityId);
           const categoryKey = inferCategoryKey(item.activity, item.notes, item.category);
+          const isDragging = dragState?.activityId === activityId;
+          const showIndicatorBefore =
+            dragState?.targetDayNumber === dayNumber &&
+            dragState.insertIndex === index &&
+            dragState.activityId !== activityId;
 
           return (
-            <motion.li key={activityId} variants={riseIn}>
+            <motion.li
+              key={activityId}
+              ref={(node) => {
+                if (node) itemRefs.current.set(activityId, node);
+                else itemRefs.current.delete(activityId);
+              }}
+              variants={riseIn}
+            >
+              {showIndicatorBefore && (
+                <div className="mb-3 h-1 rounded-pill bg-accent-strong shadow-[0_0_18px_rgba(217,79,120,0.45)]" />
+              )}
               <GlassCard
                 interactive
                 padding="none"
                 className={cn(
-                  "flex cursor-pointer overflow-hidden",
+                  "flex cursor-pointer overflow-hidden transition-opacity",
                   smartItem.conflict && "ring-2 ring-red-400/70",
+                  isDragging && "opacity-35",
                 )}
-                onClick={() => onSelectActivity?.(item)}
+                onPointerDown={(event) => handlePointerDown(event, item, activityId, index)}
+                onClick={() => {
+                  if (suppressClickRef.current) return;
+                  onSelectActivity?.(item);
+                }}
               >
                 <TripImage
                   seed={`${city}-${dayNumber}-${item.activity}`}
@@ -154,7 +360,47 @@ export function ActivityTimeline({
             </motion.li>
           );
         })}
+        {dragState?.targetDayNumber === dayNumber && dragState.insertIndex >= items.length && (
+          <li className="h-1 rounded-pill bg-accent-strong shadow-[0_0_18px_rgba(217,79,120,0.45)]" />
+        )}
       </motion.ol>
+
+      <AnimatePresence>
+        {dragState && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 0.94, scale: 1.04 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+            className="pointer-events-none fixed z-[70] overflow-hidden rounded-3xl bg-bg-elevated shadow-[0_26px_70px_-34px_rgba(15,23,42,0.75)] ring-2 ring-accent/25"
+            style={{
+              left: dragState.x - dragState.width / 2,
+              top: dragState.y - Math.min(dragState.height / 2, 72),
+              width: dragState.width,
+            }}
+          >
+            <div className="flex">
+              <TripImage
+                seed={`${city}-${dayNumber}-${dragState.item.activity}`}
+                className="size-[5.75rem] shrink-0"
+                alt=""
+              />
+              <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 p-3.5">
+                <p className="flex items-center gap-1 text-xs font-semibold text-accent-strong">
+                  <Clock size={12} />
+                  {dragState.item.time}
+                </p>
+                <p className="line-clamp-2 text-base font-semibold leading-snug text-ink">
+                  {dragState.item.activity}
+                </p>
+                {dragState.item.location && (
+                  <p className="truncate text-xs font-semibold text-ink-muted">{dragState.item.location}</p>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {activeMenu && (

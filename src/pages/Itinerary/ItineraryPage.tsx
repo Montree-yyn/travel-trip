@@ -35,6 +35,19 @@ export function ItineraryPage() {
   } | null>(null);
   const [dayActionMode, setDayActionMode] = useState<DayMoveMode | null>(null);
   const [successToastMessage, setSuccessToastMessage] = useState("");
+  const [dragTargetDay, setDragTargetDay] = useState<number | null>(null);
+  const [dayDragTarget, setDayDragTarget] = useState<number | null>(null);
+  const [undoMove, setUndoMove] = useState<{
+    activityId: string;
+    fromDayNumber: number;
+    toDayNumber: number;
+    fromIndex: number;
+  } | null>(null);
+  const [undoDayMove, setUndoDayMove] = useState<{
+    mode: "move" | "swap";
+    sourceDayNumber: number;
+    targetDayNumber: number;
+  } | null>(null);
   const { items: bookmarkIds, toggle: toggleBookmark } = usePersistedSet(
     `travel-trip-bookmarks:${sampleTrip.id}`,
   );
@@ -57,9 +70,9 @@ export function ItineraryPage() {
 
   useEffect(() => {
     if (!successToastMessage) return;
-    const timeout = window.setTimeout(() => setSuccessToastMessage(""), 2400);
+    const timeout = window.setTimeout(() => setSuccessToastMessage(""), undoMove || undoDayMove ? 4200 : 2400);
     return () => window.clearTimeout(timeout);
-  }, [successToastMessage]);
+  }, [successToastMessage, undoDayMove, undoMove]);
 
   if (status === "error") {
     return (
@@ -115,8 +128,44 @@ export function ItineraryPage() {
     const moved = moveActivityToDay(movingActivity.fromDayNumber, toDayNumber, movingActivity.activity.id);
     if (moved) {
       setSuccessToastMessage("Activity moved successfully");
+      setUndoMove(null);
+      setUndoDayMove(null);
     }
     return moved;
+  }
+
+  function dropActivity(activityId: string, toDayNumber: number, insertIndex?: number) {
+    const fromIndex = timelineItems.findIndex((item) => item.id === activityId);
+    if (fromIndex < 0) return false;
+    if (toDayNumber === day.dayNumber && (insertIndex === fromIndex || insertIndex === fromIndex + 1)) {
+      return false;
+    }
+    const moved = moveActivityToDay(day.dayNumber, toDayNumber, activityId, insertIndex);
+    if (moved) {
+      setSuccessToastMessage("Activity moved");
+      setUndoMove({
+        activityId,
+        fromDayNumber: day.dayNumber,
+        toDayNumber,
+        fromIndex,
+      });
+      setUndoDayMove(null);
+    }
+    return moved;
+  }
+
+  function undoLastActivityMove() {
+    if (!undoMove) return;
+    const undone = moveActivityToDay(
+      undoMove.toDayNumber,
+      undoMove.fromDayNumber,
+      undoMove.activityId,
+      undoMove.fromIndex,
+    );
+    if (undone) {
+      setUndoMove(null);
+      setSuccessToastMessage("");
+    }
   }
 
   function confirmDayAction(targetDayNumber: number) {
@@ -126,8 +175,39 @@ export function ItineraryPage() {
       : swapDayActivities(day.dayNumber, targetDayNumber);
     if (success) {
       setSuccessToastMessage(dayActionMode === "move" ? "Day moved successfully" : "Days swapped successfully");
+      setUndoMove(null);
+      setUndoDayMove(null);
     }
     return success;
+  }
+
+  function dropDay(sourceDayNumber: number, targetDayNumber: number) {
+    if (sourceDayNumber === targetDayNumber) return false;
+    const targetDay = itineraryDays.find((item) => item.dayNumber === targetDayNumber);
+    if (!targetDay) return false;
+
+    const mode = targetDay.timeline.length === 0 ? "move" : "swap";
+    const success = mode === "move"
+      ? moveDayActivities(sourceDayNumber, targetDayNumber)
+      : swapDayActivities(sourceDayNumber, targetDayNumber);
+
+    if (success) {
+      setSuccessToastMessage("Day moved");
+      setUndoMove(null);
+      setUndoDayMove({ mode, sourceDayNumber, targetDayNumber });
+    }
+    return success;
+  }
+
+  function undoLastDayMove() {
+    if (!undoDayMove) return;
+    const undone = undoDayMove.mode === "move"
+      ? moveDayActivities(undoDayMove.targetDayNumber, undoDayMove.sourceDayNumber)
+      : swapDayActivities(undoDayMove.sourceDayNumber, undoDayMove.targetDayNumber);
+    if (undone) {
+      setUndoDayMove(null);
+      setSuccessToastMessage("");
+    }
   }
 
   return (
@@ -143,7 +223,15 @@ export function ItineraryPage() {
 
       {activeTab === "itinerary" && (
         <>
-          <DaySelector days={itineraryDays} selected={safeSelectedDay} onSelect={setSelectedDay} />
+          <DaySelector
+            days={itineraryDays}
+            selected={safeSelectedDay}
+            dragTargetDay={dragTargetDay}
+            dayDragTarget={dayDragTarget}
+            onDayDragTargetChange={setDayDragTarget}
+            onDropDay={dropDay}
+            onSelect={setSelectedDay}
+          />
 
           <motion.div
             key={day.dayNumber}
@@ -191,6 +279,8 @@ export function ItineraryPage() {
               onSelectActivity={openEditActivity}
               onMoveActivity={(activityId, direction) => moveActivity(day.dayNumber, activityId, direction)}
               onRequestMoveActivity={openMoveActivity}
+              onDragTargetDayChange={setDragTargetDay}
+              onDropActivity={dropActivity}
               onDeleteActivity={deleteActivity}
             />
           </motion.div>
@@ -237,8 +327,26 @@ export function ItineraryPage() {
                 exit={{ opacity: 0, y: 16 }}
                 className="fixed inset-x-0 bottom-28 z-[60] mx-auto flex max-w-md justify-center px-5 md:max-w-lg lg:max-w-xl"
               >
-                <div className="glass-surface-strong glass-shadow-lg rounded-pill px-4 py-3 text-sm font-bold text-ink">
-                  {successToastMessage}
+                <div className="glass-surface-strong glass-shadow-lg flex items-center gap-3 rounded-pill px-4 py-3 text-sm font-bold text-ink">
+                  <span>{successToastMessage}</span>
+                  {undoMove && successToastMessage === "Activity moved" && (
+                    <button
+                      type="button"
+                      onClick={undoLastActivityMove}
+                      className="rounded-pill bg-accent-soft px-3 py-1 text-xs font-bold text-accent-strong"
+                    >
+                      Undo
+                    </button>
+                  )}
+                  {undoDayMove && successToastMessage === "Day moved" && (
+                    <button
+                      type="button"
+                      onClick={undoLastDayMove}
+                      className="rounded-pill bg-accent-soft px-3 py-1 text-xs font-bold text-accent-strong"
+                    >
+                      Undo
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
