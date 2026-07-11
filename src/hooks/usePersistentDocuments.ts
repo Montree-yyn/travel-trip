@@ -4,14 +4,16 @@ import { useAuth } from "@/auth";
 import { isFirebaseConfigured } from "@/firebase/config";
 import {
   deleteDocumentFromFirestore,
-  hydrateDocumentsFromFirestore,
+  migrateLegacyDocumentsIfNeeded,
   prepareDocumentForSave,
   readDocumentsFromStorage,
   saveDocumentToFirestore,
+  subscribeToSharedDocuments,
   uploadDocumentFileToStorage,
   writeDocumentsToStorage,
 } from "@/lib/documents";
 import type { DocumentCategoryId, TravelDocument } from "@/types/document";
+import { getActiveTripId } from "@/sync/sharedTrip";
 
 export function usePersistentDocuments() {
   const { user } = useAuth();
@@ -22,17 +24,30 @@ export function usePersistentDocuments() {
   useEffect(() => {
     if (!uid || !isFirebaseConfigured()) return;
 
+    const tripId = getActiveTripId();
+    let unsubscribe: (() => void) | undefined;
     let cancelled = false;
-    void hydrateDocumentsFromFirestore(uid, readDocumentsFromStorage())
-      .then((nextDocuments) => {
-        if (!cancelled) setDocuments(nextDocuments);
-      })
+
+    void migrateLegacyDocumentsIfNeeded(uid, readDocumentsFromStorage(), tripId)
       .catch(() => {
-        if (!cancelled) setError("Could not load document changes. Local documents are still available.");
+        if (!cancelled) setError("Could not migrate older documents. Existing cloud documents are still available.");
+      })
+      .finally(() => {
+        if (cancelled) return;
+        unsubscribe = subscribeToSharedDocuments(
+          tripId,
+          (nextDocuments) => {
+            writeDocumentsToStorage(nextDocuments);
+            setDocuments(nextDocuments);
+            setError("");
+          },
+          () => setError("Could not load shared document changes. Please refresh and try again."),
+        );
       });
 
     return () => {
       cancelled = true;
+      unsubscribe?.();
     };
   }, [uid]);
 
@@ -58,15 +73,16 @@ export function usePersistentDocuments() {
       if (!persist(nextDocuments)) return false;
 
       if (uid && isFirebaseConfigured() && navigator.onLine) {
-        void uploadDocumentFileToStorage(uid, document)
+        const tripId = getActiveTripId();
+        void uploadDocumentFileToStorage(uid, document, tripId)
           .then((uploadedDocument) => {
             const syncedDocuments = nextDocuments.map((item) => (item.id === document.id ? uploadedDocument : item));
             persist(syncedDocuments);
-            return saveDocumentToFirestore(uid, uploadedDocument);
+            return saveDocumentToFirestore(uid, uploadedDocument, tripId);
           })
           .then(() => {
             if (previousDocument && previousDocument.id !== document.id) {
-              return deleteDocumentFromFirestore(uid, previousDocument);
+              return deleteDocumentFromFirestore(uid, previousDocument, tripId);
             }
             return undefined;
           })
@@ -114,7 +130,7 @@ export function usePersistentDocuments() {
       if (!persist(documents.filter((item) => item.id !== documentId))) return false;
 
       if (uid && document && isFirebaseConfigured() && navigator.onLine) {
-        void deleteDocumentFromFirestore(uid, document).catch(() => {
+        void deleteDocumentFromFirestore(uid, document, getActiveTripId()).catch(() => {
           setError("Could not delete this document.");
         });
       }

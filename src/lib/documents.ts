@@ -1,11 +1,11 @@
-import { deleteDoc, doc, getDocs, collection, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, writeBatch } from "firebase/firestore";
 import { deleteObject, getDownloadURL, ref, uploadString } from "firebase/storage";
 
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { getFirebaseFirestore } from "@/firebase/firestore";
-import { buildTravelDocumentStoragePath, getFirebaseStorage } from "@/firebase/storage";
-import { TRIP_ID } from "@/sync/keys";
+import { buildTripDocumentStoragePath, getFirebaseStorage } from "@/firebase/storage";
 import { logSyncOperationError } from "@/sync/syncDebugLog";
+import { getActiveTripId, sanitizeFirestoreData, sharedTripCollection, sharedTripSubDoc } from "@/sync/sharedTrip";
 import type { DocumentCategory, DocumentCategoryId, TravelDocument, TravelDocumentFile } from "@/types/document";
 
 const STORAGE_KEY = `travel-trip-documents:${sampleTrip.id}:v1`;
@@ -103,14 +103,6 @@ export function writeDocumentsToStorage(documents: TravelDocument[]) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
 }
 
-function documentsCollectionPath(uid: string, tripId: string) {
-  return `users/${uid}/trips/${tripId}/documents`;
-}
-
-function documentPath(uid: string, tripId: string, documentId: string) {
-  return `${documentsCollectionPath(uid, tripId)}/${documentId}`;
-}
-
 function uniqueDocumentId(document: TravelDocument, existingDocuments: TravelDocument[]) {
   const existingIds = new Set(existingDocuments.map((item) => item.id));
   if (document.id && document.id !== document.owner && !existingIds.has(document.id)) return document.id;
@@ -127,7 +119,7 @@ export function prepareDocumentForSave(document: TravelDocument, existingDocumen
   };
 }
 
-function serializeDocumentForFirestore(document: TravelDocument) {
+function serializeDocumentForFirestore(document: TravelDocument, uid: string, isNew: boolean) {
   const file = document.file
     ? {
         fileName: document.file.fileName,
@@ -148,6 +140,8 @@ function serializeDocumentForFirestore(document: TravelDocument) {
     file,
     createdAt: document.createdAt,
     updatedAt: document.updatedAt,
+    createdBy: isNew ? uid : undefined,
+    updatedBy: uid,
     syncedAt: serverTimestamp(),
   };
 }
@@ -158,55 +152,79 @@ function normalizeFirestoreDocument(documentId: string, value: unknown) {
   return { ...document, id: document.id || documentId };
 }
 
-function mergeDocuments(localDocuments: TravelDocument[], remoteDocuments: TravelDocument[]) {
-  const documentsById = new Map<string, TravelDocument>();
-  for (const document of localDocuments) documentsById.set(document.id, document);
-  for (const document of remoteDocuments) documentsById.set(document.id, document);
-  return Array.from(documentsById.values()).sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+function sortDocuments(documents: TravelDocument[]) {
+  return [...documents].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
 }
 
-export async function loadDocumentsFromFirestore(uid: string, tripId = TRIP_ID) {
-  const path = documentsCollectionPath(uid, tripId);
+function legacyDocumentsCollection(uid: string, tripId: string) {
+  return collection(getFirebaseFirestore(), "users", uid, "trips", tripId, "documents");
+}
+
+export async function migrateLegacyDocumentsIfNeeded(uid: string, localDocuments: TravelDocument[], tripId = getActiveTripId()) {
+  const sharedDocuments = sharedTripCollection(tripId, "documents");
   try {
-    const snapshot = await getDocs(collection(getFirebaseFirestore(), path));
-    return snapshot.docs
+    const [sharedSnapshot, legacySnapshot] = await Promise.all([
+      getDocs(sharedDocuments),
+      getDocs(legacyDocumentsCollection(uid, tripId)),
+    ]);
+    const existingIds = new Set(sharedSnapshot.docs.map((item) => item.id));
+    const legacyDocuments = legacySnapshot.docs
       .map((item) => normalizeFirestoreDocument(item.id, item.data()))
       .filter((document): document is TravelDocument => document !== null);
+    const candidates = [...legacyDocuments, ...localDocuments].filter((document, index, documents) =>
+      !existingIds.has(document.id) && documents.findIndex((item) => item.id === document.id) === index,
+    );
+
+    if (!candidates.length) return;
+
+    const batch = writeBatch(sharedDocuments.firestore);
+    for (const document of candidates) {
+      batch.set(
+        sharedTripSubDoc(tripId, "documents", document.id),
+        sanitizeFirestoreData(serializeDocumentForFirestore(document, uid, true)),
+        { merge: true },
+      );
+    }
+    await batch.commit();
   } catch (error) {
     logSyncOperationError({
-      operation: "loadDocumentsFromFirestore",
+      operation: "migrateLegacyDocumentsIfNeeded",
       source: "Firestore",
-      path,
+      path: `trips/${tripId}/documents`,
       uid,
-      phase: "getDocs",
+      phase: "migrate",
       error,
     });
     throw error;
   }
 }
 
-export async function hydrateDocumentsFromFirestore(uid: string, localDocuments: TravelDocument[], tripId = TRIP_ID) {
-  const remoteDocuments = await loadDocumentsFromFirestore(uid, tripId);
-  const mergedDocuments = mergeDocuments(localDocuments, remoteDocuments);
-  writeDocumentsToStorage(mergedDocuments);
-
-  if (remoteDocuments.length === 0 && localDocuments.length > 0) {
-    await Promise.all(
-      localDocuments.map(async (document) => {
-        const uploadedDocument = await uploadDocumentFileToStorage(uid, document, tripId);
-        await saveDocumentToFirestore(uid, uploadedDocument, tripId);
-      }),
-    );
-  }
-
-  return mergedDocuments;
+export function subscribeToSharedDocuments(
+  tripId: string,
+  onDocuments: (documents: TravelDocument[]) => void,
+  onError: (error: Error) => void,
+) {
+  return onSnapshot(
+    sharedTripCollection(tripId, "documents"),
+    (snapshot) => {
+      onDocuments(sortDocuments(
+        snapshot.docs
+          .map((item) => normalizeFirestoreDocument(item.id, item.data()))
+          .filter((document): document is TravelDocument => document !== null),
+      ));
+    },
+    (error) => onError(error),
+  );
 }
 
-export async function uploadDocumentFileToStorage(uid: string, document: TravelDocument, tripId = TRIP_ID) {
+export async function uploadDocumentFileToStorage(uid: string, document: TravelDocument, tripId = getActiveTripId()) {
   if (!document.file) return document;
 
-  const storagePath = buildTravelDocumentStoragePath(uid, tripId, document.id, document.file.fileName);
-  if (document.file.storagePath === storagePath && document.file.downloadUrl) return document;
+  void uid;
+  const storagePath = buildTripDocumentStoragePath(tripId, document.id, document.file.fileName);
+  // Legacy documents keep their existing Storage object and download URL. Only a new
+  // data URL (from add/replace) is uploaded to the shared trip Storage path.
+  if (document.file.storagePath && document.file.downloadUrl) return document;
 
   try {
     const storageRef = ref(getFirebaseStorage(), storagePath);
@@ -232,10 +250,12 @@ export async function uploadDocumentFileToStorage(uid: string, document: TravelD
   }
 }
 
-export async function saveDocumentToFirestore(uid: string, document: TravelDocument, tripId = TRIP_ID) {
-  const path = documentPath(uid, tripId, document.id);
+export async function saveDocumentToFirestore(uid: string, document: TravelDocument, tripId = getActiveTripId()) {
+  const documentRef = sharedTripSubDoc(tripId, "documents", document.id);
+  const path = documentRef.path;
   try {
-    await setDoc(doc(getFirebaseFirestore(), path), serializeDocumentForFirestore(document), { merge: true });
+    const existing = await getDoc(documentRef);
+    await setDoc(documentRef, sanitizeFirestoreData(serializeDocumentForFirestore(document, uid, !existing.exists())), { merge: true });
   } catch (error) {
     logSyncOperationError({
       operation: "saveDocumentToFirestore",
@@ -249,10 +269,11 @@ export async function saveDocumentToFirestore(uid: string, document: TravelDocum
   }
 }
 
-export async function deleteDocumentFromFirestore(uid: string, document: TravelDocument, tripId = TRIP_ID) {
-  const path = documentPath(uid, tripId, document.id);
+export async function deleteDocumentFromFirestore(uid: string, document: TravelDocument, tripId = getActiveTripId()) {
+  const documentRef = sharedTripSubDoc(tripId, "documents", document.id);
+  const path = documentRef.path;
   try {
-    await deleteDoc(doc(getFirebaseFirestore(), path));
+    await deleteDoc(documentRef);
     if (document.file?.storagePath) {
       await deleteObject(ref(getFirebaseStorage(), document.file.storagePath));
     }
