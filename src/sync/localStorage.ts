@@ -11,11 +11,11 @@ import type {
   TripBudgetDoc,
   TripChecklistDoc,
   TripFavoritesDoc,
-  TripMemoriesDoc,
   TripSettingsDoc,
   TripTranslatorDoc,
   TripVisitedDoc,
 } from "./types";
+import type { MemoriesData } from "@/types/memory";
 
 const defaultBudget: BudgetData = { expenses: [] };
 
@@ -92,12 +92,12 @@ export function readChecklistFromStorage(): TripChecklistDoc {
   return normalizeChecklistData(parsed);
 }
 
-export function readMemoriesFromStorage(): TripMemoriesDoc {
+export function readMemoriesFromStorage(): MemoriesData {
   const parsed = readJson<unknown>(SYNC_STORAGE_KEYS.memories, null);
   return normalizeMemoriesData(parsed);
 }
 
-export function writeMemoriesToStorage(memories: TripMemoriesDoc) {
+export function writeMemoriesToStorage(memories: MemoriesData) {
   writeJson(SYNC_STORAGE_KEYS.memories, memories);
 }
 

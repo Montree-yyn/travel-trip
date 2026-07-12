@@ -1,6 +1,5 @@
 import type { BudgetData } from "@/types/budget";
 import type { ChecklistData } from "@/types/checklist";
-import type { MemoriesData } from "@/types/memory";
 import type { TranslatorData } from "@/types/translator";
 import type { Locale } from "@/i18n";
 import type { ThemeMode } from "@/theme/theme-context";
@@ -22,7 +21,6 @@ export interface TripVisitedDoc {
 }
 
 export type TripChecklistDoc = ChecklistData;
-export type TripMemoriesDoc = MemoriesData;
 export type TripBudgetDoc = BudgetData;
 export type TripTranslatorDoc = TranslatorData;
 
@@ -33,7 +31,6 @@ export interface TripSyncSnapshot {
   favorites: TripFavoritesDoc | null;
   visited: TripVisitedDoc | null;
   checklist: TripChecklistDoc | null;
-  memories: TripMemoriesDoc | null;
   budget: TripBudgetDoc | null;
   translator: TripTranslatorDoc | null;
 }

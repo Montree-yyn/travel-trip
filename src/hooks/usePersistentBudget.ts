@@ -155,7 +155,7 @@ export function usePersistentBudget({
   defaultTotalBudget?: number;
   defaultCurrency?: string;
 } = {}) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState(() =>
     applyBudgetDefaults(
       isFirebaseConfigured() ? emptyBudget : readFallbackBudget(defaultCurrency),
@@ -173,7 +173,7 @@ export function usePersistentBudget({
       return;
     }
 
-    if (!user) return;
+    if (authLoading || !user) return;
 
     const tripId = getActiveTripId();
     let expenses: BudgetExpense[] = [];
@@ -192,7 +192,7 @@ export function usePersistentBudget({
         commit();
 
         const migrationKey = `${user.uid}:${tripId}:budget`;
-        if (snapshot.empty && migrationKeyRef.current !== migrationKey) {
+        if (snapshot.empty && !snapshot.metadata.fromCache && migrationKeyRef.current !== migrationKey) {
           migrationKeyRef.current = migrationKey;
           void migrateLegacyBudgetIfNeeded({ uid: user.uid, tripId, defaultCurrency }).catch((migrationError) => {
             console.error("[travel-trip-sync] Could not migrate legacy budget data", migrationError);
@@ -227,7 +227,7 @@ export function usePersistentBudget({
       unsubscribeExpenses();
       unsubscribeSettings();
     };
-  }, [defaultCurrency, defaultTotalBudget, user]);
+  }, [authLoading, defaultCurrency, defaultTotalBudget, user]);
 
   const persistExpense = useCallback(
     (expense: BudgetExpense, isCreate?: boolean) => {

@@ -1,5 +1,5 @@
-import { collection, deleteDoc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, writeBatch } from "firebase/firestore";
-import { deleteObject, getDownloadURL, ref, uploadString } from "firebase/storage";
+import { collection, getDoc, getDocs, onSnapshot, serverTimestamp, writeBatch } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 import { sampleTrip, tripSettings } from "@/data/sample-trip";
 import { getFirebaseFirestore } from "@/firebase/firestore";
@@ -11,6 +11,7 @@ import type { DocumentCategory, DocumentCategoryId, TravelDocument, TravelDocume
 const STORAGE_KEY = `travel-trip-documents:${sampleTrip.id}:v1`;
 const DOCUMENT_FILE_TYPES = new Set(["application/pdf", "image/jpeg", "image/png", "image/webp"]);
 const MAX_DOCUMENT_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const documentsMetadataId = "__meta";
 
 export const DEFAULT_DOCUMENT_OWNERS = tripSettings.documentOwners?.length
   ? tripSettings.documentOwners
@@ -146,6 +147,16 @@ function serializeDocumentForFirestore(document: TravelDocument, uid: string, is
   };
 }
 
+function documentsMetadata(tripId: string, uid: string) {
+  return sanitizeFirestoreData({
+    kind: "metadata",
+    tripId,
+    initializedAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    updatedBy: uid,
+  });
+}
+
 function normalizeFirestoreDocument(documentId: string, value: unknown) {
   const document = normalizeDocument({ ...(value as object), id: (value as Partial<TravelDocument>)?.id ?? documentId });
   if (!document) return null;
@@ -178,6 +189,11 @@ export async function migrateLegacyDocumentsIfNeeded(uid: string, localDocuments
     if (!candidates.length) return;
 
     const batch = writeBatch(sharedDocuments.firestore);
+    batch.set(
+      sharedTripSubDoc(tripId, "documents", documentsMetadataId),
+      documentsMetadata(tripId, uid),
+      { merge: true },
+    );
     for (const document of candidates) {
       batch.set(
         sharedTripSubDoc(tripId, "documents", document.id),
@@ -201,7 +217,7 @@ export async function migrateLegacyDocumentsIfNeeded(uid: string, localDocuments
 
 export function subscribeToSharedDocuments(
   tripId: string,
-  onDocuments: (documents: TravelDocument[]) => void,
+  onDocuments: (documents: TravelDocument[], fromServer: boolean, initialized: boolean) => void,
   onError: (error: Error) => void,
 ) {
   return onSnapshot(
@@ -209,9 +225,10 @@ export function subscribeToSharedDocuments(
     (snapshot) => {
       onDocuments(sortDocuments(
         snapshot.docs
+          .filter((item) => item.id !== documentsMetadataId)
           .map((item) => normalizeFirestoreDocument(item.id, item.data()))
           .filter((document): document is TravelDocument => document !== null),
-      ));
+      ), !snapshot.metadata.fromCache, !snapshot.empty);
     },
     (error) => onError(error),
   );
@@ -255,7 +272,18 @@ export async function saveDocumentToFirestore(uid: string, document: TravelDocum
   const path = documentRef.path;
   try {
     const existing = await getDoc(documentRef);
-    await setDoc(documentRef, sanitizeFirestoreData(serializeDocumentForFirestore(document, uid, !existing.exists())), { merge: true });
+    const batch = writeBatch(documentRef.firestore);
+    batch.set(
+      sharedTripSubDoc(tripId, "documents", documentsMetadataId),
+      documentsMetadata(tripId, uid),
+      { merge: true },
+    );
+    batch.set(
+      documentRef,
+      sanitizeFirestoreData(serializeDocumentForFirestore(document, uid, !existing.exists())),
+      { merge: true },
+    );
+    await batch.commit();
   } catch (error) {
     logSyncOperationError({
       operation: "saveDocumentToFirestore",
@@ -273,10 +301,14 @@ export async function deleteDocumentFromFirestore(uid: string, document: TravelD
   const documentRef = sharedTripSubDoc(tripId, "documents", document.id);
   const path = documentRef.path;
   try {
-    await deleteDoc(documentRef);
-    if (document.file?.storagePath) {
-      await deleteObject(ref(getFirebaseStorage(), document.file.storagePath));
-    }
+    const batch = writeBatch(documentRef.firestore);
+    batch.set(
+      sharedTripSubDoc(tripId, "documents", documentsMetadataId),
+      documentsMetadata(tripId, uid),
+      { merge: true },
+    );
+    batch.delete(documentRef);
+    await batch.commit();
   } catch (error) {
     logSyncOperationError({
       operation: "deleteDocumentFromFirestore",

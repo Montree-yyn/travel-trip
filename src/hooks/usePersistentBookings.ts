@@ -322,7 +322,7 @@ function sortFlights(segments: FlightSegment[]) {
 }
 
 export function usePersistentBookings() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<BookingData>(() =>
     isFirebaseConfigured() ? fallbackBookings() : readBookingsFromStorage(),
   );
@@ -336,7 +336,7 @@ export function usePersistentBookings() {
       return;
     }
 
-    if (!user) return;
+    if (authLoading || !user) return;
 
     const tripId = getActiveTripId();
     let flightSegments = flightsData.segments;
@@ -363,7 +363,7 @@ export function usePersistentBookings() {
         commit();
 
         const migrationKey = `${user.uid}:${tripId}:bookings`;
-        if (snapshot.empty && migrationKeyRef.current !== migrationKey) {
+        if (snapshot.empty && !snapshot.metadata.fromCache && migrationKeyRef.current !== migrationKey) {
           migrationKeyRef.current = migrationKey;
           void migrateLegacyBookingsIfNeeded(user.uid, tripId).catch((migrationError) => {
             console.error("[travel-trip-sync] Could not migrate legacy booking data", migrationError);
@@ -392,7 +392,7 @@ export function usePersistentBookings() {
       unsubscribeFlights();
       unsubscribeHotel();
     };
-  }, [user]);
+  }, [authLoading, user]);
 
   const updateFlight = useCallback(
     (flightId: string, input: FlightSegment) => {

@@ -15,12 +15,10 @@ import { isFirebaseConfigured } from "@/firebase/config";
 import { TRIP_ID } from "./keys";
 import {
   readFavoritesFromStorage,
-  readMemoriesFromStorage,
   readSettingsFromStorage,
   readTranslatorFromStorage,
   readVisitedFromStorage,
   writeFavoritesToStorage,
-  writeMemoriesToStorage,
   writeSettingsToStorage,
   writeTranslatorToStorage,
   writeVisitedToStorage,
@@ -30,7 +28,6 @@ import { ensureSharedTripMembership } from "./sharedTrip";
 import { logSyncEarlyReturn, logSyncFlow, logSyncProviderError, summarizeSyncSnapshot } from "./syncDebugLog";
 import type {
   TripFavoritesDoc,
-  TripMemoriesDoc,
   TripSettingsDoc,
   TripSyncSnapshot,
   TripTranslatorDoc,
@@ -47,7 +44,6 @@ interface TripSyncContextValue {
   retry: () => void;
   saveFavorites: (favorites: TripFavoritesDoc) => Promise<void>;
   saveVisited: (visited: TripVisitedDoc) => Promise<void>;
-  saveMemories: (memories: TripMemoriesDoc) => Promise<void>;
   saveTranslator: (translator: TripTranslatorDoc) => Promise<void>;
 }
 
@@ -65,7 +61,6 @@ function hydrateLocalStorage(snapshot: TripSyncSnapshot) {
 
   if (snapshot.favorites) writeFavoritesToStorage(snapshot.favorites);
   if (snapshot.visited) writeVisitedToStorage(snapshot.visited);
-  if (snapshot.memories) writeMemoriesToStorage(snapshot.memories);
   if (snapshot.translator) writeTranslatorToStorage(snapshot.translator);
 }
 
@@ -201,21 +196,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
     [queueWrite, uid],
   );
 
-  const saveMemories = useCallback(
-    async (memories: TripMemoriesDoc) => {
-      if (!uid) {
-        logSyncEarlyReturn("saveMemories", "missing uid");
-        return;
-      }
-      writeMemoriesToStorage(memories);
-      queueWrite("memories", async () => {
-        const { saveTripMemories } = await loadFirestoreSync();
-        return saveTripMemories(uid, TRIP_ID, memories);
-      });
-    },
-    [queueWrite, uid],
-  );
-
   const saveTranslator = useCallback(
     async (translator: TripTranslatorDoc) => {
       if (!uid) {
@@ -342,7 +322,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
         readSettingsFromStorage();
         readFavoritesFromStorage();
         readVisitedFromStorage();
-        readMemoriesFromStorage();
         readTranslatorFromStorage();
         markSyncError("bootstrap.loadTripSyncSnapshot", "bootstrap", error);
         setReady(true);
@@ -375,7 +354,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       retry,
       saveFavorites,
       saveVisited,
-      saveMemories,
       saveTranslator,
     }),
     [
@@ -387,7 +365,6 @@ export function TripSyncProvider({ children }: { children: ReactNode }) {
       retry,
       saveFavorites,
       saveVisited,
-      saveMemories,
       saveTranslator,
     ],
   );

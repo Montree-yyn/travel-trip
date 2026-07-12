@@ -19,6 +19,7 @@ export const DEFAULT_ACTIVE_TRIP_ID = TRIP_ID;
 
 export type SharedTripCollection =
   | "documents"
+  | "memories"
   | "flights"
   | "hotels"
   | "expenses"

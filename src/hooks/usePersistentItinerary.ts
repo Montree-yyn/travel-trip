@@ -223,7 +223,7 @@ async function migrateLegacyItineraryIfNeeded(uid: string, tripId: string, fallb
 }
 
 export function usePersistentItinerary(fallbackDays: TripDay[]) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [days, setDays] = useState(() => fallbackEditableDays(fallbackDays));
   const [error, setError] = useState("");
   const migrationKeyRef = useRef("");
@@ -235,7 +235,7 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
       return;
     }
 
-    if (!user) return;
+    if (authLoading || !user) return;
 
     const tripId = getActiveTripId();
     return onSnapshot(
@@ -244,7 +244,7 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
         setDays(buildDaysFromSnapshot(snapshot.docs, fallbackDays));
 
         const migrationKey = `${user.uid}:${tripId}:itinerary`;
-        if (snapshot.empty && migrationKeyRef.current !== migrationKey) {
+        if (snapshot.empty && !snapshot.metadata.fromCache && migrationKeyRef.current !== migrationKey) {
           migrationKeyRef.current = migrationKey;
           void migrateLegacyItineraryIfNeeded(user.uid, tripId, fallbackDays).catch((migrationError) => {
             console.error("[travel-trip-sync] Could not migrate legacy itinerary data", migrationError);
@@ -256,7 +256,7 @@ export function usePersistentItinerary(fallbackDays: TripDay[]) {
         setError("Could not load the shared itinerary. Please refresh and try again.");
       },
     );
-  }, [fallbackDays, user]);
+  }, [authLoading, fallbackDays, user]);
 
   const persistActivity = useCallback(
     (nextDays: EditableTripDay[], dayNumber: number, activity: EditableTimelineItem, isCreate?: boolean) => {

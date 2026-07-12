@@ -9,7 +9,6 @@ import {
 } from "./syncDebugLog";
 import type {
   TripFavoritesDoc,
-  TripMemoriesDoc,
   TripSettingsDoc,
   TripSyncSnapshot,
   TripTranslatorDoc,
@@ -196,15 +195,14 @@ async function writeTripDoc(
 }
 
 export async function loadTripSyncSnapshot(uid: string, tripId: string): Promise<TripSyncSnapshot> {
-  const [settings, favorites, visited, memories, translator] = await Promise.all([
+  const [settings, favorites, visited, translator] = await Promise.all([
     readTripDoc<TripSettingsDoc>(uid, tripId, "settings"),
     readTripDoc<TripFavoritesDoc>(uid, tripId, "favorites"),
     readTripDoc<TripVisitedDoc>(uid, tripId, "visited"),
-    readTripDoc<TripMemoriesDoc>(uid, tripId, "memories"),
     readTripDoc<TripTranslatorDoc>(uid, tripId, "translator"),
   ]);
 
-  return { settings, favorites, visited, checklist: null, memories, budget: null, translator };
+  return { settings, favorites, visited, checklist: null, budget: null, translator };
 }
 
 export function saveTripSettings(uid: string, tripId: string, settings: TripSettingsDoc) {
@@ -217,10 +215,6 @@ export function saveTripFavorites(uid: string, tripId: string, favorites: TripFa
 
 export function saveTripVisited(uid: string, tripId: string, visited: TripVisitedDoc) {
   return writeTripDoc(uid, tripId, "visited", visited);
-}
-
-export function saveTripMemories(uid: string, tripId: string, memories: TripMemoriesDoc) {
-  return writeTripDoc(uid, tripId, "memories", memories);
 }
 
 export function saveTripTranslator(uid: string, tripId: string, translator: TripTranslatorDoc) {

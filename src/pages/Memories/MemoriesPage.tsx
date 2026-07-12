@@ -28,7 +28,14 @@ import { PhotoGrid } from "./components/PhotoGrid";
 export function MemoriesPage() {
   const { t } = useTranslation();
   const { ready, error, retry } = useTripSync();
-  const { entries, addMemory, updateMemory, deleteMemory, updateEntryPhotos } = usePersistentMemories();
+  const {
+    entries,
+    error: memoriesSyncError,
+    addMemory,
+    updateMemory,
+    deleteMemory,
+    updateEntryPhotos,
+  } = usePersistentMemories();
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<"add" | "edit">("add");
   const [activeEntry, setActiveEntry] = useState<MemoryEntry | null>(null);
@@ -90,7 +97,7 @@ export function MemoriesPage() {
           actions={<ThemeToggle />}
         />
 
-        {error && (
+        {(error || memoriesSyncError) && (
           <div className="px-5">
             <DataErrorState
               titleKey="memories.syncErrorTitle"

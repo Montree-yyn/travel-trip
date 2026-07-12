@@ -1,13 +1,11 @@
 import {
   saveTripFavorites,
-  saveTripMemories,
   saveTripSettings,
   saveTripTranslator,
   saveTripVisited,
 } from "./firestoreSync";
 import {
   readFavoritesFromStorage,
-  readMemoriesFromStorage,
   readSettingsFromStorage,
   readTranslatorFromStorage,
   readVisitedFromStorage,
@@ -71,14 +69,6 @@ export async function performFirstSync(uid: string, tripId: string, snapshot: Tr
     uploads.push(
       uploadMissingDoc("performFirstSync.visited", uid, () =>
         saveTripVisited(uid, tripId, readVisitedFromStorage()),
-      ),
-    );
-  }
-
-  if (!snapshot.memories) {
-    uploads.push(
-      uploadMissingDoc("performFirstSync.memories", uid, () =>
-        saveTripMemories(uid, tripId, readMemoriesFromStorage()),
       ),
     );
   }

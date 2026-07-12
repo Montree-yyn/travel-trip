@@ -20,7 +20,7 @@ import {
   isUploadedMemoryPhoto,
   MAX_PHOTOS_PER_MEMORY,
 } from "@/lib/memory-photos";
-import { TRIP_ID } from "@/sync/keys";
+import { getActiveTripId } from "@/sync/sharedTrip";
 import type { MemoryPhoto, MemoryPhotoUploadState } from "@/types/memory";
 
 export function useMemoryPhotoManager({
@@ -70,7 +70,7 @@ export function useMemoryPhotoManager({
 
         const full = await uploadMemoryPhoto({
           uid,
-          tripId: TRIP_ID,
+          tripId: getActiveTripId(),
           entryId,
           photoId,
           blob,
@@ -80,7 +80,7 @@ export function useMemoryPhotoManager({
 
         const thumbnail = await uploadMemoryPhoto({
           uid,
-          tripId: TRIP_ID,
+          tripId: getActiveTripId(),
           entryId,
           photoId,
           blob: thumbnailBlob,
@@ -110,7 +110,7 @@ export function useMemoryPhotoManager({
         const fallbackBlob = await compressImageFile(blob);
         const { downloadUrl, storagePath } = await uploadMemoryPhoto({
           uid,
-          tripId: TRIP_ID,
+          tripId: getActiveTripId(),
           entryId,
           photoId,
           blob: fallbackBlob,

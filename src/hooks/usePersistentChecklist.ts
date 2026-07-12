@@ -88,7 +88,7 @@ async function migrateLegacyChecklistIfNeeded(uid: string, tripId: string) {
 }
 
 export function usePersistentChecklist() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [items, setItems] = useState(() => normalizeChecklistData(null).items);
   const [error, setError] = useState("");
   const migrationKeyRef = useRef("");
@@ -100,7 +100,7 @@ export function usePersistentChecklist() {
       return;
     }
 
-    if (!user) return;
+    if (authLoading || !user) return;
 
     const tripId = getActiveTripId();
     return onSnapshot(
@@ -112,7 +112,7 @@ export function usePersistentChecklist() {
         setItems(snapshot.empty ? normalizeChecklistData(null).items : nextItems);
 
         const migrationKey = `${user.uid}:${tripId}:checklist`;
-        if (snapshot.empty && migrationKeyRef.current !== migrationKey) {
+        if (snapshot.empty && !snapshot.metadata.fromCache && migrationKeyRef.current !== migrationKey) {
           migrationKeyRef.current = migrationKey;
           void migrateLegacyChecklistIfNeeded(user.uid, tripId).catch((migrationError) => {
             console.error("[travel-trip-sync] Could not migrate legacy checklist data", migrationError);
@@ -124,7 +124,7 @@ export function usePersistentChecklist() {
         setError("Could not load the shared checklist. Please refresh and try again.");
       },
     );
-  }, [user]);
+  }, [authLoading, user]);
 
   const persistItem = useCallback(
     (item: ChecklistItem, isCreate?: boolean) => {

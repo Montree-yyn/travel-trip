@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/auth";
 import { isFirebaseConfigured } from "@/firebase/config";
@@ -16,40 +16,40 @@ import type { DocumentCategoryId, TravelDocument } from "@/types/document";
 import { getActiveTripId } from "@/sync/sharedTrip";
 
 export function usePersistentDocuments() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const uid = user?.uid ?? null;
   const [documents, setDocuments] = useState(() => readDocumentsFromStorage());
   const [error, setError] = useState("");
+  const migrationKeyRef = useRef("");
 
   useEffect(() => {
-    if (!uid || !isFirebaseConfigured()) return;
+    if (authLoading || !uid || !isFirebaseConfigured()) return;
 
     const tripId = getActiveTripId();
-    let unsubscribe: (() => void) | undefined;
     let cancelled = false;
+    const unsubscribe = subscribeToSharedDocuments(
+      tripId,
+      (nextDocuments, fromServer, initialized) => {
+        writeDocumentsToStorage(nextDocuments);
+        setDocuments(nextDocuments);
+        setError("");
 
-    void migrateLegacyDocumentsIfNeeded(uid, readDocumentsFromStorage(), tripId)
-      .catch(() => {
-        if (!cancelled) setError("Could not migrate older documents. Existing cloud documents are still available.");
-      })
-      .finally(() => {
-        if (cancelled) return;
-        unsubscribe = subscribeToSharedDocuments(
-          tripId,
-          (nextDocuments) => {
-            writeDocumentsToStorage(nextDocuments);
-            setDocuments(nextDocuments);
-            setError("");
-          },
-          () => setError("Could not load shared document changes. Please refresh and try again."),
-        );
-      });
+        const migrationKey = `${uid}:${tripId}:documents`;
+        if (fromServer && !initialized && nextDocuments.length === 0 && migrationKeyRef.current !== migrationKey) {
+          migrationKeyRef.current = migrationKey;
+          void migrateLegacyDocumentsIfNeeded(uid, readDocumentsFromStorage(), tripId).catch(() => {
+            if (!cancelled) setError("Could not migrate older documents. Existing cloud documents are still available.");
+          });
+        }
+      },
+      () => setError("Could not load shared document changes. Please refresh and try again."),
+    );
 
     return () => {
       cancelled = true;
-      unsubscribe?.();
+      unsubscribe();
     };
-  }, [uid]);
+  }, [authLoading, uid]);
 
   const persist = useCallback((nextDocuments: TravelDocument[]) => {
     try {
